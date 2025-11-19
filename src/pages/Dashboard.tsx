@@ -3,7 +3,8 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { useAuth } from "@/hooks/use-auth";
 import { Loader2 } from "lucide-react";
-import LoyaltyPage from "@/components/dashboard/LoyaltyPage"; // Import the new LoyaltyPage
+import LoyaltyPage from "@/components/dashboard/LoyaltyPage";
+import ValidationPage from "@/components/dashboard/ValidationPage"; // Import ValidationPage
 
 // Placeholder Pages for Dashboard Sections
 const OverviewPage = () => (
@@ -69,6 +70,7 @@ const Dashboard: React.FC = () => {
         
         <Route path="overview" element={<OverviewPage />} />
         <Route path="loyalty" element={<LoyaltyPage />} />
+        <Route path="validate" element={<ValidationPage />} /> {/* New Route */}
         <Route path="scheduling" element={<SchedulingPage />} />
         <Route path="clients" element={<ClientsPage />} />
         <Route path="marketing" element={<MarketingPage />} />
