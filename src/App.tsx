@@ -14,8 +14,10 @@ import Help from "./pages/Help";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Contact from "./pages/Contact";
-import Terms from "./pages/Terms"; // Import the new Terms page
-import Privacy from "./pages/Privacy"; // Import the new Privacy page
+import Terms from "./pages/Terms";
+import Privacy from "./pages/Privacy";
+import About from "./pages/About"; // Import the new About page
+import Careers from "./pages/Careers"; // Import the new Careers page
 
 const queryClient = new QueryClient();
 
@@ -36,8 +38,10 @@ const App = () => (
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/terms" element={<Terms />} /> {/* New Terms Route */}
-          <Route path="/privacy" element={<Privacy />} /> {/* New Privacy Route */}
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/about" element={<About />} /> {/* New About Route */}
+          <Route path="/careers" element={<Careers />} /> {/* New Careers Route */}
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
