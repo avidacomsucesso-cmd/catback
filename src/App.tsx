@@ -16,8 +16,9 @@ import Signup from "./pages/Signup";
 import Contact from "./pages/Contact";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
-import About from "./pages/About"; // Import the new About page
-import Careers from "./pages/Careers"; // Import the new Careers page
+import About from "./pages/About";
+import Careers from "./pages/Careers";
+import BlogPost from "./pages/BlogPost"; // Import the new BlogPost page
 
 const queryClient = new QueryClient();
 
@@ -34,14 +35,15 @@ const App = () => (
           <Route path="/industries" element={<Industries />} />
           <Route path="/how-it-works" element={<HowItWorks />} />
           <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:slug" element={<BlogPost />} /> {/* New dynamic Blog Post Route */}
           <Route path="/help" element={<Help />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/privacy" element={<Privacy />} />
-          <Route path="/about" element={<About />} /> {/* New About Route */}
-          <Route path="/careers" element={<Careers />} /> {/* New Careers Route */}
+          <Route path="/about" element={<About />} />
+          <Route path="/careers" element={<Careers />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
