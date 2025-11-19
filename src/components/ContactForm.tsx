@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { showSuccess } from "@/utils/toast";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 const formSchema = z.object({
   name: z.string().min(2, {
