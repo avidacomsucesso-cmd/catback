@@ -29,7 +29,7 @@ const Footer: React.FC = () => {
       links: [
         { name: "Sobre Nós", href: "/about" },
         { name: "Carreiras", href: "/careers" },
-        { name: "Contacto", href: "/contact" },
+        { name: "Contacto", href: "/contact" }, // Updated link
       ],
     },
   ];
