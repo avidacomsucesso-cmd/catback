@@ -49,6 +49,13 @@
     --sidebar-border: 220 13% 91%;
 
     --sidebar-ring: 217.2 91.2% 59.8%;
+    
+    /* CATBACK Colors */
+    --catback-purple: 262 76% 51%; /* #7C3AED */
+    --catback-dark-purple: 262 63% 24%; /* #5B21B6 */
+    --catback-light-purple: 262 76% 85%; /* #C4B5FD */
+    --catback-success-green: 149 80% 39%; /* #10B981 */
+    --catback-energy-orange: 39 92% 50%; /* #F59E0B */
   }
 
   .dark {
@@ -87,6 +94,13 @@
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* CATBACK Colors */
+    --catback-purple: 262 76% 51%;
+    --catback-dark-purple: 262 63% 24%;
+    --catback-light-purple: 262 76% 85%;
+    --catback-success-green: 149 80% 39%;
+    --catback-energy-orange: 39 92% 50%;
   }
 }
 

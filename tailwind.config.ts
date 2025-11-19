@@ -62,6 +62,13 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        catback: {
+          purple: "hsl(var(--catback-purple))",
+          "dark-purple": "hsl(var(--catback-dark-purple))",
+          "light-purple": "hsl(var(--catback-light-purple))",
+          "success-green": "hsl(var(--catback-success-green))",
+          "energy-orange": "hsl(var(--catback-energy-orange))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
