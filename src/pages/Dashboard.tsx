@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { useAuth } from "@/hooks/use-auth";
 import { Loader2 } from "lucide-react";
+import LoyaltyPage from "@/components/dashboard/LoyaltyPage"; // Import the new LoyaltyPage
 
 // Placeholder Pages for Dashboard Sections
 const OverviewPage = () => (
@@ -14,14 +15,7 @@ const OverviewPage = () => (
     {/* Add quick stats here later */}
   </div>
 );
-const LoyaltyPage = () => (
-  <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
-    <h2 className="text-3xl font-bold text-catback-purple mb-4">Fidelização Digital</h2>
-    <p className="text-gray-700 dark:text-gray-300">
-      Aqui você irá criar e gerenciar seus cartões de selos, pontos e cashback.
-    </p>
-  </div>
-);
+// LoyaltyPage is now imported from its own component file
 const SchedulingPage = () => (
   <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
     <h2 className="text-3xl font-bold text-catback-purple mb-4">Agendamento Online</h2>
