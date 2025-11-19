@@ -1,5 +1,5 @@
 import React from "react";
-import { Menu, Cat, Home, CreditCard, Users, Calendar, Megaphone, Settings, LogOut, QrCode } from "lucide-react";
+import { Menu, Cat, Home, CreditCard, Users, Calendar, Megaphone, Settings, LogOut } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -14,7 +14,6 @@ interface DashboardLayoutProps {
 
 const navItems = [
   { name: "Visão Geral", href: "/dashboard/overview", icon: Home },
-  { name: "Validação Rápida", href: "/dashboard/validate", icon: QrCode }, // New Item
   { name: "Fidelização", href: "/dashboard/loyalty", icon: CreditCard },
   { name: "Agendamento", href: "/dashboard/scheduling", icon: Calendar },
   { name: "Clientes (CRM)", href: "/dashboard/clients", icon: Users },
