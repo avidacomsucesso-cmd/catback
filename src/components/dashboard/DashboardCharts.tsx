@@ -34,7 +34,7 @@ const ChartCard: React.FC<{ title: string; data: any[] | undefined; isLoading: b
                                 borderRadius: "var(--radius)",
                             }}
                         />
-                        <Bar dataKey="count" fill={color} radius={[4, 4, 0, 0]} />
+                        <Bar dataKey={dataKey} fill={color} radius={[4, 4, 0, 0]} />
                     </BarChart>
                 </ResponsiveContainer>
             </CardContent>
