@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { showSuccess } from "@/utils/toast";
+import { useProfile } from "@/hooks/use-profile"; // Import useProfile
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -22,7 +23,6 @@ const navItems = [
 
 const Sidebar: React.FC = () => {
   const location = useLocation();
-  const { user } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -85,9 +85,16 @@ const Sidebar: React.FC = () => {
 };
 
 const DashboardHeader: React.FC<{ onMenuClick: () => void }> = ({ onMenuClick }) => {
+  const { data: profile, isLoading: isLoadingProfile } = useProfile();
   const { user } = useAuth();
-  // Use user_metadata.first_name (set during signup) or fallback to email
-  const businessName = user?.user_metadata.first_name || user?.email?.split('@')[0] || "Lojista";
+
+  let businessName = "Carregando...";
+  if (!isLoadingProfile && profile) {
+    const fullName = [profile.first_name, profile.last_name].filter(Boolean).join(' ');
+    businessName = fullName || user?.email?.split('@')[0] || "Lojista";
+  } else if (!isLoadingProfile && user) {
+    businessName = user.email?.split('@')[0] || "Lojista";
+  }
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 h-16 flex items-center px-4 lg:px-8">
