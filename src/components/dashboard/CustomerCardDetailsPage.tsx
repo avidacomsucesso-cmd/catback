@@ -1,43 +1,17 @@
 import React from "react";
 import { useParams, Link } from "react-router-dom";
-import { useCustomerCardsByLoyaltyId, CustomerCard } from "@/hooks/use-customer-cards";
-import { Loader2, ArrowLeft, Cat } from "lucide-react";
+import { useCustomerCardDetail } from "@/hooks/use-customer-cards";
+import { Loader2, ArrowLeft } from "lucide-react";
 import CustomerCardInteraction from "./CustomerCardInteraction";
 import { Card, CardContent } from "@/components/ui/card";
-import StampCardVisual from "@/components/customer/StampCardVisual"; // Import customer visual
-import PointsCashbackCardVisual from "@/components/customer/PointsCashbackCardVisual"; // Import customer visual
-
-// We need to import useQuery from @tanstack/react-query and supabase
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import StampCardVisual from "@/components/customer/StampCardVisual";
+import PointsCashbackCardVisual from "@/components/customer/PointsCashbackCardVisual";
 
 const CustomerCardDetailsPage: React.FC = () => {
   const { customerCardId } = useParams<{ customerCardId: string }>();
   
-  // --- Temporary Single Fetch Logic (Ideally this would be a dedicated hook) ---
-  const fetchSingleCustomerCard = async (id: string): Promise<CustomerCard | null> => {
-    const { data, error } = await supabase
-        .from('customer_cards')
-        .select(`
-            *,
-            loyalty_cards (id, name, type, reward_description, config)
-        `)
-        .eq('id', id)
-        .single();
-
-    if (error) {
-        throw new Error(error.message);
-    }
-    return data as CustomerCard;
-  };
-  
-  // Using useQuery to fetch the single card
-  const { data: card, isLoading, error } = useQuery<CustomerCard | null, Error>({
-    queryKey: ['customerCardDetail', customerCardId],
-    queryFn: () => fetchSingleCustomerCard(customerCardId!),
-    enabled: !!customerCardId,
-  });
-  // ---------------------------------------------------------------------------
+  // Using the dedicated hook to fetch the single card
+  const { data: card, isLoading, error } = useCustomerCardDetail(customerCardId || '');
 
   if (!customerCardId) {
     return <div className="text-red-500">ID do Cartão do Cliente não fornecido.</div>;

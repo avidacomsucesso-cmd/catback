@@ -71,6 +71,31 @@ export const useCustomerCardsByLoyaltyId = (loyaltyCardId: string) => {
   });
 };
 
+// --- Fetching Single Customer Card Detail ---
+const fetchSingleCustomerCard = async (id: string): Promise<CustomerCard> => {
+    const { data, error } = await supabase
+        .from('customer_cards')
+        .select(`
+            *,
+            loyalty_cards (id, name, type, reward_description, config)
+        `)
+        .eq('id', id)
+        .single();
+
+    if (error) {
+        throw new Error(error.message);
+    }
+    return data as CustomerCard;
+};
+
+export const useCustomerCardDetail = (cardId: string) => {
+    return useQuery<CustomerCard, Error>({
+        queryKey: ['customerCardDetail', cardId],
+        queryFn: () => fetchSingleCustomerCard(cardId),
+        enabled: !!cardId,
+    });
+};
+
 
 // --- Creating/Finding Customer Card ---
 interface FindOrCreatePayload {
@@ -211,7 +236,8 @@ export const useUpdateCustomerCardProgress = () => {
     onSuccess: (data) => {
       // Invalidate the list query for this identifier to show the new card (if redeemed) or updated progress
       queryClient.invalidateQueries({ queryKey: ['customerCards', data.customer_identifier] });
-      queryClient.invalidateQueries({ queryKey: ['loyaltyCards'] }); // Just in case
+      queryClient.invalidateQueries({ queryKey: ['loyaltyProgramCustomers', data.loyalty_card_id] });
+      queryClient.invalidateQueries({ queryKey: ['customerCardDetail', data.id] }); // Invalidate detail view
     },
     onError: (error) => {
       showError(`Erro ao atualizar progresso: ${error.message}`);
