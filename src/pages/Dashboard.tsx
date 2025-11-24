@@ -11,7 +11,8 @@ import LoyaltyCustomersPage from "@/components/dashboard/LoyaltyCustomersPage";
 import CustomerCardDetailsPage from "@/components/dashboard/CustomerCardDetailsPage";
 import SchedulingPage from "@/components/dashboard/SchedulingPage";
 import DashboardStats from "@/components/dashboard/DashboardStats";
-import DashboardCharts from "@/components/dashboard/DashboardCharts"; // Importando o novo componente
+import DashboardCharts from "@/components/dashboard/DashboardCharts";
+import MarketingPage from "@/components/dashboard/MarketingPage"; // Import the new MarketingPage
 
 // Placeholder Pages for Dashboard Sections
 const OverviewPage = () => (
@@ -19,15 +20,6 @@ const OverviewPage = () => (
     <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Visão Geral</h2>
     <DashboardStats />
     <DashboardCharts />
-  </div>
-);
-
-const MarketingPage = () => (
-  <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
-    <h2 className="text-3xl font-bold text-catback-purple mb-4">Marketing Automatizado</h2>
-    <p className="text-gray-700 dark:text-gray-300">
-      Crie campanhas de SMS/WhatsApp e e-mail.
-    </p>
   </div>
 );
 
