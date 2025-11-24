@@ -2,6 +2,7 @@ import React from "react";
 import { useLoyaltyCards } from "@/hooks/use-loyalty-cards";
 import { Loader2, Stamp } from "lucide-react";
 import LoyaltyCardDisplay from "./LoyaltyCardDisplay"; // Import the new component
+import { Card, CardContent } from "@/components/ui/card";
 
 const LoyaltyCardList: React.FC = () => {
   const { data: cards, isLoading, error } = useLoyaltyCards();
