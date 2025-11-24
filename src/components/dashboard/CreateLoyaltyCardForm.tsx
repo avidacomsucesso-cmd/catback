@@ -16,8 +16,9 @@ const formSchema = z.object({
     required_error: "Selecione um tipo de fidelidade.",
   }),
   reward_description: z.string().min(5, { message: "Descreva a recompensa." }),
-  // Config fields will be dynamic, but we start with a simple stamp count for 'stamps'
-  stampCount: z.number().int().min(2).max(20).optional(),
+  stampCount: z.coerce.number().int().min(2).max(20).optional(),
+  pointsPerEuro: z.coerce.number().min(0.1).optional(),
+  cashbackPercentage: z.coerce.number().min(1).max(100).optional(),
 });
 
 type LoyaltyCardFormValues = z.infer<typeof formSchema>;
@@ -32,6 +33,8 @@ const CreateLoyaltyCardForm: React.FC<{ onCardCreated: () => void }> = ({ onCard
       type: "stamps",
       reward_description: "",
       stampCount: 10,
+      pointsPerEuro: 1,
+      cashbackPercentage: 5,
     },
   });
 
@@ -48,6 +51,10 @@ const CreateLoyaltyCardForm: React.FC<{ onCardCreated: () => void }> = ({ onCard
 
     if (values.type === 'stamps' && values.stampCount) {
         payload.config = { stamp_count: values.stampCount };
+    } else if (values.type === 'points' && values.pointsPerEuro) {
+        payload.config = { points_per_euro: values.pointsPerEuro };
+    } else if (values.type === 'cashback' && values.cashbackPercentage) {
+        payload.config = { cashback_percentage: values.cashbackPercentage };
     }
     
     createCardMutation.mutate(payload, {
@@ -106,12 +113,39 @@ const CreateLoyaltyCardForm: React.FC<{ onCardCreated: () => void }> = ({ onCard
                     <FormItem>
                         <FormLabel>Número de Selos Necessários</FormLabel>
                         <FormControl>
-                            <Input 
-                                type="number" 
-                                placeholder="Ex: 10" 
-                                {...field} 
-                                onChange={e => field.onChange(parseInt(e.target.value))}
-                            />
+                            <Input type="number" placeholder="Ex: 10" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                    </FormItem>
+                )}
+            />
+        )}
+
+        {selectedType === 'points' && (
+            <FormField
+                control={form.control}
+                name="pointsPerEuro"
+                render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Pontos Ganhos por cada Euro (€)</FormLabel>
+                        <FormControl>
+                            <Input type="number" step="0.1" placeholder="Ex: 1" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                    </FormItem>
+                )}
+            />
+        )}
+
+        {selectedType === 'cashback' && (
+            <FormField
+                control={form.control}
+                name="cashbackPercentage"
+                render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Percentagem de Cashback (%)</FormLabel>
+                        <FormControl>
+                            <Input type="number" placeholder="Ex: 5" {...field} />
                         </FormControl>
                         <FormMessage />
                     </FormItem>

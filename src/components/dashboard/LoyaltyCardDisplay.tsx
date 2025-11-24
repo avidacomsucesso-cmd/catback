@@ -28,6 +28,19 @@ const LoyaltyCardDisplay: React.FC<LoyaltyCardDisplayProps> = ({ card }) => {
     }
   };
 
+  const renderConfigDetails = () => {
+    switch (card.type) {
+      case 'stamps':
+        return <p><span className="font-semibold">Selos Necessários:</span> {card.config?.stamp_count || 'N/A'}</p>;
+      case 'points':
+        return <p><span className="font-semibold">Regra:</span> {card.config?.points_per_euro || 'N/A'} Ponto(s) por €1</p>;
+      case 'cashback':
+        return <p><span className="font-semibold">Regra:</span> {card.config?.cashback_percentage || 'N/A'}% de Cashback</p>;
+      default:
+        return null;
+    }
+  };
+
   return (
     <>
       <Card className="shadow-xl dark:bg-gray-900/80 border-gray-700/50">
@@ -58,11 +71,7 @@ const LoyaltyCardDisplay: React.FC<LoyaltyCardDisplayProps> = ({ card }) => {
               <p>
                   <span className="font-semibold">Recompensa:</span> {card.reward_description}
               </p>
-              {card.type === 'stamps' && (
-                  <p>
-                      <span className="font-semibold">Selos Necessários:</span> {card.config?.stamp_count || 'N/A'}
-                  </p>
-              )}
+              {renderConfigDetails()}
               <p className="text-xs text-gray-500 dark:text-gray-500 pt-2">
                   Criado em: {new Date(card.created_at).toLocaleDateString()}
               </p>
