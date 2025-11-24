@@ -1,17 +1,17 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Cat, Search, Loader2, CreditCard, Check, RotateCw, LogOut, PlusCircle } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Cat, Loader2, CreditCard, RotateCw, LogOut, PlusCircle, Calendar } from "lucide-react";
 import { useCustomerCardsByIdentifier, CustomerCard } from "@/hooks/use-customer-cards";
 import { cn } from "@/lib/utils";
-import { Progress } from "@/components/ui/progress";
 import StampCardVisual from "@/components/customer/StampCardVisual";
-import PointsCashbackCardVisual from "@/components/customer/PointsCashbackCardVisual"; // Import new component
+import PointsCashbackCardVisual from "@/components/customer/PointsCashbackCardVisual";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { showSuccess } from "@/utils/toast";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import CustomerAppointmentsList from "@/components/customer/CustomerAppointmentsList";
 
 // --- Componente Visual do Cartão do Cliente ---
 const CustomerCardVisual: React.FC<{ card: CustomerCard }> = ({ card }) => {
@@ -22,11 +22,8 @@ const CustomerCardVisual: React.FC<{ card: CustomerCard }> = ({ card }) => {
 
   const renderCardContent = () => {
     if (isStamps) {
-      // StampCardVisual handles the flip transformation internally
       return <StampCardVisual card={card} isFlipped={isFlipped} />;
     }
-
-    // Points and Cashback use the new component (no flip needed for now, just static display)
     return <PointsCashbackCardVisual card={card} />;
   };
 
@@ -50,14 +47,57 @@ const CustomerCardVisual: React.FC<{ card: CustomerCard }> = ({ card }) => {
   );
 };
 
+// --- Componente para a Aba de Cartões ---
+const LoyaltyCardsTab: React.FC = () => {
+    const { user } = useAuth();
+    const customerIdentifier = user?.email || user?.phone || '';
+    const { data: customerCards, isLoading, isFetching, error } = useCustomerCardsByIdentifier(customerIdentifier);
+
+    if (isLoading || isFetching) {
+        return (
+            <div className="text-center p-10">
+              <Loader2 className="h-8 w-8 animate-spin text-catback-purple mx-auto" /> 
+              <p className="mt-2 text-gray-600 dark:text-gray-400">A carregar cartões...</p>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="text-center p-10 text-red-500">
+                Erro ao carregar cartões: {error.message}
+            </div>
+        );
+    }
+
+    return (
+        <div className="space-y-6">
+            {customerCards && customerCards.length > 0 ? (
+                <div className="grid grid-cols-1 gap-6">
+                    {customerCards.map((card) => (
+                        <CustomerCardVisual key={card.id} card={card} />
+                    ))}
+                </div>
+            ) : (
+                <div className="text-center p-10 border-2 border-dashed border-gray-300 rounded-lg dark:border-gray-700 bg-white dark:bg-gray-800">
+                    <CreditCard className="w-10 h-10 text-gray-400 mx-auto mb-3" />
+                    <p className="text-lg font-semibold text-gray-700 dark:text-gray-300">
+                        Nenhum cartão ativo encontrado.
+                    </p>
+                    <p className="text-sm text-gray-500">
+                        Peça ao seu lojista para lhe atribuir um cartão.
+                    </p>
+                </div>
+            )}
+        </div>
+    );
+};
+
+
 // --- Página Principal ---
 const CustomerCards: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const customerIdentifier = user?.email || user?.phone || ''; // Use email or phone as identifier
-
-  // We reuse useCustomerCardsByIdentifier but pass the authenticated user's identifier
-  const { data: customerCards, isLoading, isFetching, error } = useCustomerCardsByIdentifier(customerIdentifier);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -98,43 +138,19 @@ const CustomerCards: React.FC = () => {
             </Button>
         </div>
 
-        <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Meus Cartões de Fidelidade</h2>
-
-        {(isLoading || isFetching) && (
-            <div className="text-center p-10">
-              <Loader2 className="h-8 w-8 animate-spin text-catback-purple mx-auto" /> 
-              <p className="mt-2 text-gray-600 dark:text-gray-400">A carregar cartões...</p>
-            </div>
-        )}
-
-        {!isLoading && !isFetching && (
-            <div className="space-y-6">
-                {customerCards && customerCards.length > 0 ? (
-                    <div className="grid grid-cols-1 gap-6">
-                        {customerCards.map((card) => (
-                            <CustomerCardVisual key={card.id} card={card} />
-                        ))}
-                    </div>
-                ) : (
-                    <div className="text-center p-10 border-2 border-dashed border-gray-300 rounded-lg dark:border-gray-700 bg-white dark:bg-gray-800">
-                        <CreditCard className="w-10 h-10 text-gray-400 mx-auto mb-3" />
-                        <p className="text-lg font-semibold text-gray-700 dark:text-gray-300">
-                            Nenhum cartão ativo encontrado.
-                        </p>
-                        <p className="text-sm text-gray-500">
-                            Peça ao seu lojista para lhe atribuir um cartão.
-                        </p>
-                    </div>
-                )}
-            </div>
-        )}
+        <Tabs defaultValue="cards" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="cards"><CreditCard className="w-4 h-4 mr-2" />Meus Cartões</TabsTrigger>
+                <TabsTrigger value="appointments"><Calendar className="w-4 h-4 mr-2" />Meus Agendamentos</TabsTrigger>
+            </TabsList>
+            <TabsContent value="cards" className="mt-6">
+                <LoyaltyCardsTab />
+            </TabsContent>
+            <TabsContent value="appointments" className="mt-6">
+                <CustomerAppointmentsList />
+            </TabsContent>
+        </Tabs>
         
-        {error && (
-            <div className="text-center p-10 text-red-500">
-                Erro ao carregar cartões: {error.message}
-            </div>
-        )}
-
         <div className="mt-10 text-center text-sm text-gray-500">
             <Link to="/" className="text-catback-purple hover:underline">
                 ← Voltar à Página Inicial

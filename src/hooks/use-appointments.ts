@@ -16,7 +16,7 @@ export interface Appointment {
   services: Pick<Service, 'name' | 'duration_minutes' | 'price'>; // Joined data
 }
 
-// --- Fetching ---
+// --- Fetching (for Lojista) ---
 const fetchAppointments = async (): Promise<Appointment[]> => {
   const { data, error } = await supabase
     .from('appointments')
@@ -35,6 +35,30 @@ export const useAppointments = () => {
     queryKey: ['appointments'],
     queryFn: fetchAppointments,
   });
+};
+
+// --- Fetching (for Customer) ---
+const fetchCustomerAppointments = async (identifier: string): Promise<Appointment[]> => {
+    if (!identifier) return [];
+    const { data, error } = await supabase
+      .from('appointments')
+      .select(`
+        *,
+        services (name, duration_minutes, price)
+      `)
+      .eq('customer_identifier', identifier)
+      .order('start_time', { ascending: false });
+  
+    if (error) throw new Error(error.message);
+    return data as Appointment[];
+};
+  
+export const useCustomerAppointments = (identifier: string) => {
+    return useQuery<Appointment[], Error>({
+        queryKey: ['customerAppointments', identifier],
+        queryFn: () => fetchCustomerAppointments(identifier),
+        enabled: !!identifier,
+    });
 };
 
 // --- Creating ---
@@ -78,8 +102,9 @@ export const useCreateAppointment = () => {
   const queryClient = useQueryClient();
   return useMutation<Appointment, Error, CreateAppointmentPayload>({
     mutationFn: createAppointment,
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['appointments'] });
+      queryClient.invalidateQueries({ queryKey: ['customerAppointments', data.customer_identifier] });
       showSuccess("Agendamento criado com sucesso!");
     },
     onError: (error) => {
@@ -104,6 +129,7 @@ export const useDeleteAppointment = () => {
         mutationFn: deleteAppointment,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['appointments'] });
+            queryClient.invalidateQueries({ queryKey: ['customerAppointments'] }); // Invalidate all customer appointments queries
             showSuccess("Agendamento removido.");
         },
         onError: (error) => {
