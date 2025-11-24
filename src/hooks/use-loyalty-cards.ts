@@ -68,6 +68,44 @@ export const useCreateLoyaltyCard = () => {
   });
 };
 
+// --- Updating ---
+interface UpdateCardPayload {
+    id: string;
+    name: string;
+    reward_description: string;
+    is_active: boolean;
+    config: any;
+}
+
+const updateLoyaltyCard = async (cardData: UpdateCardPayload): Promise<LoyaltyCard> => {
+    const { id, ...updates } = cardData;
+    const { data, error } = await supabase
+        .from('loyalty_cards')
+        .update(updates)
+        .eq('id', id)
+        .select()
+        .single();
+
+    if (error) {
+        throw new Error(error.message);
+    }
+    return data as LoyaltyCard;
+};
+
+export const useUpdateLoyaltyCard = () => {
+    const queryClient = useQueryClient();
+    return useMutation<LoyaltyCard, Error, UpdateCardPayload>({
+        mutationFn: updateLoyaltyCard,
+        onSuccess: (data) => {
+            queryClient.invalidateQueries({ queryKey: ['loyaltyCards'] });
+            showSuccess(`Cartão '${data.name}' atualizado com sucesso!`);
+        },
+        onError: (error) => {
+            showError(`Erro ao atualizar cartão: ${error.message}`);
+        },
+    });
+};
+
 // --- Deleting ---
 const deleteLoyaltyCard = async (id: string): Promise<void> => {
   const { error } = await supabase

@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Trash, Eye, Pencil, Users, Share2, RotateCw, Loader2, Cat } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import EditLoyaltyCardForm from "./EditLoyaltyCardForm"; // Import the new component
 
 interface LoyaltyCardDisplayProps {
   card: LoyaltyCard;
@@ -72,6 +74,7 @@ const CardVisual: React.FC<{ card: LoyaltyCard; isFlipped: boolean }> = ({ card,
 const LoyaltyCardDisplay: React.FC<LoyaltyCardDisplayProps> = ({ card }) => {
   const deleteMutation = useDeleteLoyaltyCard();
   const [isFlipped, setIsFlipped] = React.useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = React.useState(false);
 
   const handleDelete = () => {
     if (window.confirm(`Tem certeza que deseja deletar o cartão '${card.name}'? Isso removerá todos os cartões de clientes associados.`)) {
@@ -132,9 +135,24 @@ const LoyaltyCardDisplay: React.FC<LoyaltyCardDisplayProps> = ({ card }) => {
           <Button variant="secondary" className="justify-start">
             <Eye className="w-4 h-4 mr-2" /> Ver
           </Button>
-          <Button variant="secondary" className="justify-start">
-            <Pencil className="w-4 h-4 mr-2" /> Editar
-          </Button>
+          
+          <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+            <DialogTrigger asChild>
+              <Button variant="secondary" className="justify-start">
+                <Pencil className="w-4 h-4 mr-2" /> Editar
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle className="text-catback-purple">Editar Cartão: {card.name}</DialogTitle>
+              </DialogHeader>
+              <EditLoyaltyCardForm 
+                card={card} 
+                onCardUpdated={() => setIsEditDialogOpen(false)} 
+              />
+            </DialogContent>
+          </Dialog>
+
           <Button variant="secondary" className="justify-start">
             <Users className="w-4 h-4 mr-2" /> Clientes
           </Button>
