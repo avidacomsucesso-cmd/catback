@@ -21,7 +21,7 @@ const StampCardVisual: React.FC<StampCardVisualProps> = ({ card, isFlipped }) =>
   const gridColumnsClass = requiredStamps <= 10 ? "grid-cols-5" : "grid-cols-4";
 
   return (
-    <div className="relative w-full h-52 perspective-1000"> {/* Reduced height to h-52 */}
+    <div className="relative w-full h-52 perspective-1000"> {/* Target height: h-52 */}
       <div
         className={cn(
           "absolute w-full h-full transition-transform duration-700 preserve-3d",
@@ -34,8 +34,8 @@ const StampCardVisual: React.FC<StampCardVisualProps> = ({ card, isFlipped }) =>
           {/* Header and Reward Info */}
           <div className="space-y-0.5">
             <div className="flex justify-between items-start">
-                <h3 className="text-sm font-bold">{loyaltyCard.name}</h3> {/* Reduced font size */}
-                <Cat className="w-5 h-5 fill-white" /> {/* Reduced icon size */}
+                <h3 className="text-sm font-bold">{loyaltyCard.name}</h3>
+                <Cat className="w-5 h-5 fill-white" />
             </div>
             <p className="text-xs opacity-90">
                 Recompensa: {loyaltyCard.reward_description}
@@ -44,12 +44,12 @@ const StampCardVisual: React.FC<StampCardVisualProps> = ({ card, isFlipped }) =>
 
           {/* Stamp Grid */}
           <div className="mt-1 flex flex-col justify-center flex-grow">
-              <div className={cn("grid gap-1", gridColumnsClass)}>
+              <div className={cn("grid gap-0.5", gridColumnsClass)}> {/* Reduced gap to 0.5 */}
                   {stampsArray.map((num) => (
                       <div
                           key={num}
                           className={cn(
-                              "w-full aspect-square rounded-md flex items-center justify-center text-xs font-bold border-2", // Reduced stamp size/font
+                              "w-full aspect-square rounded-md flex items-center justify-center text-xs font-bold border-2",
                               card.current_progress >= num
                                   ? "bg-catback-success-green border-catback-success-green text-white"
                                   : "bg-white/20 border-white/50 text-white/70"
@@ -64,16 +64,16 @@ const StampCardVisual: React.FC<StampCardVisualProps> = ({ card, isFlipped }) =>
           {/* Progress Bar */}
           <div className="mt-1">
               <div className="text-center">
-                  <p className="text-xs font-semibold"> {/* Reduced font size */}
+                  <p className="text-xs font-semibold">
                       {card.current_progress} / {requiredStamps} Selos
                   </p>
-                  <Progress value={progressPercentage} className="h-1.5 mt-1" indicatorClassName="bg-catback-energy-orange" /> {/* Reduced progress bar height */}
+                  <Progress value={progressPercentage} className="h-1.5 mt-1" indicatorClassName="bg-catback-energy-orange" />
               </div>
           </div>
           
           {isComplete && (
             <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-xl">
-                <p className="text-lg font-extrabold text-catback-energy-orange animate-pulse"> {/* Reduced font size */}
+                <p className="text-lg font-extrabold text-catback-energy-orange animate-pulse">
                     RESGATE DISPONÍVEL!
                 </p>
             </div>
