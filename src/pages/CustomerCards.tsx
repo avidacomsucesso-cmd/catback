@@ -42,7 +42,7 @@ const CustomerCardVisual: React.FC<{ card: CustomerCard }> = ({ card }) => {
                 onClick={() => setIsFlipped(!isFlipped)}
                 className="w-full mt-4 text-catback-purple border-catback-purple/50 hover:bg-catback-light-purple/20"
             >
-                <RotateCw className="w-4 h-4 mr-2" /> {isFlipped ? "Ver Progresso" : "Girar Cartão para Detalhes"}
+                <RotateCw className="w-4 h-4 mr-2" /> {isFlipped ? "Ver QR Code" : "Girar Cartão para Progresso"}
             </Button>
         )}
       </CardContent>

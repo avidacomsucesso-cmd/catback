@@ -2,6 +2,7 @@ import React from "react";
 import { Cat, DollarSign, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CustomerCard } from "@/hooks/use-customer-cards";
+import QRCode from "qrcode.react";
 
 interface PointsCashbackCardVisualProps {
   card: CustomerCard;
@@ -13,13 +14,16 @@ const PointsCashbackCardVisual: React.FC<PointsCashbackCardVisualProps> = ({ car
   const currencySymbol = isPoints ? 'Pts' : '€';
   const Icon = isPoints ? Star : DollarSign;
 
-  // Placeholder for target/reward logic (since config is generic 'any' for now)
   const rewardDescription = loyaltyCard.reward_description;
+  
+  // The URL the QR code will encode: directs the merchant to the specific customer card detail page
+  const qrCodeValue = `${window.location.origin}/dashboard/loyalty/card/${card.id}`;
+  const displayCode = card.id.substring(0, 6).toUpperCase();
 
   return (
     <div className="relative w-full h-64 rounded-xl p-6 bg-catback-dark-purple shadow-xl flex flex-col justify-between text-white">
       
-      {/* Header */}
+      {/* Header & QR Code */}
       <div className="flex justify-between items-start">
         <div className="space-y-1">
             <h3 className="text-2xl font-bold">{loyaltyCard.name}</h3>
@@ -27,11 +31,19 @@ const PointsCashbackCardVisual: React.FC<PointsCashbackCardVisualProps> = ({ car
                 Programa de {isPoints ? 'Pontos' : 'Cashback'}
             </p>
         </div>
-        <Cat className="w-10 h-10 fill-white" />
+        <div className="w-16 h-16 bg-white p-0.5 rounded-md flex-shrink-0">
+            <QRCode 
+                value={qrCodeValue} 
+                size={60} 
+                level="H" 
+                renderAs="svg"
+                className="w-full h-full"
+            />
+        </div>
       </div>
 
       {/* Current Balance */}
-      <div className="text-center my-4">
+      <div className="text-center my-4 flex-grow flex flex-col justify-center">
         <p className="text-lg font-medium opacity-80">Seu Saldo Atual</p>
         <div className="flex items-center justify-center space-x-2 mt-1">
             <Icon className="w-8 h-8 text-catback-energy-orange fill-catback-energy-orange/50" />
@@ -42,14 +54,19 @@ const PointsCashbackCardVisual: React.FC<PointsCashbackCardVisualProps> = ({ car
         </div>
       </div>
 
-      {/* Reward Info */}
+      {/* Footer Info */}
       <div className="border-t border-white/20 pt-3">
         <p className="text-sm font-medium opacity-90">
             Recompensa: {rewardDescription}
         </p>
-        <p className="text-xs opacity-70 mt-1">
-            Apresente este cartão ao lojista para acumular ou resgatar.
-        </p>
+        <div className="flex justify-between items-center mt-1">
+            <p className="text-xs opacity-70">
+                Apresente este cartão ao lojista para acumular ou resgatar.
+            </p>
+            <p className="text-xs font-mono opacity-70">
+                ID: {displayCode}
+            </p>
+        </div>
       </div>
     </div>
   );

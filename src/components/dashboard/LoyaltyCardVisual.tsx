@@ -3,17 +3,26 @@ import { LoyaltyCard } from "@/hooks/use-loyalty-cards";
 import { Cat, RotateCw, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import QRCode from "qrcode.react"; // Import QRCode library
 
 interface LoyaltyCardVisualProps {
   card: LoyaltyCard;
   isFlipped: boolean;
   onFlip?: () => void;
   showFlipButton?: boolean;
+  customerCardId?: string; // Pass the specific customer card ID if available
 }
 
-const LoyaltyCardVisual: React.FC<LoyaltyCardVisualProps> = ({ card, isFlipped, onFlip, showFlipButton = true }) => {
+const LoyaltyCardVisual: React.FC<LoyaltyCardVisualProps> = ({ card, isFlipped, onFlip, showFlipButton = true, customerCardId }) => {
   const requiredStamps = card.config?.stamp_count || 12;
   const stampsArray = Array.from({ length: requiredStamps }, (_, i) => i + 1);
+
+  // The URL the QR code will encode: directs the merchant to the specific customer card detail page
+  const qrCodeValue = customerCardId 
+    ? `${window.location.origin}/dashboard/loyalty/card/${customerCardId}`
+    : `${window.location.origin}/enroll?id=${card.id}`; // Fallback for enrollment link if no customerCardId is provided (used in share modal)
+
+  const displayCode = customerCardId ? customerCardId.substring(0, 6).toUpperCase() : card.id.substring(0, 6).toUpperCase();
 
   return (
     <div className="space-y-4">
@@ -33,14 +42,17 @@ const LoyaltyCardVisual: React.FC<LoyaltyCardVisualProps> = ({ card, isFlipped, 
             <p className="font-semibold text-gray-800 dark:text-gray-200">
                 {card.name}
             </p>
-            <div className="w-24 h-24 bg-white p-1 rounded-md mt-2">
-                {/* Placeholder for QR Code */}
-                <div className="w-full h-full bg-gray-300 flex items-center justify-center text-xs text-gray-600">
-                QR Code
-                </div>
+            <div className="w-28 h-28 bg-white p-1 rounded-md mt-2">
+                <QRCode 
+                    value={qrCodeValue} 
+                    size={100} 
+                    level="H" 
+                    renderAs="svg"
+                    className="w-full h-full"
+                />
             </div>
-            <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                {card.id.substring(0, 6).toUpperCase()}
+            <p className="text-xs text-gray-600 dark:text-gray-400 mt-1 font-mono">
+                {displayCode}
             </p>
             </div>
 
