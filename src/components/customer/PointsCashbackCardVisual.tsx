@@ -2,7 +2,7 @@ import React from "react";
 import { Cat, DollarSign, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CustomerCard } from "@/hooks/use-customer-cards";
-import QRCode from "qrcode.react"; // Reverting to default import
+import * as QRCode from "qrcode.react"; // Usando importação de namespace para compatibilidade
 
 interface PointsCashbackCardVisualProps {
   card: CustomerCard;
@@ -19,6 +19,8 @@ const PointsCashbackCardVisual: React.FC<PointsCashbackCardVisualProps> = ({ car
   // The URL the QR code will encode: directs the merchant to the specific customer card detail page
   const qrCodeValue = `${window.location.origin}/dashboard/loyalty/card/${card.id}`;
   const displayCode = card.id.substring(0, 6).toUpperCase();
+  
+  const QRCodeComponent = (QRCode as any).default || QRCode;
 
   return (
     <div className="relative w-full h-64 rounded-xl p-6 bg-catback-dark-purple shadow-xl flex flex-col justify-between text-white">
@@ -32,7 +34,7 @@ const PointsCashbackCardVisual: React.FC<PointsCashbackCardVisualProps> = ({ car
             </p>
         </div>
         <div className="w-16 h-16 bg-white p-0.5 rounded-md flex-shrink-0">
-            <QRCode 
+            <QRCodeComponent 
                 value={qrCodeValue} 
                 size={60} 
                 level="H" 
