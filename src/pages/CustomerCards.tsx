@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Cat, Loader2, CreditCard, RotateCw, LogOut, PlusCircle, Calendar, Settings } from "lucide-react";
+import { Cat, Loader2, CreditCard, RotateCw, LogOut, PlusCircle, Calendar, Settings, History } from "lucide-react";
 import { useCustomerCardsByIdentifier, CustomerCard } from "@/hooks/use-customer-cards";
 import { cn } from "@/lib/utils";
 import StampCardVisual from "@/components/customer/StampCardVisual";
@@ -12,10 +12,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { showSuccess } from "@/utils/toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CustomerAppointmentsList from "@/components/customer/CustomerAppointmentsList";
+import TransactionHistory from "@/components/customer/TransactionHistory";
 
 // --- Componente Visual do Cartão do Cliente ---
 const CustomerCardVisual: React.FC<{ card: CustomerCard }> = ({ card }) => {
   const [isFlipped, setIsFlipped] = useState(false);
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const loyaltyCard = card.loyalty_cards;
   
   const isStamps = loyaltyCard.type === 'stamps';
@@ -28,22 +30,35 @@ const CustomerCardVisual: React.FC<{ card: CustomerCard }> = ({ card }) => {
   };
 
   return (
-    <Card className="shadow-xl dark:bg-gray-900/80 border-gray-700/50 overflow-hidden">
-      <CardContent className="p-4">
-        {renderCardContent()}
-        
-        {isStamps && (
+    <>
+      <Card className="shadow-xl dark:bg-gray-900/80 border-gray-700/50 overflow-hidden">
+        <CardContent className="p-4">
+          {renderCardContent()}
+          
+          <div className="flex space-x-2 mt-4">
+            {isStamps && (
+                <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => setIsFlipped(!isFlipped)}
+                    className="w-full text-catback-purple border-catback-purple/50 hover:bg-catback-light-purple/20"
+                >
+                    <RotateCw className="w-4 h-4 mr-2" /> {isFlipped ? "Ver QR Code" : "Ver Progresso"}
+                </Button>
+            )}
             <Button 
                 variant="outline" 
                 size="sm" 
-                onClick={() => setIsFlipped(!isFlipped)}
-                className="w-full mt-4 text-catback-purple border-catback-purple/50 hover:bg-catback-light-purple/20"
+                onClick={() => setIsHistoryOpen(true)}
+                className="w-full text-catback-dark-purple border-gray-300 hover:bg-gray-100"
             >
-                <RotateCw className="w-4 h-4 mr-2" /> {isFlipped ? "Ver QR Code" : "Girar Cartão para Progresso"}
+                <History className="w-4 h-4 mr-2" /> Histórico
             </Button>
-        )}
-      </CardContent>
-    </Card>
+          </div>
+        </CardContent>
+      </Card>
+      <TransactionHistory card={card} isOpen={isHistoryOpen} onClose={() => setIsHistoryOpen(false)} />
+    </>
   );
 };
 

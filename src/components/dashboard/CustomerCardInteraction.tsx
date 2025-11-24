@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { CustomerCard, useUpdateCustomerCardProgress } from "@/hooks/use-customer-cards";
+import { CustomerCard, useUpdateCustomerCardProgress, useRedeemStampCard } from "@/hooks/use-customer-cards";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Loader2, Stamp, Gift, Plus, Minus } from "lucide-react";
@@ -14,6 +14,7 @@ interface CustomerCardInteractionProps {
 
 const CustomerCardInteraction: React.FC<CustomerCardInteractionProps> = ({ card }) => {
   const updateProgressMutation = useUpdateCustomerCardProgress();
+  const redeemStampCardMutation = useRedeemStampCard();
   const loyaltyCard = card.loyalty_cards;
   const [purchaseValue, setPurchaseValue] = useState<number>(0);
   const [redeemValue, setRedeemValue] = useState<number>(0);
@@ -29,14 +30,14 @@ const CustomerCardInteraction: React.FC<CustomerCardInteractionProps> = ({ card 
   const requiredStamps = isStamps ? loyaltyCard.config?.stamp_count || 10 : 1;
   const isComplete = isStamps ? card.current_progress >= requiredStamps : false;
   const currencySymbol = isCashback ? '€' : 'Pts';
+  const isMutating = updateProgressMutation.isPending || redeemStampCardMutation.isPending;
 
   const handleStamp = () => {
     if (isStamps && card.current_progress < requiredStamps) {
       updateProgressMutation.mutate({ 
         cardId: card.id, 
         progressChange: 1,
-        customerIdentifier: card.customer_identifier,
-        loyaltyCardId: card.loyalty_card_id,
+        description: "Carimbo adicionado",
       });
     }
   };
@@ -58,8 +59,7 @@ const CustomerCardInteraction: React.FC<CustomerCardInteractionProps> = ({ card 
       updateProgressMutation.mutate({ 
         cardId: card.id, 
         progressChange,
-        customerIdentifier: card.customer_identifier,
-        loyaltyCardId: card.loyalty_card_id,
+        description: `Compra de €${purchaseValue.toFixed(2)}`,
       }, { onSuccess: () => setPurchaseValue(0) });
     }
   };
@@ -77,8 +77,7 @@ const CustomerCardInteraction: React.FC<CustomerCardInteractionProps> = ({ card 
     updateProgressMutation.mutate({ 
       cardId: card.id, 
       progressChange: -redeemValue,
-      customerIdentifier: card.customer_identifier,
-      loyaltyCardId: card.loyalty_card_id,
+      description: `Uso de saldo de ${redeemValue.toFixed(2)} ${currencySymbol}`,
     }, { onSuccess: () => setRedeemValue(0) });
   };
 
@@ -86,13 +85,7 @@ const CustomerCardInteraction: React.FC<CustomerCardInteractionProps> = ({ card 
     if (isStamps && !isComplete) return;
     
     if (window.confirm(`Confirmar resgate da recompensa: ${loyaltyCard.reward_description}?`)) {
-      updateProgressMutation.mutate({ 
-        cardId: card.id, 
-        progressChange: 0, 
-        isRedeeming: true,
-        customerIdentifier: card.customer_identifier,
-        loyaltyCardId: card.loyalty_card_id,
-      });
+      redeemStampCardMutation.mutate({ cardId: card.id });
     }
   };
 
@@ -137,19 +130,19 @@ const CustomerCardInteraction: React.FC<CustomerCardInteractionProps> = ({ card 
                 <div className="flex space-x-2">
                     <Button 
                         onClick={handleStamp}
-                        disabled={updateProgressMutation.isPending || isComplete}
+                        disabled={isMutating || isComplete}
                         className="bg-catback-purple hover:bg-catback-dark-purple flex-grow"
                     >
-                        {updateProgressMutation.isPending && !isComplete ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Stamp className="h-4 w-4 mr-2" />}
+                        {isMutating && !isComplete ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Stamp className="h-4 w-4 mr-2" />}
                         Carimbar (+1)
                     </Button>
                     <Button 
                         onClick={handleRedeemStampCard}
-                        disabled={updateProgressMutation.isPending || !isComplete}
+                        disabled={isMutating || !isComplete}
                         variant="outline"
                         className="border-catback-success-green text-catback-success-green hover:bg-catback-success-green/10 flex-grow"
                     >
-                        {updateProgressMutation.isPending && isComplete ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Gift className="h-4 w-4 mr-2" />}
+                        {isMutating && isComplete ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Gift className="h-4 w-4 mr-2" />}
                         Resgatar
                     </Button>
                 </div>
@@ -159,7 +152,7 @@ const CustomerCardInteraction: React.FC<CustomerCardInteractionProps> = ({ card 
                         <p className="text-sm font-medium">Adicionar {currencySymbol}</p>
                         <div className="flex space-x-2">
                             <Input type="number" placeholder="Valor da Compra (€)" value={purchaseValue || ''} onChange={(e) => setPurchaseValue(parseFloat(e.target.value) || 0)} />
-                            <Button onClick={handleAddProgress} disabled={updateProgressMutation.isPending || purchaseValue <= 0} className="bg-catback-success-green hover:bg-catback-success-green/90">
+                            <Button onClick={handleAddProgress} disabled={isMutating || purchaseValue <= 0} className="bg-catback-success-green hover:bg-catback-success-green/90">
                                 <Plus className="h-4 w-4" />
                             </Button>
                         </div>
@@ -168,7 +161,7 @@ const CustomerCardInteraction: React.FC<CustomerCardInteractionProps> = ({ card 
                         <p className="text-sm font-medium">Usar Saldo ({currencySymbol})</p>
                         <div className="flex space-x-2">
                             <Input type="number" placeholder={`Valor a usar em ${currencySymbol}`} value={redeemValue || ''} onChange={(e) => setRedeemValue(parseFloat(e.target.value) || 0)} />
-                            <Button onClick={handleRedeemProgress} disabled={updateProgressMutation.isPending || redeemValue <= 0} variant="destructive">
+                            <Button onClick={handleRedeemProgress} disabled={isMutating || redeemValue <= 0} variant="destructive">
                                 <Minus className="h-4 w-4" />
                             </Button>
                         </div>
