@@ -93,6 +93,7 @@ const Header: React.FC = () => {
           </div>
         </div>
 
+        {/* We render MobileNav only if isMobile is true, which is safe */}
         {isMobile && <MobileNav />}
       </div>
     </header>
