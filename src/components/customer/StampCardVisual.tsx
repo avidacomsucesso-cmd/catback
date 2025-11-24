@@ -16,6 +16,13 @@ const StampCardVisual: React.FC<StampCardVisualProps> = ({ card, isFlipped }) =>
   const progressPercentage = Math.min(100, (card.current_progress / requiredStamps) * 100);
   const stampsArray = Array.from({ length: requiredStamps }, (_, i) => i + 1);
 
+  // Dynamic Grid Calculation:
+  // Max columns: 5. Max rows: 4 (for a 64 height card). Total max: 20.
+  // If requiredStamps <= 10, use 5 columns.
+  // If requiredStamps > 10, use 4 columns (to allow more rows).
+  const columns = requiredStamps <= 10 ? 5 : 4;
+  const gridClass = `grid-cols-${columns}`;
+
   return (
     <div className="relative w-full h-64 perspective-1000">
       <div
@@ -36,8 +43,8 @@ const StampCardVisual: React.FC<StampCardVisualProps> = ({ card, isFlipped }) =>
             </p>
           </div>
 
-          <div className="mt-4">
-              <div className="grid grid-cols-5 gap-2">
+          <div className="mt-4 flex-grow flex flex-col justify-center">
+              <div className={cn("grid gap-2", gridClass)}>
                   {stampsArray.map((num) => (
                       <div
                           key={num}
@@ -52,7 +59,10 @@ const StampCardVisual: React.FC<StampCardVisualProps> = ({ card, isFlipped }) =>
                       </div>
                   ))}
               </div>
-              <div className="mt-3 text-center">
+          </div>
+          
+          <div className="mt-4">
+              <div className="text-center">
                   <p className="text-lg font-semibold">
                       {card.current_progress} / {requiredStamps} Selos
                   </p>
