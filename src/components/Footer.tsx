@@ -35,7 +35,7 @@ const Footer: React.FC = () => {
     {
       title: "Clientes",
       links: [
-        { name: "Meus Cartões", href: "/customer-cards" }, // New link for customers
+        { name: "Meus Cartões", href: "/customer-auth" }, // Updated link to customer authentication
       ],
     },
   ];
