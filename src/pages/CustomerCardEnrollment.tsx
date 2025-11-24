@@ -32,7 +32,15 @@ const CustomerCardEnrollment: React.FC = () => {
 
   // 2. Handle Enrollment Logic
   useEffect(() => {
-    if (user && loyaltyCardId && loyaltyCard && !findOrCreateMutation.isPending) {
+    // Only run mutation if user is authenticated, card details are loaded, 
+    // and we haven't successfully retrieved/created the card yet.
+    if (
+      user && 
+      loyaltyCardId && 
+      loyaltyCard && 
+      !findOrCreateMutation.isPending &&
+      !findOrCreateMutation.data // <-- Prevents infinite loop after success
+    ) {
       const customerIdentifier = user.email || user.phone;
       
       if (!customerIdentifier) {
@@ -85,7 +93,7 @@ const CustomerCardEnrollment: React.FC = () => {
   }
 
   const isEnrolling = findOrCreateMutation.isPending;
-  const enrollmentSuccess = findOrCreateMutation.isSuccess || (findOrCreateMutation.data && findOrCreateMutation.data.id);
+  const enrollmentSuccess = findOrCreateMutation.isSuccess || !!findOrCreateMutation.data;
   const cardName = loyaltyCard?.name || "Cartão de Fidelidade";
 
   return (
