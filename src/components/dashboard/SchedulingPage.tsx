@@ -1,107 +1,16 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Loader2, Calendar, List, Trash, Mail } from "lucide-react";
+import { PlusCircle, Calendar, List } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useServices } from "@/hooks/use-services";
-import { useAppointments, useDeleteAppointment } from "@/hooks/use-appointments";
+import { Loader2 } from "lucide-react";
 import { ServicesDataTable } from "./ServicesDataTable";
 import { columns as servicesColumns } from "./ServicesColumns";
 import ServiceForm from "./ServiceForm";
 import AppointmentForm from "./AppointmentForm";
-import { format } from "date-fns";
-import { pt } from "date-fns/locale";
-import { supabase } from "@/integrations/supabase/client";
-import { showSuccess, showError } from "@/utils/toast";
-
-const AppointmentsList: React.FC = () => {
-    const { data: appointments, isLoading, error } = useAppointments();
-    const deleteMutation = useDeleteAppointment();
-    const [sendingReminderId, setSendingReminderId] = React.useState<string | null>(null);
-
-    const handleSendReminder = async (appointmentId: string, customerIdentifier: string) => {
-        if (!customerIdentifier.includes('@')) {
-            showError("O lembrete só pode ser enviado para um email.");
-            return;
-        }
-        setSendingReminderId(appointmentId);
-        try {
-            const { error } = await supabase.functions.invoke('send-reminder', {
-                body: { appointmentId },
-            });
-            if (error) throw error;
-            showSuccess("Lembrete enviado com sucesso!");
-        } catch (error: any) {
-            const errorMessage = error.context?.error_description || error.message;
-            showError(`Erro ao enviar lembrete: ${errorMessage}`);
-        } finally {
-            setSendingReminderId(null);
-        }
-    };
-
-    if (isLoading) {
-        return <div className="text-center p-10"><Loader2 className="h-8 w-8 animate-spin text-catback-purple mx-auto" /></div>;
-    }
-
-    if (error) {
-        return <div className="text-center p-10 text-red-500">Erro ao carregar agendamentos: {error.message}</div>;
-    }
-
-    const upcomingAppointments = appointments?.filter(a => new Date(a.start_time) >= new Date()) || [];
-
-    return (
-        <div className="space-y-4">
-            {upcomingAppointments.length > 0 ? (
-                upcomingAppointments.map(app => (
-                    <Card key={app.id} className="shadow-sm">
-                        <CardContent className="p-4 flex justify-between items-center">
-                            <div>
-                                <p className="font-bold text-lg text-catback-dark-purple dark:text-white">{app.services.name}</p>
-                                <p className="text-sm text-gray-600 dark:text-gray-400">{app.customer_identifier}</p>
-                                <p className="text-sm font-semibold text-catback-purple">
-                                    {format(new Date(app.start_time), "PPP 'às' HH:mm", { locale: pt })}
-                                </p>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <Button 
-                                    variant="ghost" 
-                                    size="icon" 
-                                    className="text-catback-purple hover:bg-catback-purple/10"
-                                    disabled={sendingReminderId === app.id}
-                                    onClick={() => handleSendReminder(app.id, app.customer_identifier)}
-                                >
-                                    {sendingReminderId === app.id ? (
-                                        <Loader2 className="w-4 h-4 animate-spin" />
-                                    ) : (
-                                        <Mail className="w-4 h-4" />
-                                    )}
-                                </Button>
-                                <Button 
-                                    variant="ghost" 
-                                    size="icon" 
-                                    className="text-red-500 hover:bg-red-500/10"
-                                    onClick={() => {
-                                        if (window.confirm("Tem certeza que deseja cancelar este agendamento?")) {
-                                            deleteMutation.mutate(app.id);
-                                        }
-                                    }}
-                                >
-                                    <Trash className="w-4 h-4" />
-                                </Button>
-                            </div>
-                        </CardContent>
-                    </Card>
-                ))
-            ) : (
-                <div className="text-center p-10 border-2 border-dashed rounded-lg">
-                    <Calendar className="w-10 h-10 text-gray-400 mx-auto mb-3" />
-                    <p className="text-lg font-semibold">Nenhum agendamento futuro.</p>
-                </div>
-            )}
-        </div>
-    );
-};
+import AppointmentsCalendar from "./AppointmentsCalendar"; // Import the new calendar component
 
 const SchedulingPage: React.FC = () => {
   const [isCreateServiceOpen, setIsCreateServiceOpen] = React.useState(false);
@@ -110,39 +19,33 @@ const SchedulingPage: React.FC = () => {
 
   return (
     <Tabs defaultValue="calendar" className="space-y-4">
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
                 Agendamento Online
             </h1>
-            <TabsList>
-                <TabsTrigger value="calendar"><Calendar className="w-4 h-4 mr-2" />Calendário</TabsTrigger>
-                <TabsTrigger value="services"><List className="w-4 h-4 mr-2" />Serviços</TabsTrigger>
-            </TabsList>
+            <div className="flex w-full sm:w-auto space-x-2">
+                <TabsList className="grid grid-cols-2 w-full sm:w-auto">
+                    <TabsTrigger value="calendar"><Calendar className="w-4 h-4 mr-2" />Calendário</TabsTrigger>
+                    <TabsTrigger value="services"><List className="w-4 h-4 mr-2" />Serviços</TabsTrigger>
+                </TabsList>
+                <Dialog open={isCreateAppointmentOpen} onOpenChange={setIsCreateAppointmentOpen}>
+                    <DialogTrigger asChild>
+                        <Button className="bg-catback-purple hover:bg-catback-dark-purple flex-shrink-0">
+                            <PlusCircle className="w-5 h-5" />
+                        </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Criar Novo Agendamento</DialogTitle>
+                        </DialogHeader>
+                        <AppointmentForm onFinished={() => setIsCreateAppointmentOpen(false)} />
+                    </DialogContent>
+                </Dialog>
+            </div>
         </div>
 
         <TabsContent value="calendar" className="space-y-6">
-            <Card>
-                <CardHeader className="flex flex-row items-center justify-between">
-                    <CardTitle>Próximos Agendamentos</CardTitle>
-                    <Dialog open={isCreateAppointmentOpen} onOpenChange={setIsCreateAppointmentOpen}>
-                        <DialogTrigger asChild>
-                            <Button className="bg-catback-purple hover:bg-catback-dark-purple">
-                                <PlusCircle className="w-5 h-5 mr-2" />
-                                Novo Agendamento
-                            </Button>
-                        </DialogTrigger>
-                        <DialogContent>
-                            <DialogHeader>
-                                <DialogTitle>Criar Novo Agendamento</DialogTitle>
-                            </DialogHeader>
-                            <AppointmentForm onFinished={() => setIsCreateAppointmentOpen(false)} />
-                        </DialogContent>
-                    </Dialog>
-                </CardHeader>
-                <CardContent>
-                    <AppointmentsList />
-                </CardContent>
-            </Card>
+            <AppointmentsCalendar />
         </TabsContent>
 
         <TabsContent value="services" className="space-y-6">
