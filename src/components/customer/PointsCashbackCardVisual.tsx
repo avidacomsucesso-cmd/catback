@@ -2,7 +2,10 @@ import React from "react";
 import { Cat, DollarSign, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CustomerCard } from "@/hooks/use-customer-cards";
-import QRCode from "qrcode.react"; // Usando importação padrão
+import * as QRCodeModule from "qrcode.react"; // Usando importação * as
+
+// qrcode.react exporta o componente como default, mas o Vite/TS pode exigir esta forma
+const QRCode = (QRCodeModule as any).default || QRCodeModule;
 
 interface PointsCashbackCardVisualProps {
   card: CustomerCard;

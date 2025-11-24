@@ -3,7 +3,10 @@ import { Check, Cat, RotateCw } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Progress } from "@/components/ui/progress";
 import { CustomerCard } from "@/hooks/use-customer-cards";
-import QRCode from "qrcode.react"; // Usando importação padrão
+import * as QRCodeModule from "qrcode.react"; // Usando importação * as
+
+// qrcode.react exporta o componente como default, mas o Vite/TS pode exigir esta forma
+const QRCode = (QRCodeModule as any).default || QRCodeModule;
 
 interface StampCardVisualProps {
   card: CustomerCard;

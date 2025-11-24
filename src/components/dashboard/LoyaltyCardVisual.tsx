@@ -3,7 +3,10 @@ import { LoyaltyCard } from "@/hooks/use-loyalty-cards";
 import { Cat, RotateCw, Check, Star, DollarSign } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import QRCode from "qrcode.react"; // Usando importação padrão
+import * as QRCodeModule from "qrcode.react"; // Usando importação * as
+
+// qrcode.react exporta o componente como default, mas o Vite/TS pode exigir esta forma
+const QRCode = (QRCodeModule as any).default || QRCodeModule;
 
 interface LoyaltyCardVisualProps {
   card: LoyaltyCard;
