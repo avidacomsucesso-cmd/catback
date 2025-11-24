@@ -3,10 +3,7 @@ import { Check, Cat, RotateCw } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Progress } from "@/components/ui/progress";
 import { CustomerCard } from "@/hooks/use-customer-cards";
-import * as QRCodeModule from "qrcode.react"; // Usando importação * as
-
-// qrcode.react exporta o componente como default, mas o Vite/TS pode exigir esta forma
-const QRCode = (QRCodeModule as any).default || QRCodeModule;
+import { QRCodeSVG } from 'qrcode.react';
 
 interface StampCardVisualProps {
   card: CustomerCard;
@@ -21,10 +18,8 @@ const StampCardVisual: React.FC<StampCardVisualProps> = ({ card, isFlipped }) =>
   const progressPercentage = Math.min(100, (currentProgress / requiredStamps) * 100);
   const stampsArray = Array.from({ length: requiredStamps }, (_, i) => i + 1);
 
-  // Determine grid columns based on stamp count for optimal layout within h-64
   const gridColumnsClass = requiredStamps <= 10 ? "grid-cols-5" : "grid-cols-4";
 
-  // The URL the QR code will encode: directs the merchant to the specific customer card detail page
   const qrCodeValue = `${window.location.origin}/dashboard/loyalty/card/${card.id}`;
   const displayCode = card.id.substring(0, 6).toUpperCase();
   
@@ -47,11 +42,10 @@ const StampCardVisual: React.FC<StampCardVisualProps> = ({ card, isFlipped }) =>
             </p>
             
             <div className="w-28 h-28 bg-white p-1 rounded-md mt-2">
-                <QRCode 
+                <QRCodeSVG 
                     value={qrCodeValue} 
                     size={100} 
                     level="H" 
-                    renderAs="svg"
                     className="w-full h-full"
                 />
             </div>
@@ -71,7 +65,6 @@ const StampCardVisual: React.FC<StampCardVisualProps> = ({ card, isFlipped }) =>
         {/* Card Back (Progress View for Cliente) */}
         <div className="absolute w-full h-full backface-hidden rounded-xl p-4 bg-gray-100 dark:bg-gray-800 shadow-lg flex flex-col justify-between text-gray-900 dark:text-white rotate-y-180">
             
-            {/* Header and Reward Info */}
             <div className="space-y-0.5 text-center">
                 <h3 className="text-xl font-bold text-catback-dark-purple dark:text-white">{loyaltyCard.name}</h3>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -79,7 +72,6 @@ const StampCardVisual: React.FC<StampCardVisualProps> = ({ card, isFlipped }) =>
                 </p>
             </div>
 
-            {/* Stamp Grid */}
             <div className="mt-4 flex flex-col justify-center flex-grow">
                 <div className={cn("grid gap-1.5 mx-auto", gridColumnsClass)}>
                     {stampsArray.map((num) => (
@@ -98,7 +90,6 @@ const StampCardVisual: React.FC<StampCardVisualProps> = ({ card, isFlipped }) =>
                 </div>
             </div>
             
-            {/* Progress Bar */}
             <div className="mt-4">
                 <div className="text-center">
                     <p className="text-sm font-semibold">
