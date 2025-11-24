@@ -16,12 +16,9 @@ const StampCardVisual: React.FC<StampCardVisualProps> = ({ card, isFlipped }) =>
   const progressPercentage = Math.min(100, (card.current_progress / requiredStamps) * 100);
   const stampsArray = Array.from({ length: requiredStamps }, (_, i) => i + 1);
 
-  // Dynamic Grid Calculation:
-  // Max columns: 5. Max rows: 4 (for a 64 height card). Total max: 20.
-  // If requiredStamps <= 10, use 5 columns.
-  // If requiredStamps > 10, use 4 columns (to allow more rows).
-  const columns = requiredStamps <= 10 ? 5 : 4;
-  const gridClass = `grid-cols-${columns}`;
+  // Determine grid columns based on stamp count for optimal layout within h-72
+  // Use 5 columns for 10 or fewer stamps, 4 columns for 11-20 stamps.
+  const gridColumnsClass = requiredStamps <= 10 ? "grid-cols-5" : "grid-cols-4";
 
   return (
     <div className="relative w-full h-72 perspective-1000">
@@ -47,7 +44,7 @@ const StampCardVisual: React.FC<StampCardVisualProps> = ({ card, isFlipped }) =>
 
           {/* Stamp Grid */}
           <div className="mt-3 flex flex-col justify-center">
-              <div className={cn("grid gap-2", gridClass)}>
+              <div className={cn("grid gap-2", gridColumnsClass)}>
                   {stampsArray.map((num) => (
                       <div
                           key={num}
