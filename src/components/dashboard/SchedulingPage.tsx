@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Loader2, Calendar, List, Trash } from "lucide-react";
+import { PlusCircle, Loader2, Calendar, List, Trash, Mail } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,10 +12,33 @@ import ServiceForm from "./ServiceForm";
 import AppointmentForm from "./AppointmentForm";
 import { format } from "date-fns";
 import { pt } from "date-fns/locale";
+import { supabase } from "@/integrations/supabase/client";
+import { showSuccess, showError } from "@/utils/toast";
 
 const AppointmentsList: React.FC = () => {
     const { data: appointments, isLoading, error } = useAppointments();
     const deleteMutation = useDeleteAppointment();
+    const [sendingReminderId, setSendingReminderId] = React.useState<string | null>(null);
+
+    const handleSendReminder = async (appointmentId: string, customerIdentifier: string) => {
+        if (!customerIdentifier.includes('@')) {
+            showError("O lembrete só pode ser enviado para um email.");
+            return;
+        }
+        setSendingReminderId(appointmentId);
+        try {
+            const { error } = await supabase.functions.invoke('send-reminder', {
+                body: { appointmentId },
+            });
+            if (error) throw error;
+            showSuccess("Lembrete enviado com sucesso!");
+        } catch (error: any) {
+            const errorMessage = error.context?.error_description || error.message;
+            showError(`Erro ao enviar lembrete: ${errorMessage}`);
+        } finally {
+            setSendingReminderId(null);
+        }
+    };
 
     if (isLoading) {
         return <div className="text-center p-10"><Loader2 className="h-8 w-8 animate-spin text-catback-purple mx-auto" /></div>;
@@ -40,18 +63,33 @@ const AppointmentsList: React.FC = () => {
                                     {format(new Date(app.start_time), "PPP 'às' HH:mm", { locale: pt })}
                                 </p>
                             </div>
-                            <Button 
-                                variant="ghost" 
-                                size="icon" 
-                                className="text-red-500 hover:bg-red-500/10"
-                                onClick={() => {
-                                    if (window.confirm("Tem certeza que deseja cancelar este agendamento?")) {
-                                        deleteMutation.mutate(app.id);
-                                    }
-                                }}
-                            >
-                                <Trash className="w-4 h-4" />
-                            </Button>
+                            <div className="flex items-center space-x-2">
+                                <Button 
+                                    variant="ghost" 
+                                    size="icon" 
+                                    className="text-catback-purple hover:bg-catback-purple/10"
+                                    disabled={sendingReminderId === app.id}
+                                    onClick={() => handleSendReminder(app.id, app.customer_identifier)}
+                                >
+                                    {sendingReminderId === app.id ? (
+                                        <Loader2 className="w-4 h-4 animate-spin" />
+                                    ) : (
+                                        <Mail className="w-4 h-4" />
+                                    )}
+                                </Button>
+                                <Button 
+                                    variant="ghost" 
+                                    size="icon" 
+                                    className="text-red-500 hover:bg-red-500/10"
+                                    onClick={() => {
+                                        if (window.confirm("Tem certeza que deseja cancelar este agendamento?")) {
+                                            deleteMutation.mutate(app.id);
+                                        }
+                                    }}
+                                >
+                                    <Trash className="w-4 h-4" />
+                                </Button>
+                            </div>
                         </CardContent>
                     </Card>
                 ))
