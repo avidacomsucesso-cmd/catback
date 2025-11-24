@@ -24,7 +24,7 @@ const StampCardVisual: React.FC<StampCardVisualProps> = ({ card, isFlipped }) =>
   const gridClass = `grid-cols-${columns}`;
 
   return (
-    <div className="relative w-full h-64 perspective-1000">
+    <div className="relative w-full h-72 perspective-1000"> {/* Increased height to h-72 */}
       <div
         className={cn(
           "absolute w-full h-full transition-transform duration-700 preserve-3d",
@@ -46,7 +46,7 @@ const StampCardVisual: React.FC<StampCardVisualProps> = ({ card, isFlipped }) =>
           </div>
 
           {/* Stamp Grid */}
-          <div className="mt-4 flex-grow flex flex-col justify-center overflow-hidden">
+          <div className="mt-4 flex flex-col justify-center">
               <div className={cn("grid gap-2", gridClass)}>
                   {stampsArray.map((num) => (
                       <div
