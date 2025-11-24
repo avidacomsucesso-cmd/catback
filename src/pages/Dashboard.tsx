@@ -9,16 +9,15 @@ import ProfileSettingsForm from "@/components/dashboard/ProfileSettingsForm";
 import PasswordSettingsForm from "@/components/dashboard/PasswordSettingsForm"; 
 import LoyaltyCustomersPage from "@/components/dashboard/LoyaltyCustomersPage"; 
 import CustomerCardDetailsPage from "@/components/dashboard/CustomerCardDetailsPage";
-import SchedulingPage from "@/components/dashboard/SchedulingPage"; // Importando o componente correto
+import SchedulingPage from "@/components/dashboard/SchedulingPage";
+import DashboardStats from "@/components/dashboard/DashboardStats"; // Importando o novo componente
 
 // Placeholder Pages for Dashboard Sections
 const OverviewPage = () => (
-  <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
-    <h2 className="text-3xl font-bold text-catback-purple mb-4">Visão Geral</h2>
-    <p className="text-gray-700 dark:text-gray-300">
-      Bem-vindo ao seu Dashboard CATBACK. Comece configurando seu Cartão de Fidelidade!
-    </p>
-    {/* Add quick stats here later */}
+  <div className="space-y-8">
+    <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Visão Geral</h2>
+    <DashboardStats />
+    {/* Futuramente, podemos adicionar mais componentes aqui, como gráficos ou uma lista de atividades recentes. */}
   </div>
 );
 
