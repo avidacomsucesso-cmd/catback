@@ -16,12 +16,12 @@ const StampCardVisual: React.FC<StampCardVisualProps> = ({ card, isFlipped }) =>
   const progressPercentage = Math.min(100, (card.current_progress / requiredStamps) * 100);
   const stampsArray = Array.from({ length: requiredStamps }, (_, i) => i + 1);
 
-  // Determine grid columns based on stamp count for optimal layout within h-64
+  // Determine grid columns based on stamp count for optimal layout within h-52
   // Use 5 columns for 10 or fewer stamps, 4 columns for 11-20 stamps.
   const gridColumnsClass = requiredStamps <= 10 ? "grid-cols-5" : "grid-cols-4";
 
   return (
-    <div className="relative w-full h-64 perspective-1000">
+    <div className="relative w-full h-52 perspective-1000"> {/* Reduced height to h-52 */}
       <div
         className={cn(
           "absolute w-full h-full transition-transform duration-700 preserve-3d",
@@ -29,13 +29,13 @@ const StampCardVisual: React.FC<StampCardVisualProps> = ({ card, isFlipped }) =>
         )}
       >
         {/* Card Front (Progress View) */}
-        <div className="absolute w-full h-full backface-hidden rounded-xl p-4 bg-catback-purple shadow-lg flex flex-col justify-between text-white">
+        <div className="absolute w-full h-full backface-hidden rounded-xl p-3 bg-catback-purple shadow-lg flex flex-col justify-between text-white">
           
           {/* Header and Reward Info */}
-          <div className="space-y-1">
+          <div className="space-y-0.5">
             <div className="flex justify-between items-start">
-                <h3 className="text-base font-bold">{loyaltyCard.name}</h3>
-                <Cat className="w-6 h-6 fill-white" />
+                <h3 className="text-sm font-bold">{loyaltyCard.name}</h3> {/* Reduced font size */}
+                <Cat className="w-5 h-5 fill-white" /> {/* Reduced icon size */}
             </div>
             <p className="text-xs opacity-90">
                 Recompensa: {loyaltyCard.reward_description}
@@ -43,13 +43,13 @@ const StampCardVisual: React.FC<StampCardVisualProps> = ({ card, isFlipped }) =>
           </div>
 
           {/* Stamp Grid */}
-          <div className="mt-2 flex flex-col justify-center flex-grow py-1">
+          <div className="mt-1 flex flex-col justify-center flex-grow">
               <div className={cn("grid gap-1", gridColumnsClass)}>
                   {stampsArray.map((num) => (
                       <div
                           key={num}
                           className={cn(
-                              "w-full aspect-square rounded-md flex items-center justify-center text-sm font-bold border-2",
+                              "w-full aspect-square rounded-md flex items-center justify-center text-xs font-bold border-2", // Reduced stamp size/font
                               card.current_progress >= num
                                   ? "bg-catback-success-green border-catback-success-green text-white"
                                   : "bg-white/20 border-white/50 text-white/70"
@@ -62,18 +62,18 @@ const StampCardVisual: React.FC<StampCardVisualProps> = ({ card, isFlipped }) =>
           </div>
           
           {/* Progress Bar */}
-          <div className="mt-2">
+          <div className="mt-1">
               <div className="text-center">
-                  <p className="text-sm font-semibold">
+                  <p className="text-xs font-semibold"> {/* Reduced font size */}
                       {card.current_progress} / {requiredStamps} Selos
                   </p>
-                  <Progress value={progressPercentage} className="h-2 mt-1" indicatorClassName="bg-catback-energy-orange" />
+                  <Progress value={progressPercentage} className="h-1.5 mt-1" indicatorClassName="bg-catback-energy-orange" /> {/* Reduced progress bar height */}
               </div>
           </div>
           
           {isComplete && (
             <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-xl">
-                <p className="text-xl font-extrabold text-catback-energy-orange animate-pulse">
+                <p className="text-lg font-extrabold text-catback-energy-orange animate-pulse"> {/* Reduced font size */}
                     RESGATE DISPONÍVEL!
                 </p>
             </div>
