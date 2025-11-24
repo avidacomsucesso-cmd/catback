@@ -7,7 +7,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useCreateLoyaltyCard } from "@/hooks/use-loyalty-cards";
 import { Loader2 } from "lucide-react";
 
@@ -60,100 +59,93 @@ const CreateLoyaltyCardForm: React.FC<{ onCardCreated: () => void }> = ({ onCard
   }
 
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <CardTitle className="text-2xl text-catback-purple">Criar Novo Cartão de Fidelidade</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Nome do Cartão (Ex: Cartão Café)</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Nome interno do programa" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Nome do Cartão (Ex: Cartão Café)</FormLabel>
+              <FormControl>
+                <Input placeholder="Nome interno do programa" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-            <FormField
-              control={form.control}
-              name="type"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Tipo de Fidelidade</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecione o tipo de programa" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="stamps">Cartão de Selos (Carimbos)</SelectItem>
-                      <SelectItem value="points">Pontos Acumulativos</SelectItem>
-                      <SelectItem value="cashback">Cashback</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+        <FormField
+          control={form.control}
+          name="type"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Tipo de Fidelidade</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione o tipo de programa" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="stamps">Cartão de Selos (Carimbos)</SelectItem>
+                  <SelectItem value="points">Pontos Acumulativos</SelectItem>
+                  <SelectItem value="cashback">Cashback</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-            {selectedType === 'stamps' && (
-                <FormField
-                    control={form.control}
-                    name="stampCount"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Número de Selos Necessários</FormLabel>
-                            <FormControl>
-                                <Input 
-                                    type="number" 
-                                    placeholder="Ex: 10" 
-                                    {...field} 
-                                    onChange={e => field.onChange(parseInt(e.target.value))}
-                                />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-            )}
-            
+        {selectedType === 'stamps' && (
             <FormField
-              control={form.control}
-              name="reward_description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Descrição da Recompensa (Ex: 1 Café Grátis)</FormLabel>
-                  <FormControl>
-                    <Textarea placeholder="O que o cliente ganha ao completar o cartão?" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+                control={form.control}
+                name="stampCount"
+                render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Número de Selos Necessários</FormLabel>
+                        <FormControl>
+                            <Input 
+                                type="number" 
+                                placeholder="Ex: 10" 
+                                {...field} 
+                                onChange={e => field.onChange(parseInt(e.target.value))}
+                            />
+                        </FormControl>
+                        <FormMessage />
+                    </FormItem>
+                )}
             />
+        )}
+        
+        <FormField
+          control={form.control}
+          name="reward_description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Descrição da Recompensa (Ex: 1 Café Grátis)</FormLabel>
+              <FormControl>
+                <Textarea placeholder="O que o cliente ganha ao completar o cartão?" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-            <Button 
-              type="submit" 
-              className="w-full bg-catback-purple hover:bg-catback-dark-purple"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                "Criar Cartão"
-              )}
-            </Button>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+        <Button 
+          type="submit" 
+          className="w-full bg-catback-purple hover:bg-catback-dark-purple"
+          disabled={isSubmitting || createCardMutation.isPending}
+        >
+          {createCardMutation.isPending ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            "Criar Cartão"
+          )}
+        </Button>
+      </form>
+    </Form>
   );
 };
 

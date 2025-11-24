@@ -4,6 +4,7 @@ import { PlusCircle } from "lucide-react";
 import CreateLoyaltyCardForm from "./CreateLoyaltyCardForm";
 import LoyaltyCardList from "./LoyaltyCardList";
 import { Separator } from "@/components/ui/separator";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 const LoyaltyPage: React.FC = () => {
   const [isCreating, setIsCreating] = useState(false);
@@ -14,20 +15,24 @@ const LoyaltyPage: React.FC = () => {
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
           Fidelização Digital
         </h1>
-        <Button 
-          onClick={() => setIsCreating(!isCreating)}
-          className="bg-catback-purple hover:bg-catback-dark-purple"
-        >
-          <PlusCircle className="w-5 h-5 mr-2" /> 
-          {isCreating ? "Cancelar" : "Novo Cartão"}
-        </Button>
+        
+        <Dialog open={isCreating} onOpenChange={setIsCreating}>
+          <DialogTrigger asChild>
+            <Button 
+              className="bg-catback-purple hover:bg-catback-dark-purple"
+            >
+              <PlusCircle className="w-5 h-5 mr-2" /> 
+              Novo Cartão
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle className="text-catback-purple">Criar Novo Cartão de Fidelidade</DialogTitle>
+            </DialogHeader>
+            <CreateLoyaltyCardForm onCardCreated={() => setIsCreating(false)} />
+          </DialogContent>
+        </Dialog>
       </div>
-
-      {isCreating && (
-        <div className="max-w-lg">
-          <CreateLoyaltyCardForm onCardCreated={() => setIsCreating(false)} />
-        </div>
-      )}
 
       <Separator />
 
