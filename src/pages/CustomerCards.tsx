@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Cat, Loader2, CreditCard, RotateCw, LogOut, PlusCircle, Calendar } from "lucide-react";
+import { Cat, Loader2, CreditCard, RotateCw, LogOut, PlusCircle, Calendar, Settings } from "lucide-react";
 import { useCustomerCardsByIdentifier, CustomerCard } from "@/hooks/use-customer-cards";
 import { cn } from "@/lib/utils";
 import StampCardVisual from "@/components/customer/StampCardVisual";
@@ -117,14 +117,21 @@ const CustomerCards: React.FC = () => {
                     Minha Área
                 </h1>
             </div>
-            <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={handleLogout}
-                className="text-red-500 hover:bg-red-500/10"
-            >
-                <LogOut className="w-4 h-4 mr-1" /> Sair
-            </Button>
+            <div className="flex items-center space-x-2">
+                <Link to="/customer-settings">
+                    <Button variant="ghost" size="icon">
+                        <Settings className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                    </Button>
+                </Link>
+                <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={handleLogout}
+                    className="text-red-500 hover:bg-red-500/10"
+                >
+                    <LogOut className="w-4 h-4 mr-1" /> Sair
+                </Button>
+            </div>
         </div>
 
         <p className="text-gray-600 dark:text-gray-400 mb-6">

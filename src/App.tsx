@@ -23,9 +23,10 @@ import Careers from "./pages/Careers";
 import BlogPost from "./pages/BlogPost";
 import Dashboard from "./pages/Dashboard";
 import CustomerCards from "./pages/CustomerCards"; 
-import CustomerAuth from "./pages/CustomerAuth"; // Import the new customer auth page
-import CustomerCardEnrollment from "./pages/CustomerCardEnrollment"; // Import the new enrollment page
-import CustomerBooking from "./pages/CustomerBooking"; // Import the new booking page
+import CustomerAuth from "./pages/CustomerAuth";
+import CustomerCardEnrollment from "./pages/CustomerCardEnrollment";
+import CustomerBooking from "./pages/CustomerBooking";
+import CustomerSettings from "./pages/CustomerSettings"; // Import the new settings page
 
 const queryClient = new QueryClient();
 
@@ -56,17 +57,18 @@ const App = () => (
             
             {/* Customer Routes */}
             <Route path="/customer-auth" element={<CustomerAuth />} />
-            <Route path="/enroll" element={<CustomerCardEnrollment />} /> {/* Public Enrollment Link */}
+            <Route path="/enroll" element={<CustomerCardEnrollment />} />
             
             {/* Protected Routes (Lojista) */}
             <Route element={<ProtectedRoute />}>
               <Route path="/dashboard/*" element={<Dashboard />} /> 
             </Route>
 
-            {/* Protected Customer Route (Visualização dos Cartões) */}
+            {/* Protected Customer Routes */}
             <Route element={<ProtectedRoute redirectPath="/customer-auth" />}>
                 <Route path="/customer-cards" element={<CustomerCards />} />
                 <Route path="/customer-booking" element={<CustomerBooking />} />
+                <Route path="/customer-settings" element={<CustomerSettings />} />
             </Route>
 
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
