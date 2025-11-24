@@ -8,13 +8,15 @@ import { useLoyaltyCards } from "@/hooks/use-loyalty-cards";
 import CustomerCardInteraction from "./CustomerCardInteraction";
 import { Separator } from "@/components/ui/separator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { showSuccess } from "@/utils/toast";
-import ClientProfileCard from "./ClientProfileCard"; // Import the new component
+import { showSuccess, showError } from "@/utils/toast";
+import ClientProfileCard from "./ClientProfileCard";
+import { supabase } from "@/integrations/supabase/client";
 
 const ClientsPage: React.FC = () => {
   const [identifier, setIdentifier] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedLoyaltyCardId, setSelectedLoyaltyCardId] = useState<string | undefined>(undefined);
+  const [isResettingPassword, setIsResettingPassword] = useState(false);
   
   const { data: customerCards, isLoading: isLoadingCards, isFetching: isFetchingCards, error: cardsError } = useCustomerCardsByIdentifier(searchQuery);
   const { data: loyaltyPrograms, isLoading: isLoadingPrograms } = useLoyaltyCards();
@@ -42,6 +44,31 @@ const ClientsPage: React.FC = () => {
             setSelectedLoyaltyCardId(undefined); // Reset selection
         }
     });
+  };
+  
+  const handlePasswordReset = async () => {
+    if (!searchQuery || !searchQuery.includes('@')) {
+        showError("A redefinição de senha só é possível para clientes registados com um endereço de email válido.");
+        return;
+    }
+
+    setIsResettingPassword(true);
+    try {
+        // This sends a recovery email to the customer's email address.
+        const { error } = await supabase.auth.resetPasswordForEmail(searchQuery, {
+            // Redirect customer to the update password page within the customer auth flow
+            redirectTo: `${window.location.origin}/customer-auth?view=update_password`, 
+        });
+
+        if (error) throw error;
+
+        showSuccess(`Email de redefinição de senha enviado para ${searchQuery}. O cliente deve verificar a caixa de entrada.`);
+    } catch (error) {
+        console.error("Password reset error:", error);
+        showError("Erro ao enviar email de redefinição. Verifique se o email está registado no sistema.");
+    } finally {
+        setIsResettingPassword(false);
+    }
   };
 
   const showCreationSection = searchQuery && !isLoadingCards && (customerCards?.length === 0 || !customerCards);
@@ -90,6 +117,8 @@ const ClientsPage: React.FC = () => {
             <ClientProfileCard 
               identifier={searchQuery} 
               activeCardsCount={customerCards?.length || 0} 
+              onPasswordReset={handlePasswordReset}
+              isResetting={isResettingPassword}
             />
           )}
 
