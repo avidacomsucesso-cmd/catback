@@ -3,19 +3,16 @@ import { useParams, Link } from "react-router-dom";
 import { useCustomerCardsByLoyaltyId, CustomerCard } from "@/hooks/use-customer-cards";
 import { Loader2, ArrowLeft, Cat } from "lucide-react";
 import CustomerCardInteraction from "./CustomerCardInteraction";
-import LoyaltyCardVisual from "./LoyaltyCardVisual";
 import { Card, CardContent } from "@/components/ui/card";
+import StampCardVisual from "@/components/customer/StampCardVisual"; // Import customer visual
+import PointsCashbackCardVisual from "@/components/customer/PointsCashbackCardVisual"; // Import customer visual
+
+// We need to import useQuery from @tanstack/react-query and supabase
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 const CustomerCardDetailsPage: React.FC = () => {
   const { customerCardId } = useParams<{ customerCardId: string }>();
-  
-  // We need a way to fetch a single customer card by ID. 
-  // Since we don't have a dedicated hook for single fetch, we'll create one temporarily 
-  // or rely on the existing structure if possible. 
-  // For simplicity and speed, let's assume we can fetch the single card.
-  
-  // NOTE: Since we don't have a useCustomerCardById hook, I will simulate the fetch 
-  // or assume a new hook exists. Let's create a simple fetch function and useQuery.
   
   // --- Temporary Single Fetch Logic (Ideally this would be a dedicated hook) ---
   const fetchSingleCustomerCard = async (id: string): Promise<CustomerCard | null> => {
@@ -81,19 +78,10 @@ const CustomerCardDetailsPage: React.FC = () => {
                 <h2 className="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-200">
                     Visualização do Cliente
                 </h2>
-                {/* We use the StampCardVisual/PointsCashbackCardVisual logic here */}
                 {isStamps ? (
-                    <LoyaltyCardVisual card={card.loyalty_cards} isFlipped={false} showFlipButton={false} />
+                    <StampCardVisual card={card} isFlipped={false} />
                 ) : (
-                    <div className="relative w-full h-64 rounded-xl p-6 bg-catback-dark-purple shadow-xl flex flex-col justify-center items-center text-white">
-                        <Cat className="w-12 h-12 fill-white mb-4" />
-                        <p className="text-xl font-bold">
-                            {card.current_progress.toFixed(card.loyalty_cards.type === 'cashback' ? 2 : 0)} {card.loyalty_cards.type === 'cashback' ? '€' : 'Pts'}
-                        </p>
-                        <p className="text-sm opacity-80 mt-1">
-                            {card.loyalty_cards.type.toUpperCase()}
-                        </p>
-                    </div>
+                    <PointsCashbackCardVisual card={card} />
                 )}
             </CardContent>
         </Card>
@@ -104,9 +92,5 @@ const CustomerCardDetailsPage: React.FC = () => {
     </div>
   );
 };
-
-// We need to import useQuery from @tanstack/react-query and supabase
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 
 export default CustomerCardDetailsPage;
