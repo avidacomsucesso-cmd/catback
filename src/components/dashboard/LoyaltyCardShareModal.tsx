@@ -7,6 +7,7 @@ import { showSuccess } from "@/utils/toast";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
+import { QRCodeSVG } from 'qrcode.react';
 
 interface LoyaltyCardShareModalProps {
   card: LoyaltyCard;
@@ -58,8 +59,8 @@ const LoyaltyCardShareModal: React.FC<LoyaltyCardShareModalProps> = ({ card, isO
                 <div className="space-y-6 text-center">
                     
                     {/* QR Code Section */}
-                    <div className="flex flex-col items-center p-4 border rounded-lg bg-gray-50 dark:bg-gray-800">
-                        <QrCode className="w-24 h-24 text-gray-700 dark:text-gray-300" /> {/* Placeholder for actual QR code image */}
+                    <div className="flex flex-col items-center p-4 border rounded-lg bg-white dark:bg-gray-800">
+                        <QRCodeSVG value={publicUrl} size={128} level="H" />
                         <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
                             QR Code público (Escaneie para aderir)
                         </p>
