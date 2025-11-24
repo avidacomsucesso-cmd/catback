@@ -24,6 +24,7 @@ import BlogPost from "./pages/BlogPost";
 import Dashboard from "./pages/Dashboard";
 import CustomerCards from "./pages/CustomerCards"; 
 import CustomerAuth from "./pages/CustomerAuth"; // Import the new customer auth page
+import CustomerCardEnrollment from "./pages/CustomerCardEnrollment"; // Import the new enrollment page
 
 const queryClient = new QueryClient();
 
@@ -52,15 +53,16 @@ const App = () => (
             <Route path="/about" element={<About />} />
             <Route path="/careers" element={<Careers />} />
             
-            {/* Customer Authentication Route */}
+            {/* Customer Routes */}
             <Route path="/customer-auth" element={<CustomerAuth />} />
+            <Route path="/enroll" element={<CustomerCardEnrollment />} /> {/* Public Enrollment Link */}
             
-            {/* Protected Routes */}
+            {/* Protected Routes (Lojista) */}
             <Route element={<ProtectedRoute />}>
               <Route path="/dashboard/*" element={<Dashboard />} /> 
             </Route>
 
-            {/* Protected Customer Route */}
+            {/* Protected Customer Route (Visualização dos Cartões) */}
             <Route element={<ProtectedRoute redirectPath="/customer-auth" />}>
                 <Route path="/customer-cards" element={<CustomerCards />} />
             </Route>

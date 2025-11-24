@@ -16,8 +16,8 @@ interface LoyaltyCardShareModalProps {
 
 // Mock function to generate a public URL for the customer card
 const generatePublicUrl = (cardId: string) => {
-    // In a real app, this would be the base URL + /customer-cards?id=...
-    return `${window.location.origin}/customer-cards?id=${cardId}`;
+    // Use the new /enroll route with the loyalty card ID
+    return `${window.location.origin}/enroll?id=${cardId}`;
 };
 
 // Mock function to generate a short public code
