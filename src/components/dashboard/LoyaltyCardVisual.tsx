@@ -1,6 +1,6 @@
 import React from "react";
 import { LoyaltyCard } from "@/hooks/use-loyalty-cards";
-import { Cat, RotateCw, Check } from "lucide-react";
+import { Cat, RotateCw, Check, Star, DollarSign } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import * as QRCode from "qrcode.react"; // Usando importação de namespace para compatibilidade
@@ -25,6 +25,9 @@ const LoyaltyCardVisual: React.FC<LoyaltyCardVisualProps> = ({ card, isFlipped, 
   const displayCode = customerCardId ? customerCardId.substring(0, 6).toUpperCase() : card.id.substring(0, 6).toUpperCase();
   
   const QRCodeComponent = (QRCode as any).default || QRCode;
+  
+  // New logic for Points/Cashback visualization
+  const Icon = card.type === 'points' ? Star : DollarSign;
 
   return (
     <div className="space-y-4">
@@ -58,12 +61,12 @@ const LoyaltyCardVisual: React.FC<LoyaltyCardVisualProps> = ({ card, isFlipped, 
             </p>
             </div>
 
-            {/* Card Back (Stamp Progress View) */}
+            {/* Card Back (Program Type View) */}
             <div className="absolute w-full h-full backface-hidden rounded-xl p-4 bg-gray-800 dark:bg-gray-900 shadow-lg flex flex-col justify-center text-center rotate-y-180">
             <p className="font-semibold text-white mb-3">
                 Recompensa: {card.reward_description}
             </p>
-            {card.type === 'stamps' && (
+            {card.type === 'stamps' ? (
                 <div className="grid grid-cols-4 gap-3 max-w-xs mx-auto">
                 {stampsArray.map((num) => (
                     <div
@@ -74,9 +77,16 @@ const LoyaltyCardVisual: React.FC<LoyaltyCardVisualProps> = ({ card, isFlipped, 
                     </div>
                 ))}
                 </div>
-            )}
-            {card.type !== 'stamps' && (
-                <p className="text-gray-400 text-sm">Visualização de {card.type} em desenvolvimento.</p>
+            ) : (
+                <div className="flex flex-col items-center justify-center space-y-4">
+                    <Icon className="w-12 h-12 text-catback-energy-orange fill-catback-energy-orange/50" />
+                    <p className="text-xl font-bold text-white">
+                        Programa de {card.type === 'points' ? 'Pontos' : 'Cashback'}
+                    </p>
+                    <p className="text-sm text-gray-400">
+                        Regras de acumulação definidas nas configurações.
+                    </p>
+                </div>
             )}
             </div>
         </div>
