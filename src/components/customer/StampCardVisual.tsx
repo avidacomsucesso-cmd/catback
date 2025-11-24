@@ -16,12 +16,11 @@ const StampCardVisual: React.FC<StampCardVisualProps> = ({ card, isFlipped }) =>
   const progressPercentage = Math.min(100, (card.current_progress / requiredStamps) * 100);
   const stampsArray = Array.from({ length: requiredStamps }, (_, i) => i + 1);
 
-  // Determine grid columns based on stamp count for optimal layout within h-52
-  // Use 5 columns for 10 or fewer stamps, 4 columns for 11-20 stamps.
+  // Determine grid columns based on stamp count for optimal layout within h-64
   const gridColumnsClass = requiredStamps <= 10 ? "grid-cols-5" : "grid-cols-4";
 
   return (
-    <div className="relative w-full h-52 perspective-1000"> {/* Target height: h-52 */}
+    <div className="relative w-full h-64 perspective-1000"> {/* Increased height back to h-64 */}
       <div
         className={cn(
           "absolute w-full h-full transition-transform duration-700 preserve-3d",
@@ -29,51 +28,51 @@ const StampCardVisual: React.FC<StampCardVisualProps> = ({ card, isFlipped }) =>
         )}
       >
         {/* Card Front (Progress View) */}
-        <div className="absolute w-full h-full backface-hidden rounded-xl p-3 bg-catback-purple shadow-lg flex flex-col justify-between text-white">
+        <div className="absolute w-full h-full backface-hidden rounded-xl p-4 bg-catback-purple shadow-lg flex flex-col justify-between text-white"> {/* Increased padding to p-4 */}
           
           {/* Header and Reward Info */}
           <div className="space-y-0.5">
             <div className="flex justify-between items-start">
-                <h3 className="text-sm font-bold">{loyaltyCard.name}</h3>
-                <Cat className="w-5 h-5 fill-white" />
+                <h3 className="text-base font-bold">{loyaltyCard.name}</h3> {/* Adjusted font size */}
+                <Cat className="w-6 h-6 fill-white" /> {/* Adjusted icon size */}
             </div>
-            <p className="text-xs opacity-90">
+            <p className="text-sm opacity-90"> {/* Adjusted font size */}
                 Recompensa: {loyaltyCard.reward_description}
             </p>
           </div>
 
           {/* Stamp Grid */}
-          <div className="mt-1 flex flex-col justify-center flex-grow">
-              <div className={cn("grid gap-0.5", gridColumnsClass)}> {/* Reduced gap to 0.5 */}
+          <div className="mt-2 flex flex-col justify-center flex-grow">
+              <div className={cn("grid gap-1.5", gridColumnsClass)}> {/* Adjusted gap */}
                   {stampsArray.map((num) => (
                       <div
                           key={num}
                           className={cn(
-                              "w-full aspect-square rounded-md flex items-center justify-center text-xs font-bold border-2",
+                              "w-full aspect-square rounded-md flex items-center justify-center text-sm font-bold border-2",
                               card.current_progress >= num
                                   ? "bg-catback-success-green border-catback-success-green text-white"
                                   : "bg-white/20 border-white/50 text-white/70"
                           )}
                       >
-                          {card.current_progress >= num ? <Check className="w-3 h-3" /> : num}
+                          {card.current_progress >= num ? <Check className="w-4 h-4" /> : num}
                       </div>
                   ))}
               </div>
           </div>
           
           {/* Progress Bar */}
-          <div className="mt-1">
+          <div className="mt-2">
               <div className="text-center">
-                  <p className="text-xs font-semibold">
+                  <p className="text-sm font-semibold">
                       {card.current_progress} / {requiredStamps} Selos
                   </p>
-                  <Progress value={progressPercentage} className="h-1.5 mt-1" indicatorClassName="bg-catback-energy-orange" />
+                  <Progress value={progressPercentage} className="h-2 mt-1" indicatorClassName="bg-catback-energy-orange" />
               </div>
           </div>
           
           {isComplete && (
             <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-xl">
-                <p className="text-lg font-extrabold text-catback-energy-orange animate-pulse">
+                <p className="text-xl font-extrabold text-catback-energy-orange animate-pulse">
                     RESGATE DISPONÍVEL!
                 </p>
             </div>
@@ -81,19 +80,19 @@ const StampCardVisual: React.FC<StampCardVisualProps> = ({ card, isFlipped }) =>
         </div>
 
         {/* Card Back (Details View) */}
-        <div className="absolute w-full h-full backface-hidden rounded-xl p-4 bg-gray-100 dark:bg-gray-800 shadow-lg flex flex-col justify-center text-center rotate-y-180">
-            <h3 className="text-xl font-bold text-catback-dark-purple dark:text-white mb-3">
+        <div className="absolute w-full h-full backface-hidden rounded-xl p-6 bg-gray-100 dark:bg-gray-800 shadow-lg flex flex-col justify-center text-center rotate-y-180">
+            <h3 className="text-2xl font-bold text-catback-dark-purple dark:text-white mb-4">
                 Detalhes do Programa
             </h3>
             
-            <div className="space-y-2 mb-4">
-                <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+            <div className="space-y-3 mb-4">
+                <p className="text-base font-semibold text-gray-700 dark:text-gray-300">
                     Condição de Resgate:
                 </p>
-                <p className="text-lg font-extrabold text-catback-energy-orange">
+                <p className="text-2xl font-extrabold text-catback-energy-orange">
                     {requiredStamps} Selos
                 </p>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="text-base text-gray-600 dark:text-gray-400">
                     Recompensa: {loyaltyCard.reward_description}
                 </p>
             </div>
