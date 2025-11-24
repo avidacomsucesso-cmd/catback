@@ -12,13 +12,19 @@ import CustomerCardDetailsPage from "@/components/dashboard/CustomerCardDetailsP
 import SchedulingPage from "@/components/dashboard/SchedulingPage";
 import DashboardStats from "@/components/dashboard/DashboardStats";
 import DashboardCharts from "@/components/dashboard/DashboardCharts";
-import MarketingPage from "@/components/dashboard/MarketingPage"; // Import the new MarketingPage
+import MarketingPage from "@/components/dashboard/MarketingPage";
+import TodaysAppointments from "@/components/dashboard/TodaysAppointments";
+import RecentActivity from "@/components/dashboard/RecentActivity";
 
 // Placeholder Pages for Dashboard Sections
 const OverviewPage = () => (
   <div className="space-y-8">
     <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Visão Geral</h2>
     <DashboardStats />
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <TodaysAppointments />
+      <RecentActivity />
+    </div>
     <DashboardCharts />
   </div>
 );
