@@ -41,6 +41,11 @@ export const useAppointments = () => {
 type CreateAppointmentPayload = Omit<Appointment, 'id' | 'user_id' | 'created_at' | 'end_time' | 'services'>;
 
 const createAppointment = async (payload: CreateAppointmentPayload): Promise<Appointment> => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+        throw new Error("Utilizador não autenticado.");
+    }
+
     // Fetch service duration to calculate end_time
     const { data: service, error: serviceError } = await supabase
         .from('services')
@@ -55,6 +60,7 @@ const createAppointment = async (payload: CreateAppointmentPayload): Promise<App
 
     const appointmentData = {
         ...payload,
+        user_id: user.id, // Add the user_id here
         end_time: endTime.toISOString(),
     };
 
