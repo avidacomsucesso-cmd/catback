@@ -3,7 +3,7 @@ import { LoyaltyCard } from "@/hooks/use-loyalty-cards";
 import { Cat, RotateCw, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import QRCode from "qrcode.react"; // Import QRCode library
+import { QRCode } from "qrcode.react"; // Changed import
 
 interface LoyaltyCardVisualProps {
   card: LoyaltyCard;

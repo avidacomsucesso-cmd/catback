@@ -2,7 +2,7 @@ import React from "react";
 import { Cat, DollarSign, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CustomerCard } from "@/hooks/use-customer-cards";
-import QRCode from "qrcode.react";
+import { QRCode } from "qrcode.react"; // Changed import
 
 interface PointsCashbackCardVisualProps {
   card: CustomerCard;
