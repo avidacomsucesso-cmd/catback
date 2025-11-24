@@ -49,6 +49,7 @@ const LoyaltyCardVisual: React.FC<LoyaltyCardVisualProps> = ({ card, isFlipped, 
                 {card.name}
             </p>
             <div className="w-28 h-28 bg-white p-1 rounded-md mt-2">
+                {/* Using the resolved QRCode component */}
                 <QRCode 
                     value={qrCodeValue} 
                     size={100} 
