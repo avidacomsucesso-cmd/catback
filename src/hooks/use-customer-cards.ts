@@ -115,9 +115,11 @@ interface UpdateProgressPayload {
   cardId: string;
   progressChange: number; // +1 for stamp, +10 for points, etc.
   isRedeeming?: boolean;
+  customerIdentifier: string; // Needed for creating new card after redemption
+  loyaltyCardId: string; // Needed for creating new card after redemption
 }
 
-const updateCustomerCardProgress = async ({ cardId, progressChange, isRedeeming = false }: UpdateProgressPayload): Promise<CustomerCard> => {
+const updateCustomerCardProgress = async ({ cardId, progressChange, isRedeeming = false, customerIdentifier, loyaltyCardId }: UpdateProgressPayload): Promise<CustomerCard> => {
   // 1. Fetch current card state
   const { data: currentCard, error: fetchError } = await supabase
     .from('customer_cards')
@@ -128,15 +130,18 @@ const updateCustomerCardProgress = async ({ cardId, progressChange, isRedeeming 
   if (fetchError) throw new Error(fetchError.message);
   if (currentCard.is_redeemed) throw new Error("Este cartão já foi resgatado.");
 
-  let newProgress = currentCard.current_progress + progressChange;
-  let newIsRedeemed = isRedeeming;
+  let newProgress = currentCard.current_progress;
+  let newIsRedeemed = false;
 
   if (isRedeeming) {
-    // When redeeming, progress usually resets or is marked as complete
-    newProgress = 0; // Assuming we reset progress on redemption for simplicity
+    // Mark current card as redeemed
     newIsRedeemed = true;
-  } else if (newProgress < 0) {
-    newProgress = 0; // Prevent negative progress
+  } else {
+    // Update progress normally
+    newProgress = currentCard.current_progress + progressChange;
+    if (newProgress < 0) {
+      newProgress = 0; // Prevent negative progress
+    }
   }
 
   // 2. Update the card
@@ -156,6 +161,17 @@ const updateCustomerCardProgress = async ({ cardId, progressChange, isRedeeming 
 
   if (updateError) throw new Error(updateError.message);
   
+  // 3. If redeeming, automatically create a new card for the customer
+  if (isRedeeming) {
+    showSuccess("Recompensa resgatada com sucesso! Criando novo cartão...");
+    // We don't return the redeemed card, but the newly created one (or the last updated one)
+    // For simplicity in the mutation return type, we return the updated (redeemed) card, 
+    // but we trigger the creation of the new one.
+    await findOrCreateCustomerCard({ loyalty_card_id: loyaltyCardId, customer_identifier: customerIdentifier });
+  } else {
+    showSuccess("Progresso atualizado!");
+  }
+
   return updatedCard as CustomerCard;
 };
 
@@ -164,9 +180,9 @@ export const useUpdateCustomerCardProgress = () => {
   return useMutation<CustomerCard, Error, UpdateProgressPayload>({
     mutationFn: updateCustomerCardProgress,
     onSuccess: (data) => {
+      // Invalidate the list query for this identifier to show the new card (if redeemed) or updated progress
       queryClient.invalidateQueries({ queryKey: ['customerCards', data.customer_identifier] });
       queryClient.invalidateQueries({ queryKey: ['loyaltyCards'] }); // Just in case
-      showSuccess(data.is_redeemed ? "Recompensa resgatada com sucesso!" : "Progresso atualizado!");
     },
     onError: (error) => {
       showError(`Erro ao atualizar progresso: ${error.message}`);

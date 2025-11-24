@@ -24,15 +24,25 @@ const CustomerCardInteraction: React.FC<CustomerCardInteractionProps> = ({ card 
 
   const handleStamp = () => {
     if (isStamps && card.current_progress < requiredStamps) {
-      updateProgressMutation.mutate({ cardId: card.id, progressChange: 1 });
+      updateProgressMutation.mutate({ 
+        cardId: card.id, 
+        progressChange: 1,
+        customerIdentifier: card.customer_identifier, // Required for mutation
+        loyaltyCardId: card.loyalty_card_id, // Required for mutation
+      });
     }
   };
 
   const handleRedeem = () => {
     if (isComplete) {
       if (window.confirm(`Confirmar resgate da recompensa: ${loyaltyCard.reward_description}?`)) {
-        // When redeeming, we mark it as redeemed and reset progress to 0
-        updateProgressMutation.mutate({ cardId: card.id, progressChange: 0, isRedeeming: true });
+        updateProgressMutation.mutate({ 
+          cardId: card.id, 
+          progressChange: 0, 
+          isRedeeming: true,
+          customerIdentifier: card.customer_identifier, // Required for new card creation
+          loyaltyCardId: card.loyalty_card_id, // Required for new card creation
+        });
       }
     }
   };
@@ -73,7 +83,7 @@ const CustomerCardInteraction: React.FC<CustomerCardInteractionProps> = ({ card 
               disabled={updateProgressMutation.isPending || isComplete}
               className="bg-catback-purple hover:bg-catback-dark-purple flex-grow"
             >
-              {updateProgressMutation.isPending ? (
+              {updateProgressMutation.isPending && !isComplete ? (
                 <Loader2 className="h-4 w-4 animate-spin mr-2" />
               ) : (
                 <Stamp className="h-4 w-4 mr-2" />
@@ -88,7 +98,11 @@ const CustomerCardInteraction: React.FC<CustomerCardInteractionProps> = ({ card 
             variant="outline"
             className="border-catback-success-green text-catback-success-green hover:bg-catback-success-green/10 flex-grow"
           >
-            <Gift className="h-4 w-4 mr-2" />
+            {updateProgressMutation.isPending && isComplete ? (
+                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+            ) : (
+                <Gift className="h-4 w-4 mr-2" />
+            )}
             Resgatar Recompensa
           </Button>
         </div>
