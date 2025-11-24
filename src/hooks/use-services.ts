@@ -35,9 +35,19 @@ export const useServices = () => {
 type CreateServicePayload = Omit<Service, 'id' | 'user_id' | 'created_at'>;
 
 const createService = async (serviceData: CreateServicePayload): Promise<Service> => {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    throw new Error("Utilizador não autenticado.");
+  }
+
+  const dataToInsert = {
+    ...serviceData,
+    user_id: user.id,
+  };
+
   const { data, error } = await supabase
     .from('services')
-    .insert(serviceData)
+    .insert(dataToInsert)
     .select()
     .single();
 
