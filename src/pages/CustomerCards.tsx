@@ -8,6 +8,7 @@ import { useCustomerCardsByIdentifier, CustomerCard } from "@/hooks/use-customer
 import { cn } from "@/lib/utils";
 import { Progress } from "@/components/ui/progress";
 import StampCardVisual from "@/components/customer/StampCardVisual";
+import PointsCashbackCardVisual from "@/components/customer/PointsCashbackCardVisual"; // Import new component
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { showSuccess } from "@/utils/toast";
@@ -25,22 +26,8 @@ const CustomerCardVisual: React.FC<{ card: CustomerCard }> = ({ card }) => {
       return <StampCardVisual card={card} isFlipped={isFlipped} />;
     }
 
-    // Placeholder for other types (Points, Cashback)
-    return (
-        <div className="relative w-full h-64 rounded-xl p-4 bg-gray-700 shadow-lg flex flex-col justify-center items-center text-white">
-            <CreditCard className="w-12 h-12 mb-3 text-catback-energy-orange" />
-            <h3 className="text-xl font-bold">{loyaltyCard.name}</h3>
-            <p className="text-sm mt-1 opacity-90">
-                Tipo: {loyaltyCard.type.toUpperCase()}
-            </p>
-            <p className="text-3xl font-extrabold mt-4">
-                {card.current_progress}
-            </p>
-            <p className="text-sm">
-                {loyaltyCard.type === 'points' ? 'Pontos' : 'Saldo'}
-            </p>
-        </div>
-    );
+    // Points and Cashback use the new component (no flip needed for now, just static display)
+    return <PointsCashbackCardVisual card={card} />;
   };
 
   return (
