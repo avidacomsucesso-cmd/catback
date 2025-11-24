@@ -10,14 +10,15 @@ import PasswordSettingsForm from "@/components/dashboard/PasswordSettingsForm";
 import LoyaltyCustomersPage from "@/components/dashboard/LoyaltyCustomersPage"; 
 import CustomerCardDetailsPage from "@/components/dashboard/CustomerCardDetailsPage";
 import SchedulingPage from "@/components/dashboard/SchedulingPage";
-import DashboardStats from "@/components/dashboard/DashboardStats"; // Importando o novo componente
+import DashboardStats from "@/components/dashboard/DashboardStats";
+import DashboardCharts from "@/components/dashboard/DashboardCharts"; // Importando o novo componente
 
 // Placeholder Pages for Dashboard Sections
 const OverviewPage = () => (
   <div className="space-y-8">
     <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Visão Geral</h2>
     <DashboardStats />
-    {/* Futuramente, podemos adicionar mais componentes aqui, como gráficos ou uma lista de atividades recentes. */}
+    <DashboardCharts />
   </div>
 );
 
