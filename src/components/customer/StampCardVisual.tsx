@@ -85,6 +85,19 @@ const StampCardVisual: React.FC<StampCardVisualProps> = ({ card, isFlipped }) =>
             <h3 className="text-xl font-bold text-catback-dark-purple dark:text-white mb-3">
                 Detalhes do Programa
             </h3>
+            
+            <div className="space-y-2 mb-4">
+                <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    Condição de Resgate:
+                </p>
+                <p className="text-lg font-extrabold text-catback-energy-orange">
+                    {requiredStamps} Selos
+                </p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                    Recompensa: {loyaltyCard.reward_description}
+                </p>
+            </div>
+
             <p className="text-sm text-gray-600 dark:text-gray-400">
                 Tipo: {loyaltyCard.type.toUpperCase()}
             </p>
