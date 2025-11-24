@@ -3,7 +3,7 @@ import { LoyaltyCard } from "@/hooks/use-loyalty-cards";
 import { Cat, RotateCw, Check, Star, DollarSign } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import * as QRCode from "qrcode.react"; // Usando importação de namespace para compatibilidade
+import QRCode from "qrcode.react"; // Usando importação padrão
 
 interface LoyaltyCardVisualProps {
   card: LoyaltyCard;
@@ -23,8 +23,6 @@ const LoyaltyCardVisual: React.FC<LoyaltyCardVisualProps> = ({ card, isFlipped, 
     : `${window.location.origin}/enroll?id=${card.id}`; // Fallback for enrollment link if no customerCardId is provided (used in share modal)
 
   const displayCode = customerCardId ? customerCardId.substring(0, 6).toUpperCase() : card.id.substring(0, 6).toUpperCase();
-  
-  const QRCodeComponent = (QRCode as any).default || QRCode;
   
   // New logic for Points/Cashback visualization
   const Icon = card.type === 'points' ? Star : DollarSign;
@@ -48,7 +46,7 @@ const LoyaltyCardVisual: React.FC<LoyaltyCardVisualProps> = ({ card, isFlipped, 
                 {card.name}
             </p>
             <div className="w-28 h-28 bg-white p-1 rounded-md mt-2">
-                <QRCodeComponent 
+                <QRCode 
                     value={qrCodeValue} 
                     size={100} 
                     level="H" 

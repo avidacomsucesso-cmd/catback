@@ -3,7 +3,7 @@ import { Check, Cat, RotateCw } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Progress } from "@/components/ui/progress";
 import { CustomerCard } from "@/hooks/use-customer-cards";
-import * as QRCode from "qrcode.react"; // Usando importação de namespace para compatibilidade
+import QRCode from "qrcode.react"; // Usando importação padrão
 
 interface StampCardVisualProps {
   card: CustomerCard;
@@ -25,8 +25,6 @@ const StampCardVisual: React.FC<StampCardVisualProps> = ({ card, isFlipped }) =>
   const qrCodeValue = `${window.location.origin}/dashboard/loyalty/card/${card.id}`;
   const displayCode = card.id.substring(0, 6).toUpperCase();
   
-  const QRCodeComponent = (QRCode as any).default || QRCode;
-
   return (
     <div className="relative w-full h-64 perspective-1000">
       <div
@@ -46,7 +44,7 @@ const StampCardVisual: React.FC<StampCardVisualProps> = ({ card, isFlipped }) =>
             </p>
             
             <div className="w-28 h-28 bg-white p-1 rounded-md mt-2">
-                <QRCodeComponent 
+                <QRCode 
                     value={qrCodeValue} 
                     size={100} 
                     level="H" 
