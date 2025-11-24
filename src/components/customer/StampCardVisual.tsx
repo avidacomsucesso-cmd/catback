@@ -24,7 +24,7 @@ const StampCardVisual: React.FC<StampCardVisualProps> = ({ card, isFlipped }) =>
   const gridClass = `grid-cols-${columns}`;
 
   return (
-    <div className="relative w-full h-72 perspective-1000"> {/* Increased height to h-72 */}
+    <div className="relative w-full h-72 perspective-1000">
       <div
         className={cn(
           "absolute w-full h-full transition-transform duration-700 preserve-3d",
@@ -32,21 +32,21 @@ const StampCardVisual: React.FC<StampCardVisualProps> = ({ card, isFlipped }) =>
         )}
       >
         {/* Card Front (Progress View) */}
-        <div className="absolute w-full h-full backface-hidden rounded-xl p-4 bg-catback-purple shadow-lg flex flex-col justify-between text-white">
+        <div className="absolute w-full h-full backface-hidden rounded-xl p-3 bg-catback-purple shadow-lg flex flex-col justify-between text-white">
           
           {/* Header and Reward Info */}
           <div className="space-y-1">
             <div className="flex justify-between items-start">
-                <h3 className="text-xl font-bold">{loyaltyCard.name}</h3>
-                <Cat className="w-8 h-8 fill-white" />
+                <h3 className="text-lg font-bold">{loyaltyCard.name}</h3>
+                <Cat className="w-7 h-7 fill-white" />
             </div>
-            <p className="text-sm opacity-90">
+            <p className="text-xs opacity-90">
                 Recompensa: {loyaltyCard.reward_description}
             </p>
           </div>
 
           {/* Stamp Grid */}
-          <div className="mt-4 flex flex-col justify-center">
+          <div className="mt-3 flex flex-col justify-center">
               <div className={cn("grid gap-2", gridClass)}>
                   {stampsArray.map((num) => (
                       <div
@@ -58,16 +58,16 @@ const StampCardVisual: React.FC<StampCardVisualProps> = ({ card, isFlipped }) =>
                                   : "bg-white/20 border-white/50 text-white/70"
                           )}
                       >
-                          {card.current_progress >= num ? <Check className="w-5 h-5" /> : num}
+                          {card.current_progress >= num ? <Check className="w-4 h-4" /> : num}
                       </div>
                   ))}
               </div>
           </div>
           
           {/* Progress Bar */}
-          <div className="mt-4">
+          <div className="mt-3">
               <div className="text-center">
-                  <p className="text-lg font-semibold">
+                  <p className="text-base font-semibold">
                       {card.current_progress} / {requiredStamps} Selos
                   </p>
                   <Progress value={progressPercentage} className="h-2 mt-1" indicatorClassName="bg-catback-energy-orange" />
@@ -76,7 +76,7 @@ const StampCardVisual: React.FC<StampCardVisualProps> = ({ card, isFlipped }) =>
           
           {isComplete && (
             <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-xl">
-                <p className="text-2xl font-extrabold text-catback-energy-orange animate-pulse">
+                <p className="text-xl font-extrabold text-catback-energy-orange animate-pulse">
                     RESGATE DISPONÍVEL!
                 </p>
             </div>
