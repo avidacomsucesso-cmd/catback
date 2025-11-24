@@ -5,7 +5,8 @@ import { useAuth } from "@/hooks/use-auth";
 import { Loader2 } from "lucide-react";
 import LoyaltyPage from "@/components/dashboard/LoyaltyPage"; 
 import ClientsPage from "@/components/dashboard/ClientsPage"; 
-import ProfileSettingsForm from "@/components/dashboard/ProfileSettingsForm"; // Import the new form
+import ProfileSettingsForm from "@/components/dashboard/ProfileSettingsForm"; 
+import PasswordSettingsForm from "@/components/dashboard/PasswordSettingsForm"; // Import the new form
 
 // Placeholder Pages for Dashboard Sections
 const OverviewPage = () => (
@@ -40,7 +41,8 @@ const SettingsPage = () => (
       Configurações
     </h1>
     <ProfileSettingsForm />
-    {/* Future: Password change, billing settings */}
+    <PasswordSettingsForm />
+    {/* Future: Billing settings */}
   </div>
 );
 
