@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Cat, Search, Loader2, CreditCard, Check, RotateCw, LogOut } from "lucide-react";
+import { Cat, Search, Loader2, CreditCard, Check, RotateCw, LogOut, PlusCircle } from "lucide-react";
 import { useCustomerCardsByIdentifier, CustomerCard } from "@/hooks/use-customer-cards";
 import { cn } from "@/lib/utils";
 import { Progress } from "@/components/ui/progress";
@@ -53,6 +53,7 @@ const CustomerCardVisual: React.FC<{ card: CustomerCard }> = ({ card }) => {
 // --- Página Principal ---
 const CustomerCards: React.FC = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const customerIdentifier = user?.email || user?.phone || ''; // Use email or phone as identifier
 
   // We reuse useCustomerCardsByIdentifier but pass the authenticated user's identifier
@@ -61,18 +62,19 @@ const CustomerCards: React.FC = () => {
   const handleLogout = async () => {
     await supabase.auth.signOut();
     showSuccess("Sessão encerrada.");
+    navigate("/customer-auth");
   };
 
   const displayIdentifier = user?.email || user?.phone || 'Cliente';
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col items-center pt-12 pb-16">
-      <div className="w-full max-w-2xl px-4"> {/* Increased max-w-xl to max-w-2xl */}
-        <div className="flex justify-between items-center mb-8">
+      <div className="w-full max-w-2xl px-4">
+        <div className="flex justify-between items-center mb-4">
             <div className="flex items-center space-x-2">
                 <Cat className="w-8 h-8 text-catback-purple" />
                 <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                    Meus Cartões
+                    Minha Área
                 </h1>
             </div>
             <Button 
@@ -85,11 +87,19 @@ const CustomerCards: React.FC = () => {
             </Button>
         </div>
 
-        <p className="text-gray-600 dark:text-gray-400 mb-8">
-            Bem-vindo(a), <span className="font-semibold">{displayIdentifier}</span>. Aqui estão seus cartões ativos.
+        <p className="text-gray-600 dark:text-gray-400 mb-6">
+            Bem-vindo(a), <span className="font-semibold">{displayIdentifier}</span>.
         </p>
 
-        {/* Results */}
+        <div className="mb-8">
+            <Button onClick={() => navigate('/customer-booking')} className="w-full bg-catback-energy-orange hover:bg-catback-energy-orange/90 text-lg py-6">
+                <PlusCircle className="w-5 h-5 mr-2" />
+                Agendar Novo Serviço
+            </Button>
+        </div>
+
+        <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Meus Cartões de Fidelidade</h2>
+
         {(isLoading || isFetching) && (
             <div className="text-center p-10">
               <Loader2 className="h-8 w-8 animate-spin text-catback-purple mx-auto" /> 
@@ -112,7 +122,7 @@ const CustomerCards: React.FC = () => {
                             Nenhum cartão ativo encontrado.
                         </p>
                         <p className="text-sm text-gray-500">
-                            Se você acabou de aderir, pode levar um momento para aparecer.
+                            Peça ao seu lojista para lhe atribuir um cartão.
                         </p>
                     </div>
                 )}
