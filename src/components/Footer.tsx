@@ -32,6 +32,12 @@ const Footer: React.FC = () => {
         { name: "Contacto", href: "/contact" }, // Updated link
       ],
     },
+    {
+      title: "Clientes",
+      links: [
+        { name: "Meus Cartões", href: "/customer-cards" }, // New link for customers
+      ],
+    },
   ];
 
   return (

@@ -22,6 +22,7 @@ import About from "./pages/About";
 import Careers from "./pages/Careers";
 import BlogPost from "./pages/BlogPost";
 import Dashboard from "./pages/Dashboard";
+import CustomerCards from "./pages/CustomerCards"; // Import the new page
 
 const queryClient = new QueryClient();
 
@@ -49,6 +50,7 @@ const App = () => (
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/about" element={<About />} />
             <Route path="/careers" element={<Careers />} />
+            <Route path="/customer-cards" element={<CustomerCards />} /> {/* New public route */}
             
             {/* Protected Routes */}
             <Route element={<ProtectedRoute />}>
