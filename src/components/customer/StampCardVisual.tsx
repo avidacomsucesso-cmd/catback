@@ -16,12 +16,12 @@ const StampCardVisual: React.FC<StampCardVisualProps> = ({ card, isFlipped }) =>
   const progressPercentage = Math.min(100, (card.current_progress / requiredStamps) * 100);
   const stampsArray = Array.from({ length: requiredStamps }, (_, i) => i + 1);
 
-  // Determine grid columns based on stamp count for optimal layout within h-72
+  // Determine grid columns based on stamp count for optimal layout within h-64
   // Use 5 columns for 10 or fewer stamps, 4 columns for 11-20 stamps.
   const gridColumnsClass = requiredStamps <= 10 ? "grid-cols-5" : "grid-cols-4";
 
   return (
-    <div className="relative w-full h-72 perspective-1000">
+    <div className="relative w-full h-64 perspective-1000">
       <div
         className={cn(
           "absolute w-full h-full transition-transform duration-700 preserve-3d",
@@ -34,8 +34,8 @@ const StampCardVisual: React.FC<StampCardVisualProps> = ({ card, isFlipped }) =>
           {/* Header and Reward Info */}
           <div className="space-y-1">
             <div className="flex justify-between items-start">
-                <h3 className="text-lg font-bold">{loyaltyCard.name}</h3>
-                <Cat className="w-7 h-7 fill-white" />
+                <h3 className="text-base font-bold">{loyaltyCard.name}</h3>
+                <Cat className="w-6 h-6 fill-white" />
             </div>
             <p className="text-xs opacity-90">
                 Recompensa: {loyaltyCard.reward_description}
@@ -43,28 +43,28 @@ const StampCardVisual: React.FC<StampCardVisualProps> = ({ card, isFlipped }) =>
           </div>
 
           {/* Stamp Grid */}
-          <div className="mt-3 flex flex-col justify-center">
+          <div className="mt-2 flex flex-col justify-center flex-grow">
               <div className={cn("grid gap-2", gridColumnsClass)}>
                   {stampsArray.map((num) => (
                       <div
                           key={num}
                           className={cn(
-                              "w-full aspect-square rounded-md flex items-center justify-center text-sm font-bold border-2",
+                              "w-full aspect-square rounded-md flex items-center justify-center text-xs font-bold border-2",
                               card.current_progress >= num
                                   ? "bg-catback-success-green border-catback-success-green text-white"
                                   : "bg-white/20 border-white/50 text-white/70"
                           )}
                       >
-                          {card.current_progress >= num ? <Check className="w-4 h-4" /> : num}
+                          {card.current_progress >= num ? <Check className="w-3 h-3" /> : num}
                       </div>
                   ))}
               </div>
           </div>
           
           {/* Progress Bar */}
-          <div className="mt-3">
+          <div className="mt-2">
               <div className="text-center">
-                  <p className="text-base font-semibold">
+                  <p className="text-sm font-semibold">
                       {card.current_progress} / {requiredStamps} Selos
                   </p>
                   <Progress value={progressPercentage} className="h-2 mt-1" indicatorClassName="bg-catback-energy-orange" />
