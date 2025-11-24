@@ -1,22 +1,49 @@
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, User, Loader2, CreditCard } from "lucide-react";
+import { Search, User, Loader2, CreditCard, PlusCircle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useCustomerCardsByIdentifier } from "@/hooks/use-customer-cards";
+import { useCustomerCardsByIdentifier, useFindOrCreateCustomerCard } from "@/hooks/use-customer-cards";
+import { useLoyaltyCards } from "@/hooks/use-loyalty-cards";
 import CustomerCardInteraction from "./CustomerCardInteraction";
 import { Separator } from "@/components/ui/separator";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { showSuccess } from "@/utils/toast";
 
 const ClientsPage: React.FC = () => {
   const [identifier, setIdentifier] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedLoyaltyCardId, setSelectedLoyaltyCardId] = useState<string | undefined>(undefined);
   
-  const { data: customerCards, isLoading, isFetching, error } = useCustomerCardsByIdentifier(searchQuery);
+  const { data: customerCards, isLoading: isLoadingCards, isFetching: isFetchingCards, error: cardsError } = useCustomerCardsByIdentifier(searchQuery);
+  const { data: loyaltyPrograms, isLoading: isLoadingPrograms } = useLoyaltyCards();
+  const findOrCreateMutation = useFindOrCreateCustomerCard();
+
+  const isFetching = isFetchingCards || isLoadingPrograms || findOrCreateMutation.isPending;
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    setSearchQuery(identifier.trim());
+    const trimmedIdentifier = identifier.trim();
+    if (trimmedIdentifier) {
+        setSearchQuery(trimmedIdentifier);
+    }
   };
+
+  const handleCreateNewCard = () => {
+    if (!searchQuery || !selectedLoyaltyCardId) return;
+
+    findOrCreateMutation.mutate({
+        loyalty_card_id: selectedLoyaltyCardId,
+        customer_identifier: searchQuery,
+    }, {
+        onSuccess: (newCard) => {
+            showSuccess(`Novo cartão '${newCard.loyalty_cards.name}' criado para ${searchQuery}.`);
+            setSelectedLoyaltyCardId(undefined); // Reset selection
+        }
+    });
+  };
+
+  const showCreationSection = searchQuery && !isLoadingCards && (customerCards?.length === 0 || !customerCards);
 
   return (
     <div className="space-y-8">
@@ -60,16 +87,16 @@ const ClientsPage: React.FC = () => {
             Cartões Ativos para: <span className="text-catback-purple">{searchQuery}</span>
           </h2>
 
-          {isLoading && (
+          {isLoadingCards && (
             <div className="text-center p-10">
               <Loader2 className="h-8 w-8 animate-spin text-catback-purple mx-auto" /> 
               <p className="mt-2">A procurar cartões...</p>
             </div>
           )}
 
-          {error && (
+          {cardsError && (
             <div className="text-center p-10 text-red-500">
-              Erro ao carregar cartões: {error.message}
+              Erro ao carregar cartões: {cardsError.message}
             </div>
           )}
 
@@ -80,15 +107,48 @@ const ClientsPage: React.FC = () => {
               ))}
             </div>
           ) : (
-            !isLoading && searchQuery && (
-              <div className="text-center p-10 border-2 border-dashed border-gray-300 rounded-lg dark:border-gray-700">
-                <CreditCard className="w-10 h-10 text-gray-400 mx-auto mb-3" />
-                <p className="text-lg font-semibold text-gray-700 dark:text-gray-300">
-                  Nenhum cartão ativo encontrado para este cliente.
+            showCreationSection && (
+              <div className="p-10 border-2 border-dashed border-catback-light-purple rounded-lg dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                <CreditCard className="w-10 h-10 text-catback-purple mx-auto mb-3" />
+                <p className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4">
+                  Nenhum cartão ativo encontrado.
                 </p>
-                <p className="text-sm text-gray-500">
-                  O cliente pode não ter um cartão ou todos os cartões foram resgatados.
-                </p>
+                
+                <h3 className="text-xl font-bold text-catback-dark-purple mb-3">
+                    Atribuir Novo Cartão de Fidelidade
+                </h3>
+                
+                <div className="flex flex-col sm:flex-row gap-3">
+                    <Select onValueChange={setSelectedLoyaltyCardId} value={selectedLoyaltyCardId}>
+                        <SelectTrigger className="flex-grow">
+                            <SelectValue placeholder={isLoadingPrograms ? "A carregar programas..." : "Selecione um programa de fidelidade"} />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {loyaltyPrograms?.map(program => (
+                                <SelectItem key={program.id} value={program.id}>
+                                    {program.name} ({program.type.toUpperCase()})
+                                </SelectItem>
+                            ))}
+                            {(!loyaltyPrograms || loyaltyPrograms.length === 0) && (
+                                <SelectItem value="none" disabled>
+                                    Nenhum programa ativo. Crie um em Fidelização.
+                                </SelectItem>
+                            )}
+                        </SelectContent>
+                    </Select>
+                    <Button 
+                        onClick={handleCreateNewCard}
+                        disabled={!selectedLoyaltyCardId || findOrCreateMutation.isPending}
+                        className="bg-catback-energy-orange hover:bg-catback-energy-orange/90 flex-shrink-0"
+                    >
+                        {findOrCreateMutation.isPending ? (
+                            <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                        ) : (
+                            <PlusCircle className="w-5 h-5 mr-2" />
+                        )}
+                        Atribuir Cartão
+                    </Button>
+                </div>
               </div>
             )
           )}
