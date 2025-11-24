@@ -1,8 +1,8 @@
 import React from "react";
 import { useParams, Link } from "react-router-dom";
 import { useCustomerCardsByLoyaltyId, CustomerCard } from "@/hooks/use-customer-cards";
-import { Loader2, ArrowLeft, User, CreditCard, Check, X } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Loader2, ArrowLeft, User, CreditCard, Check, X, ArrowRight } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
@@ -23,25 +23,25 @@ const CustomerRow: React.FC<{ card: CustomerCard }> = ({ card }) => {
     };
 
     return (
-        <Card className="shadow-sm hover:shadow-md transition-shadow">
-            <CardContent className="p-4 flex justify-between items-center">
-                <div className="flex items-center space-x-4">
-                    <User className="w-6 h-6 text-catback-dark-purple" />
-                    <div>
-                        <p className="font-semibold text-gray-900 dark:text-white">{card.customer_identifier}</p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                            {isStamps ? `Progresso: ${card.current_progress}/${requiredStamps} Selos` : `Progresso: ${card.current_progress}`}
-                        </p>
+        <Link to={`/dashboard/loyalty/card/${card.id}`}>
+            <Card className="shadow-sm hover:shadow-md transition-shadow hover:border-catback-purple/50 cursor-pointer">
+                <CardContent className="p-4 flex justify-between items-center">
+                    <div className="flex items-center space-x-4">
+                        <User className="w-6 h-6 text-catback-dark-purple" />
+                        <div>
+                            <p className="font-semibold text-gray-900 dark:text-white">{card.customer_identifier}</p>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">
+                                {isStamps ? `Progresso: ${card.current_progress}/${requiredStamps} Selos` : `Saldo: ${card.current_progress.toFixed(loyaltyCard.type === 'cashback' ? 2 : 0)} ${loyaltyCard.type === 'cashback' ? '€' : 'Pts'}`}
+                            </p>
+                        </div>
                     </div>
-                </div>
-                <div className="flex items-center space-x-4">
-                    {statusBadge()}
-                    <p className="text-sm text-gray-500 dark:text-gray-400 hidden sm:block">
-                        Última Atividade: {new Date(card.updated_at).toLocaleDateString()}
-                    </p>
-                </div>
-            </CardContent>
-        </Card>
+                    <div className="flex items-center space-x-4">
+                        {statusBadge()}
+                        <ArrowRight className="w-4 h-4 text-catback-purple hidden sm:block" />
+                    </div>
+                </CardContent>
+            </Card>
+        </Link>
     );
 };
 
@@ -74,7 +74,7 @@ const LoyaltyCustomersPage: React.FC = () => {
         Clientes do Programa: {programName}
       </h1>
       <p className="text-gray-600 dark:text-gray-400">
-        Total de {customerCards?.length || 0} cartões de clientes associados a este programa (incluindo resgatados).
+        Total de {customerCards?.length || 0} cartões de clientes associados a este programa (incluindo resgatados). Clique em um cartão para interagir.
       </p>
 
       <div className="space-y-4">

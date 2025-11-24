@@ -7,7 +7,8 @@ import LoyaltyPage from "@/components/dashboard/LoyaltyPage";
 import ClientsPage from "@/components/dashboard/ClientsPage"; 
 import ProfileSettingsForm from "@/components/dashboard/ProfileSettingsForm"; 
 import PasswordSettingsForm from "@/components/dashboard/PasswordSettingsForm"; 
-import LoyaltyCustomersPage from "@/components/dashboard/LoyaltyCustomersPage"; // Import the new page
+import LoyaltyCustomersPage from "@/components/dashboard/LoyaltyCustomersPage"; 
+import CustomerCardDetailsPage from "@/components/dashboard/CustomerCardDetailsPage"; // Import the new page
 
 // Placeholder Pages for Dashboard Sections
 const OverviewPage = () => (
@@ -67,7 +68,8 @@ const Dashboard: React.FC = () => {
         
         <Route path="overview" element={<OverviewPage />} />
         <Route path="loyalty" element={<LoyaltyPage />} />
-        <Route path="loyalty/customers/:loyaltyCardId" element={<LoyaltyCustomersPage />} /> {/* New route */}
+        <Route path="loyalty/customers/:loyaltyCardId" element={<LoyaltyCustomersPage />} />
+        <Route path="loyalty/card/:customerCardId" element={<CustomerCardDetailsPage />} /> {/* NEW ROUTE */}
         <Route path="scheduling" element={<SchedulingPage />} />
         <Route path="clients" element={<ClientsPage />} />
         <Route path="marketing" element={<MarketingPage />} />
