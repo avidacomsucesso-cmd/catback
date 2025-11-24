@@ -29,7 +29,7 @@ const StampCardVisual: React.FC<StampCardVisualProps> = ({ card, isFlipped }) =>
         )}
       >
         {/* Card Front (Progress View) */}
-        <div className="absolute w-full h-full backface-hidden rounded-xl p-3 bg-catback-purple shadow-lg flex flex-col justify-between text-white">
+        <div className="absolute w-full h-full backface-hidden rounded-xl p-4 bg-catback-purple shadow-lg flex flex-col justify-between text-white">
           
           {/* Header and Reward Info */}
           <div className="space-y-1">
@@ -43,13 +43,13 @@ const StampCardVisual: React.FC<StampCardVisualProps> = ({ card, isFlipped }) =>
           </div>
 
           {/* Stamp Grid */}
-          <div className="mt-2 flex flex-col justify-center flex-grow">
-              <div className={cn("grid gap-2", gridColumnsClass)}>
+          <div className="mt-2 flex flex-col justify-center flex-grow py-1">
+              <div className={cn("grid gap-1", gridColumnsClass)}>
                   {stampsArray.map((num) => (
                       <div
                           key={num}
                           className={cn(
-                              "w-full aspect-square rounded-md flex items-center justify-center text-xs font-bold border-2",
+                              "w-full aspect-square rounded-md flex items-center justify-center text-sm font-bold border-2",
                               card.current_progress >= num
                                   ? "bg-catback-success-green border-catback-success-green text-white"
                                   : "bg-white/20 border-white/50 text-white/70"
