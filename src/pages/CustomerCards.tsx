@@ -67,7 +67,7 @@ const CustomerCards: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col items-center pt-12 pb-16">
-      <div className="w-full max-w-xl px-4">
+      <div className="w-full max-w-2xl px-4"> {/* Increased max-w-xl to max-w-2xl */}
         <div className="flex justify-between items-center mb-8">
             <div className="flex items-center space-x-2">
                 <Cat className="w-8 h-8 text-catback-purple" />
