@@ -43,6 +43,34 @@ export const useCustomerCardsByIdentifier = (identifier: string) => {
   });
 };
 
+// --- Fetching All Customer Cards for a Loyalty Program ---
+const fetchCustomerCardsByLoyaltyId = async (loyaltyCardId: string): Promise<CustomerCard[]> => {
+  if (!loyaltyCardId) return [];
+  
+  const { data, error } = await supabase
+    .from('customer_cards')
+    .select(`
+      *,
+      loyalty_cards (id, name, type, reward_description, config)
+    `)
+    .eq('loyalty_card_id', loyaltyCardId)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+  return data as CustomerCard[];
+};
+
+export const useCustomerCardsByLoyaltyId = (loyaltyCardId: string) => {
+  return useQuery<CustomerCard[], Error>({
+    queryKey: ['loyaltyProgramCustomers', loyaltyCardId],
+    queryFn: () => fetchCustomerCardsByLoyaltyId(loyaltyCardId),
+    enabled: !!loyaltyCardId,
+  });
+};
+
+
 // --- Creating/Finding Customer Card ---
 interface FindOrCreatePayload {
   loyalty_card_id: string;

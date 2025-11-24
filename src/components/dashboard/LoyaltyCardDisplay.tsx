@@ -6,7 +6,8 @@ import { Trash, Eye, Pencil, Users, Share2, RotateCw, Loader2, Cat } from "lucid
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import EditLoyaltyCardForm from "./EditLoyaltyCardForm"; // Import the new component
+import EditLoyaltyCardForm from "./EditLoyaltyCardForm"; 
+import { Link } from "react-router-dom"; // Import Link
 
 interface LoyaltyCardDisplayProps {
   card: LoyaltyCard;
@@ -153,9 +154,11 @@ const LoyaltyCardDisplay: React.FC<LoyaltyCardDisplayProps> = ({ card }) => {
             </DialogContent>
           </Dialog>
 
-          <Button variant="secondary" className="justify-start">
-            <Users className="w-4 h-4 mr-2" /> Clientes
-          </Button>
+          <Link to={`/dashboard/loyalty/customers/${card.id}`}>
+            <Button variant="secondary" className="justify-start w-full">
+              <Users className="w-4 h-4 mr-2" /> Clientes
+            </Button>
+          </Link>
           <Button variant="secondary" className="justify-start">
             <Share2 className="w-4 h-4 mr-2" /> Partilhar
           </Button>
