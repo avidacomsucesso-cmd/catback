@@ -9,6 +9,7 @@ import CustomerCardInteraction from "./CustomerCardInteraction";
 import { Separator } from "@/components/ui/separator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { showSuccess } from "@/utils/toast";
+import ClientProfileCard from "./ClientProfileCard"; // Import the new component
 
 const ClientsPage: React.FC = () => {
   const [identifier, setIdentifier] = useState("");
@@ -83,8 +84,17 @@ const ClientsPage: React.FC = () => {
       {/* Results */}
       {searchQuery && (
         <div className="space-y-6">
+          
+          {/* Client Profile Summary */}
+          {!isLoadingCards && (
+            <ClientProfileCard 
+              identifier={searchQuery} 
+              activeCardsCount={customerCards?.length || 0} 
+            />
+          )}
+
           <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200">
-            Cartões Ativos para: <span className="text-catback-purple">{searchQuery}</span>
+            Cartões Ativos
           </h2>
 
           {isLoadingCards && (
