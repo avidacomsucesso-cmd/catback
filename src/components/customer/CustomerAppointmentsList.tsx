@@ -1,17 +1,25 @@
 import React from "react";
-import { useCustomerAppointments } from "@/hooks/use-appointments";
+import { useCustomerAppointments, useCancelAppointment } from "@/hooks/use-appointments";
 import { useAuth } from "@/hooks/use-auth";
-import { Loader2, Calendar, Clock } from "lucide-react";
+import { Loader2, Calendar, Clock, XCircle } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { format } from "date-fns";
 import { pt } from "date-fns/locale";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
 
 const CustomerAppointmentsList: React.FC = () => {
   const { user } = useAuth();
   const identifier = user?.email || user?.phone || '';
   const { data: appointments, isLoading, error } = useCustomerAppointments(identifier);
+  const cancelMutation = useCancelAppointment(identifier);
+
+  const handleCancel = (appointmentId: string, serviceName: string) => {
+    if (window.confirm(`Tem certeza que deseja cancelar o agendamento para '${serviceName}'?`)) {
+        cancelMutation.mutate(appointmentId);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -38,16 +46,27 @@ const CustomerAppointmentsList: React.FC = () => {
             {upcomingAppointments.map(app => (
               <Card key={app.id} className="shadow-sm">
                 <CardContent className="p-4 flex justify-between items-center">
-                  <div>
+                  <div className="flex-grow">
                     <p className="font-bold text-catback-dark-purple dark:text-white">{app.services.name}</p>
                     <p className="text-sm text-gray-600 dark:text-gray-400">
                       {format(new Date(app.start_time), "EEEE, d 'de' MMMM 'de' yyyy", { locale: pt })}
                     </p>
                   </div>
-                  <Badge className="bg-catback-energy-orange hover:bg-catback-energy-orange/90">
-                    <Clock className="w-3 h-3 mr-1.5" />
-                    {format(new Date(app.start_time), "HH:mm")}
-                  </Badge>
+                  <div className="flex items-center space-x-2">
+                    <Badge className="bg-catback-energy-orange hover:bg-catback-energy-orange/90">
+                      <Clock className="w-3 h-3 mr-1.5" />
+                      {format(new Date(app.start_time), "HH:mm")}
+                    </Badge>
+                    <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        className="text-red-500 hover:bg-red-500/10"
+                        onClick={() => handleCancel(app.id, app.services.name)}
+                        disabled={cancelMutation.isPending}
+                    >
+                        <XCircle className="w-4 h-4" />
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             ))}

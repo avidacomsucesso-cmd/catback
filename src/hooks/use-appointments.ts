@@ -113,7 +113,7 @@ export const useCreateAppointment = () => {
   });
 };
 
-// --- Deleting ---
+// --- Deleting (Lojista & Customer) ---
 const deleteAppointment = async (id: string): Promise<void> => {
     const { error } = await supabase
       .from('appointments')
@@ -134,6 +134,22 @@ export const useDeleteAppointment = () => {
         },
         onError: (error) => {
             showError(`Erro ao remover agendamento: ${error.message}`);
+        },
+    });
+};
+
+// --- Customer Cancellation Hook ---
+export const useCancelAppointment = (customerIdentifier: string) => {
+    const queryClient = useQueryClient();
+    return useMutation<void, Error, string>({
+        mutationFn: deleteAppointment,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['customerAppointments', customerIdentifier] });
+            queryClient.invalidateQueries({ queryKey: ['appointments'] });
+            showSuccess("Agendamento cancelado com sucesso.");
+        },
+        onError: (error) => {
+            showError(`Erro ao cancelar agendamento: ${error.message}`);
         },
     });
 };
