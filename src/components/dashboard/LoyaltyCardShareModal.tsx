@@ -50,7 +50,7 @@ const LoyaltyCardShareModal: React.FC<LoyaltyCardShareModalProps> = ({ card, isO
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="sm:max-w-[450px]">
+            <DialogContent className="sm:max-w-[380px]">
                 <DialogHeader>
                     <DialogTitle className="text-catback-purple">Compartilhar Cartão: {card.name}</DialogTitle>
                 </DialogHeader>
@@ -59,7 +59,7 @@ const LoyaltyCardShareModal: React.FC<LoyaltyCardShareModalProps> = ({ card, isO
                     
                     {/* QR Code Section */}
                     <div className="flex flex-col items-center p-4 border rounded-lg bg-gray-50 dark:bg-gray-800">
-                        <QrCode className="w-32 h-32 text-gray-700 dark:text-gray-300" /> {/* Placeholder for actual QR code image */}
+                        <QrCode className="w-24 h-24 text-gray-700 dark:text-gray-300" /> {/* Placeholder for actual QR code image */}
                         <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
                             QR Code público (Escaneie para aderir)
                         </p>
@@ -68,8 +68,8 @@ const LoyaltyCardShareModal: React.FC<LoyaltyCardShareModalProps> = ({ card, isO
                     {/* Link Section */}
                     <div className="space-y-2">
                         <div className="flex items-center space-x-2">
-                            <Input readOnly value={publicUrl} className="flex-grow" />
-                            <Button onClick={handleCopyLink} size="icon" className="bg-catback-energy-orange hover:bg-catback-energy-orange/90">
+                            <Input readOnly value={publicUrl} className="flex-grow text-xs" />
+                            <Button onClick={handleCopyLink} size="icon" className="bg-catback-energy-orange hover:bg-catback-energy-orange/90 h-9 w-9">
                                 <Copy className="w-4 h-4" />
                             </Button>
                         </div>
@@ -81,10 +81,10 @@ const LoyaltyCardShareModal: React.FC<LoyaltyCardShareModalProps> = ({ card, isO
                     {/* Public Code Section */}
                     <div className="flex justify-between items-center p-3 border rounded-lg">
                         <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Código público: <span className="font-bold text-catback-dark-purple dark:text-white">{publicCode}</span>
+                            Código: <span className="font-bold text-catback-dark-purple dark:text-white">{publicCode}</span>
                         </p>
                         <Button onClick={handleCopyCode} variant="ghost" size="sm" className="text-catback-purple hover:bg-catback-light-purple/20">
-                            <Copy className="w-4 h-4 mr-1" /> Copiar Código
+                            <Copy className="w-4 h-4 mr-1" /> Copiar
                         </Button>
                     </div>
 
@@ -106,7 +106,7 @@ const LoyaltyCardShareModal: React.FC<LoyaltyCardShareModalProps> = ({ card, isO
                                     item.color
                                 )}
                             >
-                                <item.icon className="w-6 h-6" />
+                                <item.icon className="w-5 h-5" />
                                 <span className="text-xs mt-1">{item.name}</span>
                             </a>
                         ))}
