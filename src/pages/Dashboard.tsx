@@ -8,7 +8,8 @@ import ClientsPage from "@/components/dashboard/ClientsPage";
 import ProfileSettingsForm from "@/components/dashboard/ProfileSettingsForm"; 
 import PasswordSettingsForm from "@/components/dashboard/PasswordSettingsForm"; 
 import LoyaltyCustomersPage from "@/components/dashboard/LoyaltyCustomersPage"; 
-import CustomerCardDetailsPage from "@/components/dashboard/CustomerCardDetailsPage"; // Import the new page
+import CustomerCardDetailsPage from "@/components/dashboard/CustomerCardDetailsPage";
+import SchedulingPage from "@/components/dashboard/SchedulingPage"; // Importando o componente correto
 
 // Placeholder Pages for Dashboard Sections
 const OverviewPage = () => (
@@ -20,14 +21,7 @@ const OverviewPage = () => (
     {/* Add quick stats here later */}
   </div>
 );
-const SchedulingPage = () => (
-  <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
-    <h2 className="text-3xl font-bold text-catback-purple mb-4">Agendamento Online</h2>
-    <p className="text-gray-700 dark:text-gray-300">
-      Gerencie seu calendário, serviços e lembretes automáticos.
-    </p>
-  </div>
-);
+
 const MarketingPage = () => (
   <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
     <h2 className="text-3xl font-bold text-catback-purple mb-4">Marketing Automatizado</h2>
@@ -69,7 +63,7 @@ const Dashboard: React.FC = () => {
         <Route path="overview" element={<OverviewPage />} />
         <Route path="loyalty" element={<LoyaltyPage />} />
         <Route path="loyalty/customers/:loyaltyCardId" element={<LoyaltyCustomersPage />} />
-        <Route path="loyalty/card/:customerCardId" element={<CustomerCardDetailsPage />} /> {/* NEW ROUTE */}
+        <Route path="loyalty/card/:customerCardId" element={<CustomerCardDetailsPage />} />
         <Route path="scheduling" element={<SchedulingPage />} />
         <Route path="clients" element={<ClientsPage />} />
         <Route path="marketing" element={<MarketingPage />} />
