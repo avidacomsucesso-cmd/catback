@@ -7,6 +7,7 @@ import { Cat, Search, Loader2, CreditCard, Check, RotateCw } from "lucide-react"
 import { useCustomerCardsByIdentifier, CustomerCard } from "@/hooks/use-customer-cards";
 import { cn } from "@/lib/utils";
 import { Progress } from "@/components/ui/progress";
+import StampCardVisual from "@/components/customer/StampCardVisual"; // Import the new component
 
 // --- Componente Visual do Cartão do Cliente ---
 const CustomerCardVisual: React.FC<{ card: CustomerCard }> = ({ card }) => {
@@ -14,96 +15,45 @@ const CustomerCardVisual: React.FC<{ card: CustomerCard }> = ({ card }) => {
   const loyaltyCard = card.loyalty_cards;
   
   const isStamps = loyaltyCard.type === 'stamps';
-  const requiredStamps = isStamps ? loyaltyCard.config?.stamp_count || 10 : 1;
-  const isComplete = isStamps ? card.current_progress >= requiredStamps : false;
-  const progressPercentage = isStamps 
-    ? Math.min(100, (card.current_progress / requiredStamps) * 100)
-    : 0;
 
-  const stampsArray = isStamps ? Array.from({ length: requiredStamps }, (_, i) => i + 1) : [];
+  const renderCardContent = () => {
+    if (isStamps) {
+      return <StampCardVisual card={card} isFlipped={isFlipped} />;
+    }
+
+    // Placeholder for other types (Points, Cashback)
+    return (
+        <div className="relative w-full h-64 rounded-xl p-4 bg-gray-700 shadow-lg flex flex-col justify-center items-center text-white">
+            <CreditCard className="w-12 h-12 mb-3 text-catback-energy-orange" />
+            <h3 className="text-xl font-bold">{loyaltyCard.name}</h3>
+            <p className="text-sm mt-1 opacity-90">
+                Tipo: {loyaltyCard.type.toUpperCase()}
+            </p>
+            <p className="text-3xl font-extrabold mt-4">
+                {card.current_progress}
+            </p>
+            <p className="text-sm">
+                {loyaltyCard.type === 'points' ? 'Pontos' : 'Saldo'}
+            </p>
+        </div>
+    );
+  };
 
   return (
     <Card className="shadow-xl dark:bg-gray-900/80 border-gray-700/50 overflow-hidden">
       <CardContent className="p-4">
-        <div className="relative w-full h-64 perspective-1000">
-          <div
-            className={cn(
-              "absolute w-full h-full transition-transform duration-700 preserve-3d",
-              isFlipped ? "rotate-y-180" : ""
-            )}
-          >
-            {/* Card Front (Progress View) */}
-            <div className="absolute w-full h-full backface-hidden rounded-xl p-4 bg-catback-purple shadow-lg flex flex-col justify-between text-white">
-              <div>
-                <div className="flex justify-between items-start">
-                    <h3 className="text-xl font-bold">{loyaltyCard.name}</h3>
-                    <Cat className="w-8 h-8 fill-white" />
-                </div>
-                <p className="text-sm mt-1 opacity-90">
-                    Recompensa: {loyaltyCard.reward_description}
-                </p>
-              </div>
-
-              {isStamps && (
-                <div className="mt-4">
-                    <div className="grid grid-cols-5 gap-2">
-                        {stampsArray.map((num) => (
-                            <div
-                                key={num}
-                                className={cn(
-                                    "w-full aspect-square rounded-md flex items-center justify-center text-sm font-bold border-2",
-                                    card.current_progress >= num
-                                        ? "bg-catback-success-green border-catback-success-green text-white"
-                                        : "bg-white/20 border-white/50 text-white/70"
-                                )}
-                            >
-                                {card.current_progress >= num ? <Check className="w-5 h-5" /> : num}
-                            </div>
-                        ))}
-                    </div>
-                    <div className="mt-3 text-center">
-                        <p className="text-lg font-semibold">
-                            {card.current_progress} / {requiredStamps} Selos
-                        </p>
-                        <Progress value={progressPercentage} className="h-2 mt-1" indicatorClassName="bg-catback-energy-orange" />
-                    </div>
-                </div>
-              )}
-              {isComplete && (
-                <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-xl">
-                    <p className="text-2xl font-extrabold text-catback-energy-orange animate-pulse">
-                        RESGATE DISPONÍVEL!
-                    </p>
-                </div>
-              )}
-            </div>
-
-            {/* Card Back (Details View) */}
-            <div className="absolute w-full h-full backface-hidden rounded-xl p-4 bg-gray-100 dark:bg-gray-800 shadow-lg flex flex-col justify-center text-center rotate-y-180">
-                <h3 className="text-xl font-bold text-catback-dark-purple dark:text-white mb-3">
-                    Detalhes do Programa
-                </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Tipo: {loyaltyCard.type.toUpperCase()}
-                </p>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                    ID do Cartão: {card.id.substring(0, 8)}
-                </p>
-                <p className="text-xs text-gray-500 dark:text-gray-500 mt-4">
-                    Apresente este cartão ao lojista para carimbar ou resgatar sua recompensa.
-                </p>
-            </div>
-          </div>
-        </div>
+        {renderCardContent()}
         
-        <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={() => setIsFlipped(!isFlipped)}
-            className="w-full mt-4 text-catback-purple border-catback-purple/50 hover:bg-catback-light-purple/20"
-        >
-            <RotateCw className="w-4 h-4 mr-2" /> Girar Cartão para Detalhes
-        </Button>
+        {isStamps && (
+            <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => setIsFlipped(!isFlipped)}
+                className="w-full mt-4 text-catback-purple border-catback-purple/50 hover:bg-catback-light-purple/20"
+            >
+                <RotateCw className="w-4 h-4 mr-2" /> Girar Cartão para Detalhes
+            </Button>
+        )}
       </CardContent>
     </Card>
   );
