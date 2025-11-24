@@ -22,7 +22,8 @@ import About from "./pages/About";
 import Careers from "./pages/Careers";
 import BlogPost from "./pages/BlogPost";
 import Dashboard from "./pages/Dashboard";
-import CustomerCards from "./pages/CustomerCards"; // Import the new page
+import CustomerCards from "./pages/CustomerCards"; 
+import CustomerAuth from "./pages/CustomerAuth"; // Import the new customer auth page
 
 const queryClient = new QueryClient();
 
@@ -50,11 +51,18 @@ const App = () => (
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/about" element={<About />} />
             <Route path="/careers" element={<Careers />} />
-            <Route path="/customer-cards" element={<CustomerCards />} /> {/* New public route */}
+            
+            {/* Customer Authentication Route */}
+            <Route path="/customer-auth" element={<CustomerAuth />} />
             
             {/* Protected Routes */}
             <Route element={<ProtectedRoute />}>
               <Route path="/dashboard/*" element={<Dashboard />} /> 
+            </Route>
+
+            {/* Protected Customer Route */}
+            <Route element={<ProtectedRoute redirectPath="/customer-auth" />}>
+                <Route path="/customer-cards" element={<CustomerCards />} />
             </Route>
 
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

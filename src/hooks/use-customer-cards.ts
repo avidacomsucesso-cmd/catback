@@ -16,6 +16,7 @@ export interface CustomerCard {
 }
 
 // --- Fetching Customer Cards by Identifier ---
+// This function is used by both the Lojista (CRM) and the Customer (CustomerCards page)
 const fetchCustomerCardsByIdentifier = async (identifier: string): Promise<CustomerCard[]> => {
   if (!identifier) return [];
   

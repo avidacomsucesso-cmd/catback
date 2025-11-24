@@ -3,11 +3,14 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Cat, Search, Loader2, CreditCard, Check, RotateCw } from "lucide-react";
+import { Cat, Search, Loader2, CreditCard, Check, RotateCw, LogOut } from "lucide-react";
 import { useCustomerCardsByIdentifier, CustomerCard } from "@/hooks/use-customer-cards";
 import { cn } from "@/lib/utils";
 import { Progress } from "@/components/ui/progress";
-import StampCardVisual from "@/components/customer/StampCardVisual"; // Import the new component
+import StampCardVisual from "@/components/customer/StampCardVisual";
+import { useAuth } from "@/hooks/use-auth";
+import { supabase } from "@/integrations/supabase/client";
+import { showSuccess } from "@/utils/toast";
 
 // --- Componente Visual do Cartão do Cliente ---
 const CustomerCardVisual: React.FC<{ card: CustomerCard }> = ({ card }) => {
@@ -18,6 +21,7 @@ const CustomerCardVisual: React.FC<{ card: CustomerCard }> = ({ card }) => {
 
   const renderCardContent = () => {
     if (isStamps) {
+      // StampCardVisual handles the flip transformation internally
       return <StampCardVisual card={card} isFlipped={isFlipped} />;
     }
 
@@ -51,7 +55,7 @@ const CustomerCardVisual: React.FC<{ card: CustomerCard }> = ({ card }) => {
                 onClick={() => setIsFlipped(!isFlipped)}
                 className="w-full mt-4 text-catback-purple border-catback-purple/50 hover:bg-catback-light-purple/20"
             >
-                <RotateCw className="w-4 h-4 mr-2" /> Girar Cartão para Detalhes
+                <RotateCw className="w-4 h-4 mr-2" /> {isFlipped ? "Ver Progresso" : "Girar Cartão para Detalhes"}
             </Button>
         )}
       </CardContent>
@@ -61,72 +65,53 @@ const CustomerCardVisual: React.FC<{ card: CustomerCard }> = ({ card }) => {
 
 // --- Página Principal ---
 const CustomerCards: React.FC = () => {
-  const [identifier, setIdentifier] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
-  
-  const { data: customerCards, isLoading, isFetching, error } = useCustomerCardsByIdentifier(searchQuery);
+  const { user } = useAuth();
+  const customerIdentifier = user?.email || user?.phone || ''; // Use email or phone as identifier
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    const trimmedIdentifier = identifier.trim();
-    if (trimmedIdentifier) {
-        setSearchQuery(trimmedIdentifier);
-    }
+  // We reuse useCustomerCardsByIdentifier but pass the authenticated user's identifier
+  const { data: customerCards, isLoading, isFetching, error } = useCustomerCardsByIdentifier(customerIdentifier);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    showSuccess("Sessão encerrada.");
   };
 
-  const showResults = searchQuery && !isLoading && !isFetching;
+  const displayIdentifier = user?.email || user?.phone || 'Cliente';
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col items-center pt-12 pb-16">
       <div className="w-full max-w-xl px-4">
-        <div className="text-center mb-8">
-          <Cat className="w-10 h-10 mx-auto text-catback-purple mb-2" />
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-            Meus Cartões CATBACK
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-2">
-            Insira seu email ou telefone para ver seus cartões de fidelidade ativos.
-          </p>
+        <div className="flex justify-between items-center mb-8">
+            <div className="flex items-center space-x-2">
+                <Cat className="w-8 h-8 text-catback-purple" />
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                    Meus Cartões
+                </h1>
+            </div>
+            <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={handleLogout}
+                className="text-red-500 hover:bg-red-500/10"
+            >
+                <LogOut className="w-4 h-4 mr-1" /> Sair
+            </Button>
         </div>
 
-        {/* Search Form */}
-        <Card className="p-6 shadow-xl mb-8">
-          <form onSubmit={handleSearch} className="flex space-x-3">
-            <Input
-              type="text"
-              placeholder="Email ou Telefone"
-              value={identifier}
-              onChange={(e) => setIdentifier(e.target.value)}
-              className="flex-grow"
-            />
-            <Button 
-              type="submit" 
-              className="bg-catback-energy-orange hover:bg-catback-energy-orange/90"
-              disabled={!identifier || isLoading || isFetching}
-            >
-              {isLoading || isFetching ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                  <Search className="w-5 h-5" />
-              )}
-            </Button>
-          </form>
-        </Card>
+        <p className="text-gray-600 dark:text-gray-400 mb-8">
+            Bem-vindo(a), <span className="font-semibold">{displayIdentifier}</span>. Aqui estão seus cartões ativos.
+        </p>
 
         {/* Results */}
-        {isLoading && searchQuery && (
+        {(isLoading || isFetching) && (
             <div className="text-center p-10">
               <Loader2 className="h-8 w-8 animate-spin text-catback-purple mx-auto" /> 
-              <p className="mt-2 text-gray-600 dark:text-gray-400">A procurar cartões...</p>
+              <p className="mt-2 text-gray-600 dark:text-gray-400">A carregar cartões...</p>
             </div>
         )}
 
-        {showResults && (
+        {!isLoading && !isFetching && (
             <div className="space-y-6">
-                <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">
-                    Cartões Ativos para {searchQuery}
-                </h2>
-                
                 {customerCards && customerCards.length > 0 ? (
                     <div className="grid grid-cols-1 gap-6">
                         {customerCards.map((card) => (
@@ -140,7 +125,7 @@ const CustomerCards: React.FC = () => {
                             Nenhum cartão ativo encontrado.
                         </p>
                         <p className="text-sm text-gray-500">
-                            Certifique-se de que inseriu o identificador correto.
+                            Se você acabou de aderir, pode levar um momento para aparecer.
                         </p>
                     </div>
                 )}
