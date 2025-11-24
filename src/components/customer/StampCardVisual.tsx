@@ -3,7 +3,7 @@ import { Check, Cat, RotateCw } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Progress } from "@/components/ui/progress";
 import { CustomerCard } from "@/hooks/use-customer-cards";
-import { QRCode } from "qrcode.react"; // Changed import
+import QRCode from "qrcode.react"; // Reverting to default import
 
 interface StampCardVisualProps {
   card: CustomerCard;
