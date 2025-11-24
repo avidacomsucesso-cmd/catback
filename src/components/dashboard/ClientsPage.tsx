@@ -1,77 +1,117 @@
 import React, { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Search, User, Loader2, CreditCard, PlusCircle } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Loader2, ArrowLeft, PlusCircle, CreditCard } from "lucide-react";
+import { useAllCustomers } from "@/hooks/use-customers";
 import { useCustomerCardsByIdentifier, useFindOrCreateCustomerCard } from "@/hooks/use-customer-cards";
-import { useLoyaltyCards } from "@/hooks/use-loyalty-cards";
+import { CustomersDataTable } from "./CustomersDataTable";
+import { createCustomerColumns } from "./CustomersColumns";
 import CustomerCardInteraction from "./CustomerCardInteraction";
-import { Separator } from "@/components/ui/separator";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { showSuccess, showError } from "@/utils/toast";
 import ClientProfileCard from "./ClientProfileCard";
+import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import { showError, showSuccess } from "@/utils/toast";
+import { useLoyaltyCards } from "@/hooks/use-loyalty-cards";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+const ClientDetailView: React.FC<{ identifier: string; onBack: () => void }> = ({ identifier, onBack }) => {
+    const { data: customerCards, isLoading, error } = useCustomerCardsByIdentifier(identifier);
+    const [isResettingPassword, setIsResettingPassword] = useState(false);
+    const findOrCreateMutation = useFindOrCreateCustomerCard();
+    const { data: loyaltyPrograms, isLoading: isLoadingPrograms } = useLoyaltyCards();
+    const [selectedLoyaltyCardId, setSelectedLoyaltyCardId] = useState<string | undefined>(undefined);
+
+    const handlePasswordReset = async () => {
+        if (!identifier || !identifier.includes('@')) {
+            showError("A redefinição de senha só é possível para clientes registados com um endereço de email válido.");
+            return;
+        }
+
+        setIsResettingPassword(true);
+        try {
+            const { error } = await supabase.auth.resetPasswordForEmail(identifier, {
+                redirectTo: `${window.location.origin}/customer-auth?view=update_password`, 
+            });
+            if (error) throw error;
+            showSuccess(`Email de redefinição de senha enviado para ${identifier}.`);
+        } catch (error) {
+            showError("Erro ao enviar email de redefinição.");
+        } finally {
+            setIsResettingPassword(false);
+        }
+    };
+
+    const handleCreateNewCard = () => {
+        if (!identifier || !selectedLoyaltyCardId) return;
+        findOrCreateMutation.mutate({
+            loyalty_card_id: selectedLoyaltyCardId,
+            customer_identifier: identifier,
+        }, {
+            onSuccess: (newCard) => {
+                showSuccess(`Novo cartão '${newCard.loyalty_cards.name}' criado.`);
+                setSelectedLoyaltyCardId(undefined);
+            }
+        });
+    };
+
+    return (
+        <div className="space-y-6">
+            <Button variant="ghost" onClick={onBack}>
+                <ArrowLeft className="w-4 h-4 mr-2" /> Voltar à Lista de Clientes
+            </Button>
+            
+            {isLoading && <div className="text-center p-10"><Loader2 className="h-8 w-8 animate-spin text-catback-purple mx-auto" /></div>}
+            {error && <div className="text-center p-10 text-red-500">Erro: {error.message}</div>}
+            
+            {!isLoading && (
+                <>
+                    <ClientProfileCard 
+                        identifier={identifier} 
+                        activeCardsCount={customerCards?.length || 0} 
+                        onPasswordReset={handlePasswordReset}
+                        isResetting={isResettingPassword}
+                    />
+                    <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200">
+                        Cartões Ativos
+                    </h2>
+                    {customerCards && customerCards.length > 0 ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {customerCards.map((card) => (
+                                <CustomerCardInteraction key={card.id} card={card} />
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="p-10 border-2 border-dashed border-catback-light-purple rounded-lg">
+                            <CreditCard className="w-10 h-10 text-catback-purple mx-auto mb-3" />
+                            <p className="text-lg font-semibold text-center mb-4">Nenhum cartão ativo encontrado.</p>
+                            <div className="flex flex-col sm:flex-row gap-3">
+                                <Select onValueChange={setSelectedLoyaltyCardId} value={selectedLoyaltyCardId}>
+                                    <SelectTrigger className="flex-grow">
+                                        <SelectValue placeholder={isLoadingPrograms ? "A carregar..." : "Selecione um programa"} />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {loyaltyPrograms?.map(p => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}
+                                    </SelectContent>
+                                </Select>
+                                <Button onClick={handleCreateNewCard} disabled={!selectedLoyaltyCardId || findOrCreateMutation.isPending}>
+                                    <PlusCircle className="w-5 h-5 mr-2" /> Atribuir Cartão
+                                </Button>
+                            </div>
+                        </div>
+                    )}
+                </>
+            )}
+        </div>
+    );
+};
 
 const ClientsPage: React.FC = () => {
-  const [identifier, setIdentifier] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedLoyaltyCardId, setSelectedLoyaltyCardId] = useState<string | undefined>(undefined);
-  const [isResettingPassword, setIsResettingPassword] = useState(false);
-  
-  const { data: customerCards, isLoading: isLoadingCards, isFetching: isFetchingCards, error: cardsError } = useCustomerCardsByIdentifier(searchQuery);
-  const { data: loyaltyPrograms, isLoading: isLoadingPrograms } = useLoyaltyCards();
-  const findOrCreateMutation = useFindOrCreateCustomerCard();
+  const [selectedIdentifier, setSelectedIdentifier] = useState<string | null>(null);
+  const { data: allCustomers, isLoading, error } = useAllCustomers();
 
-  const isFetching = isFetchingCards || isLoadingPrograms || findOrCreateMutation.isPending;
+  const columns = React.useMemo(() => createCustomerColumns(setSelectedIdentifier), []);
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    const trimmedIdentifier = identifier.trim();
-    if (trimmedIdentifier) {
-        setSearchQuery(trimmedIdentifier);
-    }
-  };
-
-  const handleCreateNewCard = () => {
-    if (!searchQuery || !selectedLoyaltyCardId) return;
-
-    findOrCreateMutation.mutate({
-        loyalty_card_id: selectedLoyaltyCardId,
-        customer_identifier: searchQuery,
-    }, {
-        onSuccess: (newCard) => {
-            showSuccess(`Novo cartão '${newCard.loyalty_cards.name}' criado para ${searchQuery}.`);
-            setSelectedLoyaltyCardId(undefined); // Reset selection
-        }
-    });
-  };
-  
-  const handlePasswordReset = async () => {
-    if (!searchQuery || !searchQuery.includes('@')) {
-        showError("A redefinição de senha só é possível para clientes registados com um endereço de email válido.");
-        return;
-    }
-
-    setIsResettingPassword(true);
-    try {
-        // This sends a recovery email to the customer's email address.
-        const { error } = await supabase.auth.resetPasswordForEmail(searchQuery, {
-            // Redirect customer to the update password page within the customer auth flow
-            redirectTo: `${window.location.origin}/customer-auth?view=update_password`, 
-        });
-
-        if (error) throw error;
-
-        showSuccess(`Email de redefinição de senha enviado para ${searchQuery}. O cliente deve verificar a caixa de entrada.`);
-    } catch (error) {
-        console.error("Password reset error:", error);
-        showError("Erro ao enviar email de redefinição. Verifique se o email está registado no sistema.");
-    } finally {
-        setIsResettingPassword(false);
-    }
-  };
-
-  const showCreationSection = searchQuery && !isLoadingCards && (customerCards?.length === 0 || !customerCards);
+  if (selectedIdentifier) {
+    return <ClientDetailView identifier={selectedIdentifier} onBack={() => setSelectedIdentifier(null)} />;
+  }
 
   return (
     <div className="space-y-8">
@@ -79,119 +119,14 @@ const ClientsPage: React.FC = () => {
         Clientes (CRM)
       </h1>
       <p className="text-gray-600 dark:text-gray-400">
-        Pesquise um cliente pelo email ou número de telefone para gerenciar seus cartões de fidelidade.
+        Veja e gerencie todos os seus clientes. Use o filtro para encontrar um cliente específico.
       </p>
 
-      {/* Search Form */}
-      <Card className="p-6 shadow-md max-w-xl">
-        <form onSubmit={handleSearch} className="flex space-x-3">
-          <Input
-            type="text"
-            placeholder="Email ou Telefone do Cliente"
-            value={identifier}
-            onChange={(e) => setIdentifier(e.target.value)}
-            className="flex-grow"
-          />
-          <Button 
-            type="submit" 
-            className="bg-catback-purple hover:bg-catback-dark-purple"
-            disabled={!identifier || isFetching}
-          >
-            {isFetching ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-                <Search className="w-5 h-5" />
-            )}
-          </Button>
-        </form>
-      </Card>
-
-      <Separator />
-
-      {/* Results */}
-      {searchQuery && (
-        <div className="space-y-6">
-          
-          {/* Client Profile Summary */}
-          {!isLoadingCards && (
-            <ClientProfileCard 
-              identifier={searchQuery} 
-              activeCardsCount={customerCards?.length || 0} 
-              onPasswordReset={handlePasswordReset}
-              isResetting={isResettingPassword}
-            />
-          )}
-
-          <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200">
-            Cartões Ativos
-          </h2>
-
-          {isLoadingCards && (
-            <div className="text-center p-10">
-              <Loader2 className="h-8 w-8 animate-spin text-catback-purple mx-auto" /> 
-              <p className="mt-2">A procurar cartões...</p>
-            </div>
-          )}
-
-          {cardsError && (
-            <div className="text-center p-10 text-red-500">
-              Erro ao carregar cartões: {cardsError.message}
-            </div>
-          )}
-
-          {customerCards && customerCards.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {customerCards.map((card) => (
-                <CustomerCardInteraction key={card.id} card={card} />
-              ))}
-            </div>
-          ) : (
-            showCreationSection && (
-              <div className="p-10 border-2 border-dashed border-catback-light-purple rounded-lg dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
-                <CreditCard className="w-10 h-10 text-catback-purple mx-auto mb-3" />
-                <p className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4">
-                  Nenhum cartão ativo encontrado.
-                </p>
-                
-                <h3 className="text-xl font-bold text-catback-dark-purple mb-3">
-                    Atribuir Novo Cartão de Fidelidade
-                </h3>
-                
-                <div className="flex flex-col sm:flex-row gap-3">
-                    <Select onValueChange={setSelectedLoyaltyCardId} value={selectedLoyaltyCardId}>
-                        <SelectTrigger className="flex-grow">
-                            <SelectValue placeholder={isLoadingPrograms ? "A carregar programas..." : "Selecione um programa de fidelidade"} />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {loyaltyPrograms?.map(program => (
-                                <SelectItem key={program.id} value={program.id}>
-                                    {program.name} ({program.type.toUpperCase()})
-                                </SelectItem>
-                            ))}
-                            {(!loyaltyPrograms || loyaltyPrograms.length === 0) && (
-                                <SelectItem value="none" disabled>
-                                    Nenhum programa ativo. Crie um em Fidelização.
-                                </SelectItem>
-                            )}
-                        </SelectContent>
-                    </Select>
-                    <Button 
-                        onClick={handleCreateNewCard}
-                        disabled={!selectedLoyaltyCardId || findOrCreateMutation.isPending}
-                        className="bg-catback-energy-orange hover:bg-catback-energy-orange/90 flex-shrink-0"
-                    >
-                        {findOrCreateMutation.isPending ? (
-                            <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                        ) : (
-                            <PlusCircle className="w-5 h-5 mr-2" />
-                        )}
-                        Atribuir Cartão
-                    </Button>
-                </div>
-              </div>
-            )
-          )}
-        </div>
+      {isLoading && <div className="text-center p-10"><Loader2 className="h-8 w-8 animate-spin text-catback-purple mx-auto" /></div>}
+      {error && <div className="text-center p-10 text-red-500">Erro ao carregar clientes: {error.message}</div>}
+      
+      {allCustomers && (
+        <CustomersDataTable columns={columns} data={allCustomers} />
       )}
     </div>
   );
