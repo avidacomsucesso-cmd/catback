@@ -5,7 +5,7 @@ import { useCustomerCardsByIdentifier, useFindOrCreateCustomerCard } from "@/hoo
 import { CustomersDataTable } from "./CustomersDataTable";
 import { createCustomerColumns } from "./CustomersColumns";
 import CustomerCardInteraction from "./CustomerCardInteraction";
-import CustomerDetailsForm from "./CustomerDetailsForm"; // Import the new form
+import CustomerDetailsForm from "./CustomerDetailsForm";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { showError, showSuccess } from "@/utils/toast";
@@ -13,6 +13,7 @@ import { useLoyaltyCards } from "@/hooks/use-loyalty-cards";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { differenceInDays } from "date-fns";
 import CustomerNotes from "./CustomerNotes";
+import CustomerTransactionHistory from "./CustomerTransactionHistory";
 
 const ClientDetailView: React.FC<{ identifier: string; onBack: () => void }> = ({ identifier, onBack }) => {
     const { data: customerCards, isLoading, error } = useCustomerCardsByIdentifier(identifier);
@@ -47,6 +48,7 @@ const ClientDetailView: React.FC<{ identifier: string; onBack: () => void }> = (
                     <div className="lg:col-span-1 space-y-6">
                         <CustomerDetailsForm identifier={identifier} />
                         <CustomerNotes identifier={identifier} />
+                        <CustomerTransactionHistory identifier={identifier} />
                     </div>
                     <div className="lg:col-span-2 space-y-6">
                         <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200">
