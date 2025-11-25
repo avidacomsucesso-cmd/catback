@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { Loader2, ArrowLeft, PlusCircle, CreditCard, UserPlus } from "lucide-react";
+import { Loader2, ArrowLeft, PlusCircle, CreditCard, UserPlus, Users, History, Settings, MessageSquare } from "lucide-react";
 import { useAllCustomers, useCreateCustomer } from "@/hooks/use-customers";
 import { useCustomerCardsByIdentifier, useFindOrCreateCustomerCard } from "@/hooks/use-customer-cards";
 import { CustomersDataTable } from "./CustomersDataTable";
@@ -16,7 +16,9 @@ import CustomerNotes from "./CustomerNotes";
 import CustomerTransactionHistory from "./CustomerTransactionHistory";
 import CustomerAppointmentsHistory from "./CustomerAppointmentsHistory";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import CreateCustomerForm from "./CreateCustomerForm"; // Import the new form
+import CreateCustomerForm from "./CreateCustomerForm";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card } from "@/components/ui/card";
 
 const ClientDetailView: React.FC<{ identifier: string; onBack: () => void }> = ({ identifier, onBack }) => {
     const { data: customerCards, isLoading, error } = useCustomerCardsByIdentifier(identifier);
@@ -43,18 +45,31 @@ const ClientDetailView: React.FC<{ identifier: string; onBack: () => void }> = (
                 <ArrowLeft className="w-4 h-4 mr-2" /> Voltar à Lista de Clientes
             </Button>
             
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                Detalhes do Cliente: {identifier}
+            </h1>
+
             {isLoading && <div className="text-center p-10"><Loader2 className="h-8 w-8 animate-spin text-catback-purple mx-auto" /></div>}
             {error && <div className="text-center p-10 text-red-500">Erro: {error.message}</div>}
             
             {!isLoading && (
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div className="lg:col-span-1 space-y-6">
-                        <CustomerDetailsForm identifier={identifier} />
-                        <CustomerNotes identifier={identifier} />
-                        <CustomerAppointmentsHistory identifier={identifier} />
-                        <CustomerTransactionHistory identifier={identifier} />
-                    </div>
-                    <div className="lg:col-span-2 space-y-6">
+                <Tabs defaultValue="details" className="w-full">
+                    <TabsList className="grid w-full grid-cols-3 h-auto p-1 bg-gray-100 dark:bg-gray-800">
+                        <TabsTrigger value="details" className="flex items-center justify-center space-x-2 p-3"><Settings className="w-4 h-4" /> Detalhes</TabsTrigger>
+                        <TabsTrigger value="loyalty" className="flex items-center justify-center space-x-2 p-3"><CreditCard className="w-4 h-4" /> Fidelização</TabsTrigger>
+                        <TabsTrigger value="history" className="flex items-center justify-center space-x-2 p-3"><History className="w-4 h-4" /> Histórico</TabsTrigger>
+                    </TabsList>
+
+                    {/* TAB 1: DETAILS & NOTES */}
+                    <TabsContent value="details" className="mt-6">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <CustomerDetailsForm identifier={identifier} />
+                            <CustomerNotes identifier={identifier} />
+                        </div>
+                    </TabsContent>
+
+                    {/* TAB 2: LOYALTY CARDS */}
+                    <TabsContent value="loyalty" className="mt-6 space-y-6">
                         <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200">
                             Cartões Ativos
                         </h2>
@@ -65,7 +80,7 @@ const ClientDetailView: React.FC<{ identifier: string; onBack: () => void }> = (
                                 ))}
                             </div>
                         ) : (
-                            <div className="p-10 border-2 border-dashed border-catback-light-purple rounded-lg">
+                            <Card className="p-6 border-2 border-dashed border-catback-light-purple">
                                 <CreditCard className="w-10 h-10 text-catback-purple mx-auto mb-3" />
                                 <p className="text-lg font-semibold text-center mb-4">Nenhum cartão ativo encontrado.</p>
                                 <div className="flex flex-col sm:flex-row gap-3">
@@ -81,10 +96,18 @@ const ClientDetailView: React.FC<{ identifier: string; onBack: () => void }> = (
                                         <PlusCircle className="w-5 h-5 mr-2" /> Atribuir Cartão
                                     </Button>
                                 </div>
-                            </div>
+                            </Card>
                         )}
-                    </div>
-                </div>
+                    </TabsContent>
+
+                    {/* TAB 3: HISTORY */}
+                    <TabsContent value="history" className="mt-6 space-y-6">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <CustomerTransactionHistory identifier={identifier} />
+                            <CustomerAppointmentsHistory identifier={identifier} />
+                        </div>
+                    </TabsContent>
+                </Tabs>
             )}
         </div>
     );
