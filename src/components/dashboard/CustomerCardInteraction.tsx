@@ -40,6 +40,8 @@ const CustomerCardInteraction: React.FC<CustomerCardInteractionProps> = ({ card 
         cardId: card.id, 
         progressChange: 1,
         description: "Carimbo adicionado",
+        customer_identifier: card.customer_identifier,
+        loyalty_card_id: card.loyalty_card_id,
       });
     }
   };
@@ -62,6 +64,8 @@ const CustomerCardInteraction: React.FC<CustomerCardInteractionProps> = ({ card 
         cardId: card.id, 
         progressChange,
         description: `Compra de €${purchaseValue.toFixed(2)}`,
+        customer_identifier: card.customer_identifier,
+        loyalty_card_id: card.loyalty_card_id,
       }, { onSuccess: () => setPurchaseValue(0) });
     }
   };
@@ -80,6 +84,8 @@ const CustomerCardInteraction: React.FC<CustomerCardInteractionProps> = ({ card 
       cardId: card.id, 
       progressChange: -redeemValue,
       description: `Uso de saldo de ${redeemValue.toFixed(2)} ${currencySymbol}`,
+      customer_identifier: card.customer_identifier,
+      loyalty_card_id: card.loyalty_card_id,
     }, { onSuccess: () => setRedeemValue(0) });
   };
 
@@ -87,7 +93,11 @@ const CustomerCardInteraction: React.FC<CustomerCardInteractionProps> = ({ card 
     if (isStamps && !isComplete) return;
     
     if (window.confirm(`Confirmar resgate da recompensa: ${loyaltyCard.reward_description}?`)) {
-      redeemStampCardMutation.mutate({ cardId: card.id });
+      redeemStampCardMutation.mutate({ 
+        cardId: card.id,
+        customer_identifier: card.customer_identifier,
+        loyalty_card_id: card.loyalty_card_id,
+      });
     }
   };
 

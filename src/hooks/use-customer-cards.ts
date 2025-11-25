@@ -152,6 +152,8 @@ interface UpdateProgressPayload {
   cardId: string;
   progressChange: number;
   description: string;
+  customer_identifier: string;
+  loyalty_card_id: string;
 }
 
 const updateCustomerCardProgress = async ({ cardId, progressChange, description }: UpdateProgressPayload): Promise<void> => {
@@ -168,13 +170,12 @@ export const useUpdateCustomerCardProgress = () => {
   return useMutation<void, Error, UpdateProgressPayload>({
     mutationFn: updateCustomerCardProgress,
     onSuccess: (_, variables) => {
-      const cardData = queryClient.getQueryData<CustomerCard>(['customerCardDetail', variables.cardId]);
-      if (cardData) {
-        queryClient.invalidateQueries({ queryKey: ['customerCards', cardData.customer_identifier] });
-        queryClient.invalidateQueries({ queryKey: ['loyaltyProgramCustomers', cardData.loyalty_card_id] });
-        queryClient.invalidateQueries({ queryKey: ['customerCardDetail', cardData.id] });
-        queryClient.invalidateQueries({ queryKey: ['loyaltyTransactions', cardData.id] });
-      }
+      queryClient.invalidateQueries({ queryKey: ['customerCards', variables.customer_identifier] });
+      queryClient.invalidateQueries({ queryKey: ['loyaltyProgramCustomers', variables.loyalty_card_id] });
+      queryClient.invalidateQueries({ queryKey: ['customerCardDetail', variables.cardId] });
+      queryClient.invalidateQueries({ queryKey: ['loyaltyTransactions', variables.cardId] });
+      queryClient.invalidateQueries({ queryKey: ['dashboardStats'] });
+      queryClient.invalidateQueries({ queryKey: ['recentActivity'] });
       showSuccess("Progresso atualizado!");
     },
     onError: (error) => {
@@ -186,6 +187,8 @@ export const useUpdateCustomerCardProgress = () => {
 // --- Redeeming Stamp Card ---
 interface RedeemStampCardPayload {
     cardId: string;
+    customer_identifier: string;
+    loyalty_card_id: string;
 }
 
 const redeemStampCard = async ({ cardId }: RedeemStampCardPayload): Promise<void> => {
@@ -200,13 +203,12 @@ export const useRedeemStampCard = () => {
     return useMutation<void, Error, RedeemStampCardPayload>({
         mutationFn: redeemStampCard,
         onSuccess: (_, variables) => {
-            const cardData = queryClient.getQueryData<CustomerCard>(['customerCardDetail', variables.cardId]);
-            if (cardData) {
-                queryClient.invalidateQueries({ queryKey: ['customerCards', cardData.customer_identifier] });
-                queryClient.invalidateQueries({ queryKey: ['loyaltyProgramCustomers', cardData.loyalty_card_id] });
-                queryClient.invalidateQueries({ queryKey: ['customerCardDetail', cardData.id] });
-                queryClient.invalidateQueries({ queryKey: ['loyaltyTransactions', cardData.id] });
-            }
+            queryClient.invalidateQueries({ queryKey: ['customerCards', variables.customer_identifier] });
+            queryClient.invalidateQueries({ queryKey: ['loyaltyProgramCustomers', variables.loyalty_card_id] });
+            queryClient.invalidateQueries({ queryKey: ['customerCardDetail', variables.cardId] });
+            queryClient.invalidateQueries({ queryKey: ['loyaltyTransactions', variables.cardId] });
+            queryClient.invalidateQueries({ queryKey: ['dashboardStats'] });
+            queryClient.invalidateQueries({ queryKey: ['recentActivity'] });
             showSuccess("Recompensa resgatada e novo cartão emitido!");
         },
         onError: (error) => {
