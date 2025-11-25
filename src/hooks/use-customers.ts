@@ -6,6 +6,8 @@ export interface CustomerSummary {
   total_cards: number;
   active_cards: number;
   last_activity_at: string;
+  total_spent: number;
+  first_seen_at: string;
 }
 
 const fetchAllCustomers = async (): Promise<CustomerSummary[]> => {
