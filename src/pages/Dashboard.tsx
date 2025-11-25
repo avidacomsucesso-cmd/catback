@@ -15,11 +15,13 @@ import DashboardCharts from "@/components/dashboard/DashboardCharts";
 import MarketingPage from "@/components/dashboard/MarketingPage";
 import TodaysAppointments from "@/components/dashboard/TodaysAppointments";
 import RecentActivity from "@/components/dashboard/RecentActivity";
+import QuickActions from "@/components/dashboard/QuickActions";
 
 // Placeholder Pages for Dashboard Sections
 const OverviewPage = () => (
   <div className="space-y-8">
     <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Visão Geral</h2>
+    <QuickActions />
     <DashboardStats />
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
       <TodaysAppointments />
