@@ -5,41 +5,20 @@ import { useCustomerCardsByIdentifier, useFindOrCreateCustomerCard } from "@/hoo
 import { CustomersDataTable } from "./CustomersDataTable";
 import { createCustomerColumns } from "./CustomersColumns";
 import CustomerCardInteraction from "./CustomerCardInteraction";
-import ClientProfileCard from "./ClientProfileCard";
+import CustomerDetailsForm from "./CustomerDetailsForm"; // Import the new form
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { showError, showSuccess } from "@/utils/toast";
 import { useLoyaltyCards } from "@/hooks/use-loyalty-cards";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { differenceInDays } from "date-fns";
-import CustomerNotes from "./CustomerNotes"; // Import the new notes component
+import CustomerNotes from "./CustomerNotes";
 
 const ClientDetailView: React.FC<{ identifier: string; onBack: () => void }> = ({ identifier, onBack }) => {
     const { data: customerCards, isLoading, error } = useCustomerCardsByIdentifier(identifier);
-    const [isResettingPassword, setIsResettingPassword] = useState(false);
     const findOrCreateMutation = useFindOrCreateCustomerCard();
     const { data: loyaltyPrograms, isLoading: isLoadingPrograms } = useLoyaltyCards();
     const [selectedLoyaltyCardId, setSelectedLoyaltyCardId] = useState<string | undefined>(undefined);
-
-    const handlePasswordReset = async () => {
-        if (!identifier || !identifier.includes('@')) {
-            showError("A redefinição de senha só é possível para clientes registados com um endereço de email válido.");
-            return;
-        }
-
-        setIsResettingPassword(true);
-        try {
-            const { error } = await supabase.auth.resetPasswordForEmail(identifier, {
-                redirectTo: `${window.location.origin}/customer-auth?view=update_password`, 
-            });
-            if (error) throw error;
-            showSuccess(`Email de redefinição de senha enviado para ${identifier}.`);
-        } catch (error) {
-            showError("Erro ao enviar email de redefinição.");
-        } finally {
-            setIsResettingPassword(false);
-        }
-    };
 
     const handleCreateNewCard = () => {
         if (!identifier || !selectedLoyaltyCardId) return;
@@ -66,12 +45,7 @@ const ClientDetailView: React.FC<{ identifier: string; onBack: () => void }> = (
             {!isLoading && (
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div className="lg:col-span-1 space-y-6">
-                        <ClientProfileCard 
-                            identifier={identifier} 
-                            activeCardsCount={customerCards?.length || 0} 
-                            onPasswordReset={handlePasswordReset}
-                            isResetting={isResettingPassword}
-                        />
+                        <CustomerDetailsForm identifier={identifier} />
                         <CustomerNotes identifier={identifier} />
                     </div>
                     <div className="lg:col-span-2 space-y-6">
