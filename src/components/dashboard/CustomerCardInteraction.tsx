@@ -106,8 +106,9 @@ const CustomerCardInteraction: React.FC<CustomerCardInteractionProps> = ({ card 
             </Badge>
           </div>
         </CardHeader>
-        <CardContent className="flex-grow space-y-4 pt-4 flex flex-col">
-          <div className="flex-grow space-y-4">
+        <CardContent className="flex-grow flex flex-col justify-between space-y-4 pt-4">
+          {/* Main content area */}
+          <div className="space-y-4">
             <p className="text-sm text-gray-600 dark:text-gray-400">
               Recompensa: <span className="font-semibold">{loyaltyCard.reward_description}</span>
             </p>
@@ -175,6 +176,7 @@ const CustomerCardInteraction: React.FC<CustomerCardInteractionProps> = ({ card 
             </div>
           </div>
           
+          {/* Footer area with history button */}
           <div className="pt-4 border-t border-gray-100 dark:border-gray-700">
             <Button 
                 variant="outline" 
