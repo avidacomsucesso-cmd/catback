@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
-import { Loader2, ArrowLeft, PlusCircle, CreditCard } from "lucide-react";
-import { useAllCustomers } from "@/hooks/use-customers";
+import { Loader2, ArrowLeft, PlusCircle, CreditCard, UserPlus } from "lucide-react";
+import { useAllCustomers, useCreateCustomer } from "@/hooks/use-customers";
 import { useCustomerCardsByIdentifier, useFindOrCreateCustomerCard } from "@/hooks/use-customer-cards";
 import { CustomersDataTable } from "./CustomersDataTable";
 import { createCustomerColumns } from "./CustomersColumns";
@@ -14,7 +14,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { differenceInDays } from "date-fns";
 import CustomerNotes from "./CustomerNotes";
 import CustomerTransactionHistory from "./CustomerTransactionHistory";
-import CustomerAppointmentsHistory from "./CustomerAppointmentsHistory"; // Import the new component
+import CustomerAppointmentsHistory from "./CustomerAppointmentsHistory";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import CreateCustomerForm from "./CreateCustomerForm"; // Import the new form
 
 const ClientDetailView: React.FC<{ identifier: string; onBack: () => void }> = ({ identifier, onBack }) => {
     const { data: customerCards, isLoading, error } = useCustomerCardsByIdentifier(identifier);
@@ -49,7 +51,8 @@ const ClientDetailView: React.FC<{ identifier: string; onBack: () => void }> = (
                     <div className="lg:col-span-1 space-y-6">
                         <CustomerDetailsForm identifier={identifier} />
                         <CustomerNotes identifier={identifier} />
-                        <CustomerAppointmentsHistory identifier={identifier} /> {/* Added Appointments History */}
+                        <CustomerAppointmentsHistory identifier={identifier} />
+                        <CustomerTransactionHistory identifier={identifier} />
                     </div>
                     <div className="lg:col-span-2 space-y-6">
                         <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200">
@@ -80,10 +83,6 @@ const ClientDetailView: React.FC<{ identifier: string; onBack: () => void }> = (
                                 </div>
                             </div>
                         )}
-                        
-                        {/* Display Transaction History in the main column if space allows, or keep it in the sidebar */}
-                        {/* Keeping Transaction History in the sidebar for now, as per previous step, but adding it here for better visibility if needed. */}
-                        {/* <CustomerTransactionHistory identifier={identifier} /> */}
                     </div>
                 </div>
             )}
@@ -93,6 +92,7 @@ const ClientDetailView: React.FC<{ identifier: string; onBack: () => void }> = (
 
 const ClientsPage: React.FC = () => {
   const [selectedIdentifier, setSelectedIdentifier] = useState<string | null>(null);
+  const [isCreateCustomerOpen, setIsCreateCustomerOpen] = useState(false);
   const { data: allCustomers, isLoading, error } = useAllCustomers();
 
   const customersWithTags = useMemo(() => {
@@ -124,9 +124,26 @@ const ClientsPage: React.FC = () => {
 
   return (
     <div className="space-y-8">
-      <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-        Clientes (CRM)
-      </h1>
+      <div className="flex justify-between items-center">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+          Clientes (CRM)
+        </h1>
+        <Dialog open={isCreateCustomerOpen} onOpenChange={setIsCreateCustomerOpen}>
+            <DialogTrigger asChild>
+                <Button className="bg-catback-dark-purple hover:bg-catback-purple">
+                    <UserPlus className="w-5 h-5 mr-2" />
+                    Novo Cliente
+                </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                    <DialogTitle className="text-catback-dark-purple">Adicionar Novo Cliente</DialogTitle>
+                </DialogHeader>
+                <CreateCustomerForm onFinished={() => setIsCreateCustomerOpen(false)} />
+            </DialogContent>
+        </Dialog>
+      </div>
+      
       <p className="text-gray-600 dark:text-gray-400">
         Veja e gerencie todos os seus clientes. Use o filtro para encontrar um cliente específico.
       </p>
