@@ -40,7 +40,7 @@ const CustomerNotes: React.FC<CustomerNotesProps> = ({ identifier }) => {
             placeholder="Adicionar uma nota privada..."
             value={newNote}
             onChange={(e) => setNewNote(e.target.value)}
-            rows={2} {/* Reduced rows for compactness */}
+            rows={2}
           />
           <Button 
             onClick={handleAddNote} 
@@ -51,7 +51,7 @@ const CustomerNotes: React.FC<CustomerNotesProps> = ({ identifier }) => {
             Adicionar Nota
           </Button>
         </div>
-        <ScrollArea className="flex-grow h-64 pr-4"> {/* Increased fixed height for scroll area */}
+        <ScrollArea className="flex-grow h-64 pr-4">
           {isLoading ? (
             <div className="flex justify-center items-center h-full">
               <Loader2 className="h-6 w-6 animate-spin text-catback-purple" />
