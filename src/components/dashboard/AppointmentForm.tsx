@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -11,9 +11,9 @@ import { CalendarIcon, Loader2 } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { format } from "date-fns";
+import { format, setHours, setMinutes } from "date-fns";
 import { useServices } from "@/hooks/use-services";
-import { useCreateAppointment } from "@/hooks/use-appointments";
+import { useCreateAppointment, useUpdateAppointment, Appointment } from "@/hooks/use-appointments";
 
 const formSchema = z.object({
   service_id: z.string({ required_error: "Selecione um serviço." }),
@@ -21,6 +21,7 @@ const formSchema = z.object({
   start_time: z.date({ required_error: "A data é obrigatória." }),
   time: z.string({ required_error: "A hora é obrigatória." }),
   notes: z.string().optional(),
+  status: z.string().optional(), // Added status for editing
 });
 
 type AppointmentFormValues = z.infer<typeof formSchema>;
@@ -31,27 +32,68 @@ const timeSlots = Array.from({ length: 24 * 2 }, (_, i) => {
     return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
 });
 
-const AppointmentForm: React.FC<{ onFinished: () => void }> = ({ onFinished }) => {
+interface AppointmentFormProps {
+    appointment?: Appointment;
+    onFinished: () => void;
+}
+
+const AppointmentForm: React.FC<AppointmentFormProps> = ({ appointment, onFinished }) => {
   const { data: services, isLoading: isLoadingServices } = useServices();
   const createMutation = useCreateAppointment();
-  const isSubmitting = createMutation.isPending;
+  const updateMutation = useUpdateAppointment();
+  
+  const isEditing = !!appointment;
+  const isSubmitting = createMutation.isPending || updateMutation.isPending;
 
   const form = useForm<AppointmentFormValues>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+        service_id: appointment?.service_id || "",
+        customer_identifier: appointment?.customer_identifier || "",
+        start_time: appointment ? new Date(appointment.start_time) : undefined,
+        time: appointment ? format(new Date(appointment.start_time), "HH:mm") : undefined,
+        notes: appointment?.notes || "",
+        status: appointment?.status || "confirmed",
+    }
   });
+
+  // Populate form when appointment data loads (only relevant if we were fetching it here, but good practice)
+  useEffect(() => {
+    if (appointment) {
+        const startTime = new Date(appointment.start_time);
+        form.reset({
+            service_id: appointment.service_id,
+            customer_identifier: appointment.customer_identifier,
+            start_time: startTime,
+            time: format(startTime, "HH:mm"),
+            notes: appointment.notes || "",
+            status: appointment.status || "confirmed",
+        });
+    }
+  }, [appointment, form]);
+
 
   async function onSubmit(values: AppointmentFormValues) {
     const [hours, minutes] = values.time.split(':').map(Number);
-    const finalStartTime = new Date(values.start_time);
-    finalStartTime.setHours(hours, minutes);
+    
+    // Combine date and time into a single Date object
+    let finalStartTime = new Date(values.start_time);
+    finalStartTime = setHours(finalStartTime, hours);
+    finalStartTime = setMinutes(finalStartTime, minutes);
 
-    createMutation.mutate({
+    const payload = {
       service_id: values.service_id,
       customer_identifier: values.customer_identifier,
       start_time: finalStartTime.toISOString(),
-      status: 'confirmed',
+      status: values.status || 'confirmed',
       notes: values.notes,
-    }, { onSuccess: onFinished });
+    };
+
+    if (isEditing) {
+        updateMutation.mutate({ id: appointment.id, ...payload }, { onSuccess: onFinished });
+    } else {
+        createMutation.mutate(payload, { onSuccess: onFinished });
+    }
   }
 
   return (
@@ -63,7 +105,7 @@ const AppointmentForm: React.FC<{ onFinished: () => void }> = ({ onFinished }) =
           render={({ field }) => (
             <FormItem>
               <FormLabel>Serviço</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger disabled={isLoadingServices}>
                     <SelectValue placeholder={isLoadingServices ? "A carregar..." : "Selecione um serviço"} />
@@ -125,7 +167,7 @@ const AppointmentForm: React.FC<{ onFinished: () => void }> = ({ onFinished }) =
                         mode="single"
                         selected={field.value}
                         onSelect={field.onChange}
-                        disabled={(date) => date < new Date()}
+                        disabled={(date) => date < new Date() && !isEditing} // Allow editing past dates if needed
                         initialFocus
                     />
                     </PopoverContent>
@@ -140,7 +182,7 @@ const AppointmentForm: React.FC<{ onFinished: () => void }> = ({ onFinished }) =
                 render={({ field }) => (
                     <FormItem>
                         <FormLabel>Hora</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <Select onValueChange={field.onChange} value={field.value}>
                             <FormControl>
                                 <SelectTrigger>
                                     <SelectValue placeholder="Selecione a hora" />
@@ -157,6 +199,33 @@ const AppointmentForm: React.FC<{ onFinished: () => void }> = ({ onFinished }) =
                 )}
             />
         </div>
+        
+        {isEditing && (
+            <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Status</FormLabel>
+                        <Select onValueChange={field.onChange} value={field.value}>
+                            <FormControl>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Selecione o status" />
+                                </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                                <SelectItem value="confirmed">Confirmado</SelectItem>
+                                <SelectItem value="pending">Pendente</SelectItem>
+                                <SelectItem value="cancelled">Cancelado</SelectItem>
+                                <SelectItem value="completed">Concluído</SelectItem>
+                            </SelectContent>
+                        </Select>
+                        <FormMessage />
+                    </FormItem>
+                )}
+            />
+        )}
+
         <FormField
           control={form.control}
           name="notes"
@@ -171,7 +240,7 @@ const AppointmentForm: React.FC<{ onFinished: () => void }> = ({ onFinished }) =
           )}
         />
         <Button type="submit" className="w-full bg-catback-purple hover:bg-catback-dark-purple" disabled={isSubmitting}>
-          {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Criar Agendamento"}
+          {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : (isEditing ? "Salvar Alterações" : "Criar Agendamento")}
         </Button>
       </form>
     </Form>

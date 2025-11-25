@@ -1,17 +1,94 @@
 import React, { useState, useMemo } from "react";
 import { Calendar } from "@/components/ui/calendar";
-import { useAppointments, useDeleteAppointment } from "@/hooks/use-appointments";
-import { Loader2, Trash, Clock } from "lucide-react";
+import { useAppointments, useDeleteAppointment, Appointment } from "@/hooks/use-appointments";
+import { Loader2, Trash, Clock, Pencil } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { format, isSameDay } from "date-fns";
 import { pt } from "date-fns/locale";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import AppointmentForm from "./AppointmentForm";
+
+// Helper component for displaying and managing a single appointment
+const AppointmentItem: React.FC<{ appointment: Appointment }> = ({ appointment }) => {
+    const deleteMutation = useDeleteAppointment();
+    const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+
+    const handleDelete = () => {
+        if (window.confirm(`Tem certeza que deseja cancelar o agendamento para '${appointment.services.name}' de ${appointment.customer_identifier}?`)) {
+            deleteMutation.mutate(appointment.id);
+        }
+    };
+
+    const getStatusBadge = (status: string) => {
+        switch (status) {
+            case 'confirmed':
+                return <Badge className="bg-catback-success-green hover:bg-catback-success-green/90">Confirmado</Badge>;
+            case 'pending':
+                return <Badge variant="secondary">Pendente</Badge>;
+            case 'cancelled':
+                return <Badge variant="destructive">Cancelado</Badge>;
+            case 'completed':
+                return <Badge className="bg-catback-dark-purple hover:bg-catback-dark-purple/90">Concluído</Badge>;
+            default:
+                return <Badge variant="secondary">{status}</Badge>;
+        }
+    };
+
+    return (
+        <>
+            <div className="p-3 rounded-lg border bg-gray-50 dark:bg-gray-800">
+                <div className="flex justify-between items-start">
+                    <div>
+                        <p className="font-semibold text-catback-dark-purple dark:text-white">{appointment.services.name}</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">{appointment.customer_identifier}</p>
+                    </div>
+                    <div className="flex flex-col items-end space-y-1">
+                        {getStatusBadge(appointment.status)}
+                        <Badge variant="secondary">{format(new Date(appointment.start_time), "HH:mm")}</Badge>
+                    </div>
+                </div>
+                <div className="flex justify-end mt-2 space-x-2">
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        className="text-catback-purple hover:bg-catback-light-purple/20 h-8 w-8"
+                        onClick={() => setIsEditDialogOpen(true)}
+                    >
+                        <Pencil className="w-4 h-4" />
+                    </Button>
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        className="text-red-500 hover:bg-red-500/10 h-8 w-8"
+                        onClick={handleDelete}
+                        disabled={deleteMutation.isPending}
+                    >
+                        <Trash className="w-4 h-4" />
+                    </Button>
+                </div>
+            </div>
+
+            <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Editar Agendamento</DialogTitle>
+                    </DialogHeader>
+                    <AppointmentForm 
+                        appointment={appointment} 
+                        onFinished={() => setIsEditDialogOpen(false)} 
+                    />
+                </DialogContent>
+            </Dialog>
+        </>
+    );
+};
+
 
 const AppointmentsCalendar: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const { data: appointments, isLoading, error } = useAppointments();
-  const deleteMutation = useDeleteAppointment();
 
   const eventDays = useMemo(() => {
     return appointments?.map(a => new Date(a.start_time)) || [];
@@ -19,7 +96,9 @@ const AppointmentsCalendar: React.FC = () => {
 
   const appointmentsForSelectedDay = useMemo(() => {
     if (!selectedDate || !appointments) return [];
-    return appointments.filter(a => isSameDay(new Date(a.start_time), selectedDate));
+    return appointments
+        .filter(a => isSameDay(new Date(a.start_time), selectedDate))
+        .sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime());
   }, [selectedDate, appointments]);
 
   if (isLoading) {
@@ -64,29 +143,7 @@ const AppointmentsCalendar: React.FC = () => {
           <CardContent className="space-y-4">
             {appointmentsForSelectedDay.length > 0 ? (
               appointmentsForSelectedDay.map(app => (
-                <div key={app.id} className="p-3 rounded-lg border bg-gray-50 dark:bg-gray-800">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <p className="font-semibold text-catback-dark-purple dark:text-white">{app.services.name}</p>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">{app.customer_identifier}</p>
-                    </div>
-                    <Badge variant="secondary">{format(new Date(app.start_time), "HH:mm")}</Badge>
-                  </div>
-                  <div className="flex justify-end mt-2">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="text-red-500 hover:bg-red-500/10 h-8 w-8"
-                      onClick={() => {
-                        if (window.confirm("Tem certeza que deseja cancelar este agendamento?")) {
-                          deleteMutation.mutate(app.id);
-                        }
-                      }}
-                    >
-                      <Trash className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </div>
+                <AppointmentItem key={app.id} appointment={app} />
               ))
             ) : (
               <div className="text-center py-8">
