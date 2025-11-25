@@ -70,7 +70,7 @@ const AppointmentForm: React.FC<{ onFinished: () => void }> = ({ onFinished }) =
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {services?.map(service => (
+                  {services?.filter(s => s.is_active).map(service => (
                     <SelectItem key={service.id} value={service.id}>
                       {service.name} ({service.duration_minutes} min)
                     </SelectItem>
