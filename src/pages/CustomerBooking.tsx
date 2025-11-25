@@ -1,23 +1,38 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import Layout from "@/components/Layout";
 import { useServices, Service } from "@/hooks/use-services";
 import { useCreateAppointment } from "@/hooks/use-appointments";
 import { useAuth } from "@/hooks/use-auth";
+import { useOccupiedSlots } from "@/hooks/use-occupied-slots";
 import { Loader2, Calendar as CalendarIcon, Clock, ArrowLeft, CheckCircle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { format } from "date-fns";
+import { format, parse, addMinutes, isWithinInterval, startOfDay, endOfDay } from "date-fns";
 import { pt } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
-import { showSuccess } from "@/utils/toast";
+import { showSuccess, showError } from "@/utils/toast";
 
-const timeSlots = Array.from({ length: 24 * 2 }, (_, i) => {
-    const hours = Math.floor(i / 2);
-    const minutes = (i % 2) * 30;
-    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
-});
+// Horários de abertura/fecho (Exemplo: 9:00 às 18:00)
+const OPEN_HOUR = 9;
+const CLOSE_HOUR = 18;
+const SLOT_INTERVAL_MINUTES = 30;
+
+const generateTimeSlots = () => {
+    const slots: string[] = [];
+    const start = setHours(startOfDay(new Date()), OPEN_HOUR);
+    const end = setHours(startOfDay(new Date()), CLOSE_HOUR);
+    let current = start;
+
+    while (current < end) {
+        slots.push(format(current, 'HH:mm'));
+        current = addMinutes(current, SLOT_INTERVAL_MINUTES);
+    }
+    return slots;
+};
+
+const allTimeSlots = generateTimeSlots();
 
 const CustomerBooking: React.FC = () => {
   const { data: services, isLoading: isLoadingServices } = useServices();
@@ -30,16 +45,62 @@ const CustomerBooking: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [selectedTime, setSelectedTime] = useState<string | undefined>();
 
+  // Fetch occupied slots for the selected date
+  const { data: occupiedSlots, isLoading: isLoadingSlots } = useOccupiedSlots(selectedDate);
+
+  const serviceDuration = selectedService?.duration_minutes || 0;
+
+  const availableTimeSlots = useMemo(() => {
+    if (!selectedDate || !occupiedSlots || serviceDuration === 0) return [];
+
+    return allTimeSlots.filter(timeSlot => {
+        const [hours, minutes] = timeSlot.split(':').map(Number);
+        
+        // 1. Calculate proposed appointment interval
+        const proposedStart = new Date(selectedDate);
+        proposedStart.setHours(hours, minutes, 0, 0);
+        
+        const proposedEnd = addMinutes(proposedStart, serviceDuration);
+
+        // 2. Check if the proposed slot is outside business hours
+        const businessEnd = setHours(startOfDay(selectedDate), CLOSE_HOUR);
+        if (proposedEnd > businessEnd) {
+            return false;
+        }
+
+        // 3. Check for overlap with occupied slots
+        const isOverlapping = occupiedSlots.some(slot => {
+            const occupiedStart = new Date(slot.start_time);
+            const occupiedEnd = new Date(slot.end_time);
+
+            // Check if proposed interval overlaps with occupied interval
+            // Overlap occurs if:
+            // (Start A < End B) AND (End A > Start B)
+            return (proposedStart < occupiedEnd) && (proposedEnd > occupiedStart);
+        });
+
+        return !isOverlapping;
+    });
+  }, [selectedDate, occupiedSlots, serviceDuration]);
+
+
   const handleSelectService = (service: Service) => {
     setSelectedService(service);
+    setSelectedTime(undefined); // Reset time selection when service changes
     setStep(2);
   };
 
   const handleConfirmBooking = () => {
-    if (!selectedService || !selectedDate || !selectedTime || !user) return;
+    if (!selectedService || !selectedDate || !selectedTime || !user) {
+        showError("Por favor, selecione o serviço, data e hora.");
+        return;
+    }
 
     const customerIdentifier = user.email || user.phone;
-    if (!customerIdentifier) return;
+    if (!customerIdentifier) {
+        showError("Não foi possível identificar o cliente.");
+        return;
+    }
 
     const [hours, minutes] = selectedTime.split(':').map(Number);
     const finalStartTime = new Date(selectedDate);
@@ -53,6 +114,10 @@ const CustomerBooking: React.FC = () => {
     }, {
       onSuccess: () => {
         setStep(3); // Move to success step
+        showSuccess("Agendamento criado com sucesso!");
+      },
+      onError: (error) => {
+        showError(`Falha ao agendar: ${error.message}`);
       }
     });
   };
@@ -120,23 +185,37 @@ const CustomerBooking: React.FC = () => {
                   <Calendar
                     mode="single"
                     selected={selectedDate}
-                    onSelect={setSelectedDate}
-                    disabled={(date) => date < new Date()}
+                    onSelect={(date) => {
+                        setSelectedDate(date);
+                        setSelectedTime(undefined); // Reset time when date changes
+                    }}
+                    disabled={(date) => date < startOfDay(new Date())} // Disable past days
                     locale={pt}
                   />
                 </div>
                 <div className="space-y-4">
-                  <h3 className="font-semibold">2. Escolha a Hora</h3>
-                  <Select onValueChange={setSelectedTime} value={selectedTime}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecione um horário" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {timeSlots.map(time => (
-                        <SelectItem key={time} value={time}>{time}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <h3 className="font-semibold">2. Escolha a Hora ({serviceDuration} min)</h3>
+                  {isLoadingSlots ? (
+                    <div className="text-center py-10"><Loader2 className="h-6 w-6 animate-spin mx-auto" /></div>
+                  ) : availableTimeSlots.length > 0 ? (
+                    <div className="grid grid-cols-3 gap-2 max-h-80 overflow-y-auto p-2 border rounded-md">
+                        {availableTimeSlots.map(time => (
+                            <Button 
+                                key={time} 
+                                variant={selectedTime === time ? "default" : "outline"}
+                                onClick={() => setSelectedTime(time)}
+                                className={selectedTime === time ? "bg-catback-energy-orange hover:bg-catback-energy-orange/90" : "border-gray-300"}
+                            >
+                                {time}
+                            </Button>
+                        ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-10 text-gray-500">
+                        Nenhum horário disponível para este dia.
+                    </div>
+                  )}
+                  
                   <Button 
                     onClick={handleConfirmBooking} 
                     disabled={!selectedDate || !selectedTime || createAppointment.isPending}
