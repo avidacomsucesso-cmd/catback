@@ -2,7 +2,7 @@ import React, { useState, useMemo } from "react";
 import { Loader2, ArrowLeft, PlusCircle, CreditCard, UserPlus, Users, History, Settings, MessageSquare } from "lucide-react";
 import { useAllCustomers, useCreateCustomer } from "@/hooks/use-customers";
 import { useCustomerCardsByIdentifier, useFindOrCreateCustomerCard } from "@/hooks/use-customer-cards";
-import { CustomersDataTable } from "./CustomersDataTable";
+import { DataTable } from "@/components/ui/data-table"; // Import the generic DataTable
 import { createCustomerColumns } from "./CustomersColumns";
 import CustomerCardInteraction from "./CustomerCardInteraction";
 import CustomerDetailsForm from "./CustomerDetailsForm";
@@ -175,7 +175,12 @@ const ClientsPage: React.FC = () => {
       {error && <div className="text-center p-10 text-red-500">Erro ao carregar clientes: {error.message}</div>}
       
       {allCustomers && (
-        <CustomersDataTable columns={columns} data={customersWithTags} />
+        <DataTable 
+            columns={columns} 
+            data={customersWithTags} 
+            filterColumnId="customer_identifier"
+            filterPlaceholder="Filtrar por email ou telefone..."
+        />
       )}
     </div>
   );

@@ -6,11 +6,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useServices } from "@/hooks/use-services";
 import { Loader2 } from "lucide-react";
-import { ServicesDataTable } from "./ServicesDataTable";
+import { DataTable } from "@/components/ui/data-table"; // Import the new generic DataTable
 import { columns as servicesColumns } from "./ServicesColumns";
 import ServiceForm from "./ServiceForm";
 import AppointmentForm from "./AppointmentForm";
-import AppointmentsCalendar from "./AppointmentsCalendar"; // Import the new calendar component
+import AppointmentsCalendar from "./AppointmentsCalendar";
 
 const SchedulingPage: React.FC = () => {
   const [isCreateServiceOpen, setIsCreateServiceOpen] = React.useState(false);
@@ -73,7 +73,12 @@ const SchedulingPage: React.FC = () => {
                     ) : servicesError ? (
                         <div className="text-center p-10 text-red-500">Erro: {servicesError.message}</div>
                     ) : (
-                        <ServicesDataTable columns={servicesColumns} data={services || []} />
+                        <DataTable 
+                            columns={servicesColumns} 
+                            data={services || []} 
+                            filterColumnId="name"
+                            filterPlaceholder="Filtrar por nome..."
+                        />
                     )}
                 </CardContent>
             </Card>
