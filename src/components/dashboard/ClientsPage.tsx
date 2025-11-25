@@ -14,6 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { differenceInDays } from "date-fns";
 import CustomerNotes from "./CustomerNotes";
 import CustomerTransactionHistory from "./CustomerTransactionHistory";
+import CustomerAppointmentsHistory from "./CustomerAppointmentsHistory"; // Import the new component
 
 const ClientDetailView: React.FC<{ identifier: string; onBack: () => void }> = ({ identifier, onBack }) => {
     const { data: customerCards, isLoading, error } = useCustomerCardsByIdentifier(identifier);
@@ -48,7 +49,7 @@ const ClientDetailView: React.FC<{ identifier: string; onBack: () => void }> = (
                     <div className="lg:col-span-1 space-y-6">
                         <CustomerDetailsForm identifier={identifier} />
                         <CustomerNotes identifier={identifier} />
-                        <CustomerTransactionHistory identifier={identifier} />
+                        <CustomerAppointmentsHistory identifier={identifier} /> {/* Added Appointments History */}
                     </div>
                     <div className="lg:col-span-2 space-y-6">
                         <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200">
@@ -79,6 +80,10 @@ const ClientDetailView: React.FC<{ identifier: string; onBack: () => void }> = (
                                 </div>
                             </div>
                         )}
+                        
+                        {/* Display Transaction History in the main column if space allows, or keep it in the sidebar */}
+                        {/* Keeping Transaction History in the sidebar for now, as per previous step, but adding it here for better visibility if needed. */}
+                        {/* <CustomerTransactionHistory identifier={identifier} /> */}
                     </div>
                 </div>
             )}
