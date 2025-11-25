@@ -1,16 +1,46 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Calendar, List } from "lucide-react";
+import { PlusCircle, Calendar, List, Clock } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useServices } from "@/hooks/use-services";
+import { useAppointments } from "@/hooks/use-appointments"; // Import useAppointments
 import { Loader2 } from "lucide-react";
-import { DataTable } from "@/components/ui/data-table"; // Import the new generic DataTable
+import { DataTable } from "@/components/ui/data-table";
 import { columns as servicesColumns } from "./ServicesColumns";
+import { columns as appointmentsColumns } from "./AppointmentsColumns"; // Import appointments columns
 import ServiceForm from "./ServiceForm";
 import AppointmentForm from "./AppointmentForm";
 import AppointmentsCalendar from "./AppointmentsCalendar";
+
+const AppointmentsListTab: React.FC = () => {
+    const { data: appointments, isLoading, error } = useAppointments();
+
+    if (isLoading) {
+        return <div className="text-center p-10"><Loader2 className="h-8 w-8 animate-spin text-catback-purple mx-auto" /></div>;
+    }
+
+    if (error) {
+        return <div className="text-center p-10 text-red-500">Erro ao carregar agendamentos: {error.message}</div>;
+    }
+
+    return (
+        <Card>
+            <CardHeader>
+                <CardTitle>Todos os Agendamentos</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <DataTable 
+                    columns={appointmentsColumns} 
+                    data={appointments || []} 
+                    filterColumnId="customer_identifier"
+                    filterPlaceholder="Filtrar por cliente..."
+                />
+            </CardContent>
+        </Card>
+    );
+};
 
 const SchedulingPage: React.FC = () => {
   const [isCreateServiceOpen, setIsCreateServiceOpen] = React.useState(false);
@@ -24,8 +54,9 @@ const SchedulingPage: React.FC = () => {
                 Agendamento Online
             </h1>
             <div className="flex w-full sm:w-auto space-x-2">
-                <TabsList className="grid grid-cols-2 w-full sm:w-auto">
+                <TabsList className="grid grid-cols-3 w-full sm:w-auto">
                     <TabsTrigger value="calendar"><Calendar className="w-4 h-4 mr-2" />Calendário</TabsTrigger>
+                    <TabsTrigger value="list"><List className="w-4 h-4 mr-2" />Lista</TabsTrigger>
                     <TabsTrigger value="services"><List className="w-4 h-4 mr-2" />Serviços</TabsTrigger>
                 </TabsList>
                 <Dialog open={isCreateAppointmentOpen} onOpenChange={setIsCreateAppointmentOpen}>
@@ -46,6 +77,10 @@ const SchedulingPage: React.FC = () => {
 
         <TabsContent value="calendar" className="space-y-6">
             <AppointmentsCalendar />
+        </TabsContent>
+        
+        <TabsContent value="list" className="space-y-6">
+            <AppointmentsListTab />
         </TabsContent>
 
         <TabsContent value="services" className="space-y-6">
