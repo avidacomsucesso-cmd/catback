@@ -40,14 +40,18 @@ const CustomerNotes: React.FC<CustomerNotesProps> = ({ identifier }) => {
             placeholder="Adicionar uma nota privada..."
             value={newNote}
             onChange={(e) => setNewNote(e.target.value)}
-            rows={3}
+            rows={2} {/* Reduced rows for compactness */}
           />
-          <Button onClick={handleAddNote} disabled={createMutation.isPending} className="w-full">
+          <Button 
+            onClick={handleAddNote} 
+            disabled={createMutation.isPending || !newNote.trim()} 
+            className="w-full bg-catback-dark-purple hover:bg-catback-purple"
+          >
             {createMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <PlusCircle className="h-4 w-4 mr-2" />}
             Adicionar Nota
           </Button>
         </div>
-        <ScrollArea className="flex-grow h-48 pr-4">
+        <ScrollArea className="flex-grow h-64 pr-4"> {/* Increased fixed height for scroll area */}
           {isLoading ? (
             <div className="flex justify-center items-center h-full">
               <Loader2 className="h-6 w-6 animate-spin text-catback-purple" />
@@ -55,9 +59,9 @@ const CustomerNotes: React.FC<CustomerNotesProps> = ({ identifier }) => {
           ) : notes && notes.length > 0 ? (
             <div className="space-y-3">
               {notes.map(note => (
-                <div key={note.id} className="p-3 bg-gray-50 dark:bg-gray-800 rounded-md text-sm">
-                  <p className="text-gray-800 dark:text-gray-200">{note.note}</p>
-                  <div className="flex justify-between items-center mt-1">
+                <div key={note.id} className="p-3 bg-gray-50 dark:bg-gray-800 rounded-md text-sm border border-gray-200 dark:border-gray-700">
+                  <p className="text-gray-800 dark:text-gray-200 whitespace-pre-wrap">{note.note}</p>
+                  <div className="flex justify-between items-center mt-1 pt-1 border-t border-gray-100 dark:border-gray-700/50">
                     <p className="text-xs text-gray-500">
                       {format(new Date(note.created_at), "d MMM yyyy, HH:mm", { locale: pt })}
                     </p>
