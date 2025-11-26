@@ -15,11 +15,13 @@ interface CustomerStatusCardProps {
 const CustomerStatusCard: React.FC<CustomerStatusCardProps> = ({ customer, onViewDetails }) => {
   const { status } = customer;
   const StatusIcon = status.icon;
+  
+  const displayName = customer.full_name || customer.customer_identifier;
 
   return (
     <Card className={cn("shadow-lg hover:shadow-xl transition-shadow border-l-4", status.color)}>
       <CardHeader>
-        <CardTitle className="truncate text-lg">{customer.customer_identifier}</CardTitle>
+        <CardTitle className="truncate text-lg">{displayName}</CardTitle>
         <div className="flex items-center text-sm font-semibold" style={{ color: status.color.replace('border-', 'bg-').replace('bg-l-4', '') }}>
           <StatusIcon className="w-4 h-4 mr-2" />
           {status.label}

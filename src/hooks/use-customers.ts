@@ -4,6 +4,7 @@ import { showError, showSuccess } from "@/utils/toast";
 
 export interface CustomerSummary {
   customer_identifier: string;
+  full_name: string | null; // Added full_name
   total_cards: number;
   active_cards: number;
   last_activity_at: string;
