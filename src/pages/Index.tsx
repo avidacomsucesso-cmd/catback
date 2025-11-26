@@ -11,6 +11,7 @@ import PricingPreview from "@/components/PricingPreview";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import IndustriesPreview from "@/components/IndustriesPreview";
 import FinalCTA from "@/components/FinalCTA";
+import RoleSelectionCTA from "@/components/RoleSelectionCTA"; // Import the new component
 
 // Placeholder for the mascot illustration
 const CatbackIllustration: React.FC = () => (
@@ -39,19 +40,8 @@ const Index = () => {
               Fidelização, Agendamento e CRM tudo em uma única plataforma. Comece grátis e cresça com seu negócio.
             </p>
 
-            {/* CTAs */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <Link to="/signup">
-                <Button size="lg" className="w-full sm:w-auto text-lg px-8 py-6 bg-catback-purple hover:bg-catback-dark-purple transition-all shadow-lg shadow-catback-purple/30">
-                  <Cat className="w-5 h-5 mr-2 fill-white" /> Começar Grátis - 14 Dias
-                </Button>
-              </Link>
-              <Link to="/how-it-works">
-                <Button size="lg" variant="outline" className="w-full sm:w-auto text-lg px-8 py-6 border-catback-purple text-catback-purple hover:bg-catback-light-purple/20">
-                  <Play className="w-5 h-5 mr-2" /> Ver Como Funciona
-                </Button>
-              </Link>
-            </div>
+            {/* NEW CTAs: Role Selection */}
+            <RoleSelectionCTA />
 
             {/* Social Proof */}
             <div className="flex flex-wrap justify-center lg:justify-start gap-x-6 gap-y-2 text-sm text-gray-500 dark:text-gray-400 font-medium pt-4">
