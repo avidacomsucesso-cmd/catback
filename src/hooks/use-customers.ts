@@ -9,6 +9,7 @@ export interface CustomerSummary {
   last_activity_at: string;
   total_spent: number;
   first_seen_at: string;
+  last_redemption_at: string | null;
 }
 
 export interface CustomerDetails {

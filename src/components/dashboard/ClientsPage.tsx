@@ -1,17 +1,14 @@
 import React, { useState, useMemo } from "react";
-import { Loader2, ArrowLeft, PlusCircle, CreditCard, UserPlus, Users, History, Settings, MessageSquare } from "lucide-react";
-import { useAllCustomers, useCreateCustomer } from "@/hooks/use-customers";
+import { Loader2, ArrowLeft, PlusCircle, CreditCard, UserPlus, Users, History, Settings, MessageSquare, Star, AlertTriangle, Gift, Sparkles } from "lucide-react";
+import { useAllCustomers } from "@/hooks/use-customers";
 import { useCustomerCardsByIdentifier, useFindOrCreateCustomerCard } from "@/hooks/use-customer-cards";
-import { DataTable } from "@/components/ui/data-table"; // Import the generic DataTable
-import { createCustomerColumns } from "./CustomersColumns";
 import CustomerCardInteraction from "./CustomerCardInteraction";
 import CustomerDetailsForm from "./CustomerDetailsForm";
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/supabase/client";
 import { showError, showSuccess } from "@/utils/toast";
 import { useLoyaltyCards } from "@/hooks/use-loyalty-cards";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { differenceInDays } from "date-fns";
+import { differenceInDays, differenceInHours } from "date-fns";
 import CustomerNotes from "./CustomerNotes";
 import CustomerTransactionHistory from "./CustomerTransactionHistory";
 import CustomerAppointmentsHistory from "./CustomerAppointmentsHistory";
@@ -19,6 +16,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import CreateCustomerForm from "./CreateCustomerForm";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
+import CustomerStatusCard from "./CustomerStatusCard";
+import { Input } from "@/components/ui/input";
 
 const ClientDetailView: React.FC<{ identifier: string; onBack: () => void }> = ({ identifier, onBack }) => {
     const { data: customerCards, isLoading, error } = useCustomerCardsByIdentifier(identifier);
@@ -60,7 +59,6 @@ const ClientDetailView: React.FC<{ identifier: string; onBack: () => void }> = (
                         <TabsTrigger value="history" className="flex items-center justify-center space-x-2 p-3"><History className="w-4 h-4" /> Histórico</TabsTrigger>
                     </TabsList>
 
-                    {/* TAB 1: DETAILS & NOTES */}
                     <TabsContent value="details" className="mt-6">
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                             <CustomerDetailsForm identifier={identifier} />
@@ -68,7 +66,6 @@ const ClientDetailView: React.FC<{ identifier: string; onBack: () => void }> = (
                         </div>
                     </TabsContent>
 
-                    {/* TAB 2: LOYALTY CARDS */}
                     <TabsContent value="loyalty" className="mt-6 space-y-6">
                         <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200">
                             Cartões Ativos
@@ -100,7 +97,6 @@ const ClientDetailView: React.FC<{ identifier: string; onBack: () => void }> = (
                         )}
                     </TabsContent>
 
-                    {/* TAB 3: HISTORY */}
                     <TabsContent value="history" className="mt-6 space-y-6">
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                             <CustomerTransactionHistory identifier={identifier} />
@@ -116,30 +112,37 @@ const ClientDetailView: React.FC<{ identifier: string; onBack: () => void }> = (
 const ClientsPage: React.FC = () => {
   const [selectedIdentifier, setSelectedIdentifier] = useState<string | null>(null);
   const [isCreateCustomerOpen, setIsCreateCustomerOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const { data: allCustomers, isLoading, error } = useAllCustomers();
 
-  const customersWithTags = useMemo(() => {
-    if (!allCustomers) return [];
+  const getCustomerStatus = (customer: any) => {
     const now = new Date();
-    return allCustomers.map(customer => {
-        const tags = [];
-        const daysSinceFirstSeen = differenceInDays(now, new Date(customer.first_seen_at));
-        const daysSinceLastActivity = differenceInDays(now, new Date(customer.last_activity_at));
+    if (customer.last_redemption_at && differenceInHours(now, new Date(customer.last_redemption_at)) <= 72) {
+      return { label: "Resgatou Recompensa", color: "border-purple-500", icon: Gift };
+    }
+    if (differenceInDays(now, new Date(customer.last_activity_at)) > 60) {
+      return { label: "Em Risco", color: "border-yellow-500", icon: AlertTriangle };
+    }
+    if (differenceInDays(now, new Date(customer.first_seen_at)) <= 30) {
+      return { label: "Novo Cliente", color: "border-blue-500", icon: Sparkles };
+    }
+    if (customer.total_spent > 250) {
+      return { label: "Cliente VIP", color: "border-green-500", icon: Star };
+    }
+    return { label: "Cliente Regular", color: "border-gray-300", icon: Users };
+  };
 
-        if (customer.total_spent > 500) {
-            tags.push({ name: "Cliente VIP", color: "bg-catback-energy-orange" });
-        }
-        if (daysSinceFirstSeen <= 30) {
-            tags.push({ name: "Novo Cliente", color: "bg-catback-success-green" });
-        }
-        if (daysSinceLastActivity > 90) {
-            tags.push({ name: "Em Risco", color: "bg-destructive" });
-        }
-        return { ...customer, tags };
-    });
-  }, [allCustomers]);
-
-  const columns = React.useMemo(() => createCustomerColumns(setSelectedIdentifier), []);
+  const filteredCustomers = useMemo(() => {
+    if (!allCustomers) return [];
+    return allCustomers
+      .map(customer => ({
+        ...customer,
+        status: getCustomerStatus(customer),
+      }))
+      .filter(customer =>
+        customer.customer_identifier.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+  }, [allCustomers, searchTerm]);
 
   if (selectedIdentifier) {
     return <ClientDetailView identifier={selectedIdentifier} onBack={() => setSelectedIdentifier(null)} />;
@@ -147,10 +150,15 @@ const ClientsPage: React.FC = () => {
 
   return (
     <div className="space-y-8">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-          Clientes (CRM)
-        </h1>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            Clientes (CRM)
+            </h1>
+            <p className="text-gray-600 dark:text-gray-400 mt-1">
+                Visualize e gerencie seus clientes.
+            </p>
+        </div>
         <Dialog open={isCreateCustomerOpen} onOpenChange={setIsCreateCustomerOpen}>
             <DialogTrigger asChild>
                 <Button className="bg-catback-dark-purple hover:bg-catback-purple">
@@ -167,20 +175,28 @@ const ClientsPage: React.FC = () => {
         </Dialog>
       </div>
       
-      <p className="text-gray-600 dark:text-gray-400">
-        Veja e gerencie todos os seus clientes. Use o filtro para encontrar um cliente específico.
-      </p>
+      <Input
+        placeholder="Filtrar por email ou telefone..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        className="max-w-sm"
+      />
 
       {isLoading && <div className="text-center p-10"><Loader2 className="h-8 w-8 animate-spin text-catback-purple mx-auto" /></div>}
       {error && <div className="text-center p-10 text-red-500">Erro ao carregar clientes: {error.message}</div>}
       
-      {allCustomers && (
-        <DataTable 
-            columns={columns} 
-            data={customersWithTags} 
-            filterColumnId="customer_identifier"
-            filterPlaceholder="Filtrar por email ou telefone..."
-        />
+      {!isLoading && filteredCustomers.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {filteredCustomers.map(customer => (
+                <CustomerStatusCard 
+                    key={customer.customer_identifier} 
+                    customer={customer} 
+                    onViewDetails={setSelectedIdentifier}
+                />
+            ))}
+        </div>
+      ) : (
+        !isLoading && <p className="text-center text-gray-500 pt-10">Nenhum cliente encontrado.</p>
       )}
     </div>
   );
