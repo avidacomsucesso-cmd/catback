@@ -1,18 +1,21 @@
 import React from "react";
-import { Frown, Smartphone, HelpCircle, CreditCard, Calendar, Gift, ArrowDown } from "lucide-react";
+import { Frown, Smartphone, HelpCircle, CreditCard, Calendar, Gift, ArrowDown, XCircle, PhoneOff, Zap, Users, TrendingUp } from "lucide-react";
 
 const problems = [
   {
-    icon: Frown,
+    icon: XCircle, // Changed icon for better visual
     title: "Cartões de papel perdidos e esquecidos",
+    color: "text-destructive",
   },
   {
-    icon: Smartphone,
+    icon: PhoneOff, // Changed icon for better visual
     title: "Sem lembretes de agendamento",
+    color: "text-catback-energy-orange",
   },
   {
-    icon: HelpCircle,
+    icon: Frown, // Changed icon for better visual
     title: "Sem incentivo para retornar",
+    color: "text-destructive",
   },
 ];
 
@@ -20,14 +23,17 @@ const solutions = [
   {
     icon: CreditCard,
     title: "Cartões digitais sempre à mão",
+    color: "text-catback-success-green",
   },
   {
     icon: Calendar,
     title: "Agendamento automatizado",
+    color: "text-catback-purple",
   },
   {
     icon: Gift,
     title: "Recompensas que funcionam",
+    color: "text-catback-success-green",
   },
 ];
 
@@ -42,8 +48,8 @@ const ProblemSolution: React.FC = () => {
         {/* Problems */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
           {problems.map((item, index) => (
-            <div key={index} className="p-6 border rounded-lg bg-white dark:bg-gray-800 shadow-sm">
-              <item.icon className="w-10 h-10 mx-auto text-destructive mb-4" />
+            <div key={index} className="p-6 border rounded-lg bg-white dark:bg-gray-800 shadow-lg">
+              <item.icon className={`w-12 h-12 mx-auto mb-4 ${item.color}`} />
               <p className="text-lg font-semibold text-gray-800 dark:text-gray-200">
                 {item.title}
               </p>
@@ -54,7 +60,7 @@ const ProblemSolution: React.FC = () => {
         {/* Solution Arrow */}
         <div className="flex justify-center items-center my-8">
           <div className="flex flex-col items-center">
-            <ArrowDown className="w-8 h-8 text-catback-purple animate-bounce" />
+            <ArrowDown className="w-10 h-10 text-catback-purple animate-bounce" />
             <p className="text-xl font-semibold text-catback-purple mt-2">A Solução: CATBACK</p>
           </div>
         </div>
@@ -62,8 +68,8 @@ const ProblemSolution: React.FC = () => {
         {/* Solutions */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {solutions.map((item, index) => (
-            <div key={index} className="p-6 border rounded-lg bg-catback-light-purple/20 dark:bg-catback-dark-purple/50 shadow-md">
-              <item.icon className="w-10 h-10 mx-auto text-catback-success-green mb-4" />
+            <div key={index} className="p-6 border rounded-lg bg-catback-light-purple/20 dark:bg-catback-dark-purple/50 shadow-xl">
+              <item.icon className={`w-12 h-12 mx-auto mb-4 ${item.color}`} />
               <p className="text-lg font-semibold text-catback-dark-purple dark:text-catback-light-purple">
                 {item.title}
               </p>
