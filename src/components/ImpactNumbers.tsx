@@ -7,21 +7,25 @@ const impactData = [
     icon: Building,
     number: "1.000+",
     label: "Empresas Ativas",
+    color: "text-catback-purple",
   },
   {
     icon: Users,
     number: "50.000+",
     label: "Clientes Fidelizados",
+    color: "text-catback-success-green",
   },
   {
     icon: CreditCard,
     number: "500.000+",
     label: "Cartões Criados",
+    color: "text-catback-energy-orange",
   },
   {
     icon: Globe,
     number: "5+",
     label: "Países",
+    color: "text-catback-dark-purple",
   },
 ];
 
@@ -33,7 +37,7 @@ const ImpactNumbers: React.FC = () => {
           {impactData.map((item, index) => (
             <Card key={index} className="text-center shadow-md hover:shadow-lg transition-shadow border-catback-light-purple/50">
               <CardContent className="p-6 flex flex-col items-center">
-                <item.icon className="w-8 h-8 text-catback-purple mb-3" />
+                <item.icon className={`w-10 h-10 ${item.color} mb-3`} />
                 <p className="text-3xl font-bold text-catback-dark-purple">
                   {item.number}
                 </p>

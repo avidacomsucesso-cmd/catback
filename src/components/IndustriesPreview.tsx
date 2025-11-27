@@ -2,14 +2,15 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Coffee, Scissors, Utensils, Dumbbell, Stethoscope, ShoppingBag, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 
 const industries = [
-  { name: "Cafés", icon: Coffee },
-  { name: "Salões", icon: Scissors },
-  { name: "Restaurantes", icon: Utensils },
-  { name: "Academias", icon: Dumbbell },
-  { name: "Clínicas", icon: Stethoscope },
-  { name: "Lojas", icon: ShoppingBag },
+  { name: "Cafés", icon: Coffee, color: "text-catback-energy-orange" },
+  { name: "Salões", icon: Scissors, color: "text-catback-purple" },
+  { name: "Restaurantes", icon: Utensils, color: "text-catback-success-green" },
+  { name: "Academias", icon: Dumbbell, color: "text-catback-dark-purple" },
+  { name: "Clínicas", icon: Stethoscope, color: "text-catback-purple" },
+  { name: "Lojas", icon: ShoppingBag, color: "text-catback-energy-orange" },
 ];
 
 const IndustriesPreview: React.FC = () => {
@@ -20,15 +21,17 @@ const IndustriesPreview: React.FC = () => {
           Perfeito Para o Seu Negócio
         </h2>
 
-        <div className="flex flex-wrap justify-center gap-6 mb-10">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 mb-10">
           {industries.map((industry, index) => (
-            <div 
+            <Card 
               key={index} 
-              className="flex flex-col items-center p-4 bg-white dark:bg-gray-900 rounded-lg shadow-md w-32 h-32 justify-center transition-transform hover:scale-105 hover:shadow-lg border border-gray-200 dark:border-gray-700"
+              className="flex flex-col items-center p-6 bg-white dark:bg-gray-900 rounded-xl shadow-md justify-center transition-transform hover:scale-105 hover:shadow-lg border border-gray-200 dark:border-gray-700"
             >
-              <industry.icon className="w-8 h-8 text-catback-purple mb-2" />
-              <p className="text-sm font-medium text-gray-700 dark:text-gray-300">{industry.name}</p>
-            </div>
+              <CardContent className="p-0 flex flex-col items-center">
+                <industry.icon className={`w-10 h-10 ${industry.color} mb-3`} />
+                <p className="text-md font-semibold text-gray-800 dark:text-gray-200">{industry.name}</p>
+              </CardContent>
+            </Card>
           ))}
         </div>
 
