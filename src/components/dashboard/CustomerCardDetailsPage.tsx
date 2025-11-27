@@ -74,11 +74,11 @@ const CustomerCardDetailsPage: React.FC = () => {
           </Card>
 
           {/* Right: Interação (Carimbar/Resgatar) */}
-          <CustomerCardInteraction card={card} />
+          <CustomerCardInteraction card={card} onViewHistory={() => setIsHistoryOpen(true)} />
         </div>
       </div>
       {/* Transaction History Sheet */}
-      <TransactionHistory card={card} isOpen={isHistoryOpen} onClose={() => setIsHistoryOpen(false)} />
+      {card && <TransactionHistory card={card} isOpen={isHistoryOpen} onClose={() => setIsHistoryOpen(false)} />}
     </>
   );
 };

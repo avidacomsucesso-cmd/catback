@@ -7,19 +7,18 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { showError } from "@/utils/toast";
-import TransactionHistory from "@/components/customer/TransactionHistory";
 
 interface CustomerCardInteractionProps {
   card: CustomerCard;
+  onViewHistory: () => void; // Added prop to trigger history view in parent
 }
 
-const CustomerCardInteraction: React.FC<CustomerCardInteractionProps> = ({ card }) => {
+const CustomerCardInteraction: React.FC<CustomerCardInteractionProps> = ({ card, onViewHistory }) => {
   const updateProgressMutation = useUpdateCustomerCardProgress();
   const redeemStampCardMutation = useRedeemStampCard();
   const loyaltyCard = card.loyalty_cards;
   const [purchaseValue, setPurchaseValue] = useState<number>(0);
   const [redeemValue, setRedeemValue] = useState<number>(0);
-  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
 
   if (!loyaltyCard) {
     return <Card className="p-4 text-red-500">Erro: Configuração do cartão de fidelidade não encontrada.</Card>;
@@ -106,104 +105,101 @@ const CustomerCardInteraction: React.FC<CustomerCardInteractionProps> = ({ card 
     : 0;
 
   return (
-    <>
-      <Card className="shadow-lg border-l-4 border-catback-purple h-full flex flex-col">
-        <CardHeader className="pb-2">
-          <div className="flex justify-between items-center">
-            <CardTitle className="text-xl text-catback-dark-purple">{loyaltyCard.name}</CardTitle>
-            <Badge className="bg-catback-light-purple text-catback-dark-purple hover:bg-catback-light-purple">
-              {loyaltyCard.type.toUpperCase()}
-            </Badge>
-          </div>
-        </CardHeader>
-        <CardContent className="flex-grow flex flex-col justify-between space-y-4 pt-4">
-          {/* Main content area */}
-          <div className="space-y-4">
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              Recompensa: <span className="font-semibold">{loyaltyCard.reward_description}</span>
-            </p>
+    <Card className="shadow-lg border-l-4 border-catback-purple h-full flex flex-col">
+      <CardHeader className="pb-2">
+        <div className="flex justify-between items-center">
+          <CardTitle className="text-xl text-catback-dark-purple">{loyaltyCard.name}</CardTitle>
+          <Badge className="bg-catback-light-purple text-catback-dark-purple hover:bg-catback-light-purple">
+            {loyaltyCard.type.toUpperCase()}
+          </Badge>
+        </div>
+      </CardHeader>
+      <CardContent className="flex-grow flex flex-col justify-between space-y-4 pt-4">
+        {/* Main content area */}
+        <div className="space-y-4">
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            Recompensa: <span className="font-semibold">{loyaltyCard.reward_description}</span>
+          </p>
 
-            {isStamps ? (
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm font-medium">
-                  <span>Progresso: {card.current_progress} / {requiredStamps}</span>
-                  {isComplete && <span className="text-catback-success-green font-bold">PRONTO PARA RESGATE!</span>}
-                </div>
-                <Progress value={progressPercentage} className="h-2" indicatorClassName="bg-catback-purple" />
+          {isStamps ? (
+            <div className="space-y-2">
+              <div className="flex justify-between text-sm font-medium">
+                <span>Progresso: {card.current_progress} / {requiredStamps}</span>
+                {isComplete && <span className="text-catback-success-green font-bold">PRONTO PARA RESGATE!</span>}
               </div>
-            ) : (
-                <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg text-center">
-                    <p className="text-sm text-gray-500 dark:text-gray-400">Saldo Atual:</p>
-                    <p className="text-3xl font-extrabold text-catback-energy-orange">
-                        {card.current_progress.toFixed(isCashback ? 2 : 0)} {currencySymbol}
-                    </p>
-                </div>
-            )}
-            
-            <div className="space-y-3 pt-2">
-                {isStamps ? (
-                    <div className="flex space-x-2">
-                        <Button 
-                            onClick={handleStamp}
-                            disabled={isMutating || isComplete}
-                            className="bg-catback-purple hover:bg-catback-dark-purple flex-grow"
-                        >
-                            {isMutating && !isComplete ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Stamp className="h-4 w-4 mr-2" />}
-                            Carimbar (+1)
-                        </Button>
-                        <Button 
-                            onClick={handleRedeemStampCard}
-                            disabled={isMutating || !isComplete}
-                            variant="outline"
-                            className="border-catback-success-green text-catback-success-green hover:bg-catback-success-green/10 flex-grow"
-                        >
-                            {isMutating && isComplete ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Gift className="h-4 w-4 mr-2" />}
-                            Resgatar
-                        </Button>
-                    </div>
-                ) : (
-                    <div className="space-y-4">
-                        <div className="space-y-2 p-3 border rounded-md">
-                            <p className="text-sm font-medium">Adicionar {currencySymbol}</p>
-                            <div className="flex space-x-2">
-                                <Input type="number" placeholder="Valor da Compra (€)" value={purchaseValue || ''} onChange={(e) => setPurchaseValue(parseFloat(e.target.value) || 0)} />
-                                <Button onClick={handleAddProgress} disabled={isMutating || purchaseValue <= 0} className="bg-catback-success-green hover:bg-catback-success-green/90">
-                                    <Plus className="h-4 w-4" />
-                                </Button>
-                            </div>
-                        </div>
-                        <div className="space-y-2 p-3 border rounded-md">
-                            <p className="text-sm font-medium">Usar Saldo ({currencySymbol})</p>
-                            <div className="flex space-x-2">
-                                <Input type="number" placeholder={`Valor a usar em ${currencySymbol}`} value={redeemValue || ''} onChange={(e) => setRedeemValue(parseFloat(e.target.value) || 0)} />
-                                <Button onClick={handleRedeemProgress} disabled={isMutating || redeemValue <= 0} variant="destructive">
-                                    <Minus className="h-4 w-4" />
-                                </Button>
-                            </div>
-                        </div>
-                    </div>
-                )}
+              <Progress value={progressPercentage} className="h-2" indicatorClassName="bg-catback-purple" />
             </div>
-          </div>
+          ) : (
+              <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg text-center">
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Saldo Atual:</p>
+                  <p className="text-3xl font-extrabold text-catback-energy-orange">
+                      {card.current_progress.toFixed(isCashback ? 2 : 0)} {currencySymbol}
+                  </p>
+              </div>
+          )}
           
-          {/* Footer area with history button */}
-          <div className="pt-4 border-t border-gray-100 dark:border-gray-700">
-            <Button 
-                variant="outline" 
-                onClick={() => setIsHistoryOpen(true)}
-                className="w-full"
-            >
-                <History className="h-4 w-4 mr-2" />
-                Ver Histórico
-            </Button>
-            <p className="text-xs text-gray-500 dark:text-gray-500 pt-2 text-center">
-                Última atualização: {new Date(card.updated_at).toLocaleDateString()}
-            </p>
+          <div className="space-y-3 pt-2">
+              {isStamps ? (
+                  <div className="flex space-x-2">
+                      <Button 
+                          onClick={handleStamp}
+                          disabled={isMutating || isComplete}
+                          className="bg-catback-purple hover:bg-catback-dark-purple flex-grow"
+                      >
+                          {isMutating && !isComplete ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Stamp className="h-4 w-4 mr-2" />}
+                          Carimbar (+1)
+                      </Button>
+                      <Button 
+                          onClick={handleRedeemStampCard}
+                          disabled={isMutating || !isComplete}
+                          variant="outline"
+                          className="border-catback-success-green text-catback-success-green hover:bg-catback-success-green/10 flex-grow"
+                      >
+                          {isMutating && isComplete ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Gift className="h-4 w-4 mr-2" />}
+                          Resgatar
+                      </Button>
+                  </div>
+              ) : (
+                  <div className="space-y-4">
+                      <div className="space-y-2 p-3 border rounded-md">
+                          <p className="text-sm font-medium">Adicionar {currencySymbol}</p>
+                          <div className="flex space-x-2">
+                              <Input type="number" placeholder="Valor da Compra (€)" value={purchaseValue || ''} onChange={(e) => setPurchaseValue(parseFloat(e.target.value) || 0)} />
+                              <Button onClick={handleAddProgress} disabled={isMutating || purchaseValue <= 0} className="bg-catback-success-green hover:bg-catback-success-green/90">
+                                  <Plus className="h-4 w-4" />
+                              </Button>
+                          </div>
+                      </div>
+                      <div className="space-y-2 p-3 border rounded-md">
+                          <p className="text-sm font-medium">Usar Saldo ({currencySymbol})</p>
+                          <div className="flex space-x-2">
+                              <Input type="number" placeholder={`Valor a usar em ${currencySymbol}`} value={redeemValue || ''} onChange={(e) => setRedeemValue(parseFloat(e.target.value) || 0)} />
+                              <Button onClick={handleRedeemProgress} disabled={isMutating || redeemValue <= 0} variant="destructive">
+                                  <Minus className="h-4 w-4" />
+                              </Button>
+                          </div>
+                      </div>
+                  </div>
+              )}
           </div>
-        </CardContent>
-      </Card>
-      <TransactionHistory card={card} isOpen={isHistoryOpen} onClose={() => setIsHistoryOpen(false)} />
-    </>
+        </div>
+        
+        {/* Footer area with history button */}
+        <div className="pt-4 border-t border-gray-100 dark:border-gray-700">
+          <Button 
+              variant="outline" 
+              onClick={onViewHistory} // Use the prop here
+              className="w-full"
+          >
+              <History className="h-4 w-4 mr-2" />
+              Ver Histórico
+          </Button>
+          <p className="text-xs text-gray-500 dark:text-gray-500 pt-2 text-center">
+              Última atualização: {new Date(card.updated_at).toLocaleDateString()}
+          </p>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 
