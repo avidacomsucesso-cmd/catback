@@ -34,10 +34,10 @@ const Index = () => {
           {/* Left Content */}
           <div className="space-y-8 text-center lg:text-left">
             <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight text-gray-900 dark:text-white">
-              Transforme Visitantes em <span className="text-catback-purple">Clientes Fiéis</span>
+              Atraia Clientes do <span className="text-catback-purple">Google</span>. Transforme-os em Fãs.
             </h1>
             <p className="text-xl text-gray-600 dark:text-gray-300 max-w-lg lg:max-w-none mx-auto">
-              Fidelização, Agendamento e CRM tudo em uma única plataforma. Comece grátis e cresça com seu negócio.
+              Otimize seu perfil no Google para atrair novos clientes e use ferramentas de fidelização inteligentes para garantir que eles voltem sempre. <br/><strong>Encontrado no Google. Lembrado pelos Clientes.</strong>
             </p>
 
             {/* NEW CTAs: Role Selection */}
