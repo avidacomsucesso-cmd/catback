@@ -12,7 +12,8 @@ import TestimonialsSection from "@/components/TestimonialsSection";
 import IndustriesPreview from "@/components/IndustriesPreview";
 import FinalCTA from "@/components/FinalCTA";
 import RoleSelectionCTA from "@/components/RoleSelectionCTA";
-import GmbSection from "@/components/GmbSection"; // Importando a nova secção
+import GmbSection from "@/components/GmbSection";
+import NfcDisplaySection from "@/components/NfcDisplaySection"; // Importando a nova secção
 
 // Placeholder for the mascot illustration
 const CatbackIllustration: React.FC = () => (
@@ -67,6 +68,9 @@ const Index = () => {
       
       {/* Nova Secção GMB */}
       <GmbSection />
+
+      {/* Nova Secção Display NFC */}
+      <NfcDisplaySection />
 
       {/* 1. Números de Impacto */}
       <ImpactNumbers />
