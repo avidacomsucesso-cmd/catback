@@ -44,7 +44,7 @@ const Signup: React.FC = () => {
 
   async function onSubmit(values: SignupFormValues) {
     try {
-      // 1. Sign up the user (Supabase will handle the creation and potentially send a default email if not disabled)
+      // 1. Sign up the user (Supabase sends the default confirmation email)
       const { data, error } = await supabase.auth.signUp({
         email: values.email,
         password: values.password,
@@ -59,23 +59,8 @@ const Signup: React.FC = () => {
       if (error) {
         throw error;
       }
-
-      // 2. Trigger Magic Link/OTP flow to generate the confirmation link
-      // This is necessary because the signUp response doesn't give us the token directly,
-      // and we need the user to click a link to confirm their email.
-      const { error: otpError } = await supabase.auth.signInWithOtp({
-          email: values.email,
-          options: {
-              emailRedirectTo: `${window.location.origin}/login`,
-          }
-      });
-
-      if (otpError) {
-          console.error("Failed to send OTP/Confirmation link:", otpError);
-          // We don't throw here, as the user might still be created, but we log the failure to send the link.
-      }
       
-      // 3. Send Custom Welcome Email via Edge Function
+      // 2. Send Custom Welcome Email via Edge Function
       const confirmationLink = `${window.location.origin}/login`; // Link to login page
       
       const payload = {

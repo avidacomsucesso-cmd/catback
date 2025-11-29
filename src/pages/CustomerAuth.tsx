@@ -43,7 +43,7 @@ const CustomerAuth: React.FC = () => {
   }, [user, isLoading, navigate]);
 
   async function sendMagicLinkEmail(email: string) {
-    // 1. Request Magic Link from Supabase
+    // 1. Request Magic Link from Supabase (This sends the default Supabase email)
     const { error: otpError } = await supabase.auth.signInWithOtp({
         email: email,
         options: {
@@ -55,11 +55,11 @@ const CustomerAuth: React.FC = () => {
         throw otpError;
     }
 
-    // 2. Send Custom Email via Edge Function
+    // 2. Send Custom Email via Edge Function (This sends our branded email)
     const payload = {
         email: email,
         subject: "Seu Acesso CATBACK - Clique para Entrar",
-        bodyText: `Olá! Use o link abaixo para aceder à sua área de cliente e ver os seus cartões de fidelidade e agendamentos. Este link é válido por 5 minutos.`,
+        bodyText: `Olá! Enviámos o seu link de acesso. Por favor, procure na sua caixa de entrada por um email com o assunto "Magic Link" ou "Seu Acesso CATBACK". Clique no link para aceder à sua área de cliente e ver os seus cartões de fidelidade e agendamentos.`,
         ctaLink: `${window.location.origin}/customer-cards`, // Generic link, user must click the actual magic link in the Supabase email
         ctaText: "Aceder à Minha Área",
     };
@@ -70,7 +70,7 @@ const CustomerAuth: React.FC = () => {
 
     if (edgeError) {
         console.error("Failed to send custom email via Edge Function:", edgeError);
-        // We still proceed, as the user should receive the default Supabase email if the custom one fails.
+        // We still proceed, as the user should receive the default Supabase email.
     }
   }
 
@@ -112,7 +112,7 @@ const CustomerAuth: React.FC = () => {
                         Verifique seu Email!
                     </p>
                     <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
-                        Enviámos um link mágico para o seu email. Clique no link para entrar automaticamente.
+                        Enviámos um link de acesso. Procure por um email com o assunto "Magic Link" ou "Seu Acesso CATBACK".
                     </p>
                     <Button variant="link" onClick={() => setIsLinkSent(false)} className="mt-4">
                         Tentar outro email
