@@ -42,30 +42,9 @@ const Signup: React.FC = () => {
 
   const { isSubmitting } = form.formState;
 
-  async function sendConfirmationEmail(email: string, token: string) {
-    const confirmationLink = `${window.location.origin}/login?token=${token}&type=signup`;
-    
-    const payload = {
-        email: email,
-        subject: "Bem-vindo ao CATBACK! Confirme seu Email",
-        bodyText: `Olá! Obrigado por se juntar ao CATBACK. Estamos entusiasmados por ajudá-lo a fidelizar os seus clientes. Clique no botão abaixo para confirmar o seu endereço de email e ativar a sua conta.`,
-        ctaLink: confirmationLink,
-        ctaText: "Confirmar Email e Iniciar Teste",
-    };
-
-    const { error } = await supabase.functions.invoke('send-welcome-email', {
-        body: payload,
-    });
-
-    if (error) {
-        console.error("Failed to send welcome email via Edge Function:", error);
-        // We still proceed, as the user might be able to confirm via the default Supabase flow if configured, or we rely on the success message.
-    }
-  }
-
   async function onSubmit(values: SignupFormValues) {
     try {
-      // 1. Sign up the user without sending the default confirmation email
+      // 1. Sign up the user (Supabase will handle the creation and potentially send a default email if not disabled)
       const { data, error } = await supabase.auth.signUp({
         email: values.email,
         password: values.password,
@@ -73,7 +52,7 @@ const Signup: React.FC = () => {
           data: {
             first_name: values.businessName,
           },
-          emailRedirectTo: `${window.location.origin}/login`, // Set redirect URL for Supabase default flow fallback
+          emailRedirectTo: `${window.location.origin}/login`,
         },
       });
 
@@ -81,103 +60,42 @@ const Signup: React.FC = () => {
         throw error;
       }
 
-      // 2. Manually send the custom welcome email using the Edge Function
-      if (data.user && data.session) {
-        // If session exists, the user is automatically signed in (default behavior).
-        // We still want to send the confirmation email if we are using the email verification flow.
-        // NOTE: Supabase's signUp usually returns a session if auto-confirm is off, but the user is unconfirmed.
-        // We rely on the user checking their email for the confirmation link.
-        
-        // Since we cannot easily get the confirmation token here, we rely on Supabase sending the confirmation link
-        // IF the default email template is disabled, we must use a custom flow.
-        // For simplicity and to ensure the user gets a nice email, we assume the default Supabase email is DISABLED
-        // and we rely on the Edge Function to send the link.
-        
-        // We need to trigger the confirmation email flow to get the token, but Supabase doesn't expose it easily.
-        // The best practice here is to rely on the default Supabase email flow being disabled, and then manually
-        // sending a magic link or confirmation link via Resend.
-        
-        // Since we cannot get the token from signUp response easily, we will use the magic link flow to generate a link
-        // that confirms the user and signs them in.
-        
-        const { data: magicLinkData, error: magicLinkError } = await supabase.auth.signInWithOtp({
-            email: values.email,
-            options: {
-                emailRedirectTo: `${window.location.origin}/dashboard/overview`,
-            }
-        });
+      // 2. Trigger Magic Link/OTP flow to generate the confirmation link
+      // This is necessary because the signUp response doesn't give us the token directly,
+      // and we need the user to click a link to confirm their email.
+      const { error: otpError } = await supabase.auth.signInWithOtp({
+          email: values.email,
+          options: {
+              emailRedirectTo: `${window.location.origin}/login`,
+          }
+      });
 
-        if (magicLinkError) {
-            console.error("Failed to generate magic link for custom email:", magicLinkError);
-            throw magicLinkError;
-        }
+      if (otpError) {
+          console.error("Failed to send OTP/Confirmation link:", otpError);
+          // We don't throw here, as the user might still be created, but we log the failure to send the link.
+      }
+      
+      // 3. Send Custom Welcome Email via Edge Function
+      const confirmationLink = `${window.location.origin}/login`; // Link to login page
+      
+      const payload = {
+          email: values.email,
+          subject: "Bem-vindo ao CATBACK! Confirme seu Email",
+          bodyText: `Olá ${values.businessName}! Obrigado por se juntar ao CATBACK. Enviámos um email de confirmação para ${values.email}. Por favor, verifique a sua caixa de entrada e clique no link para ativar a sua conta e iniciar o seu teste de 14 dias.`,
+          ctaLink: confirmationLink,
+          ctaText: "Ir para a Página de Login",
+      };
 
-        // The magic link URL is sent by Supabase's default email system. 
-        // To use our custom email, we need to intercept the token or disable the default email.
-        // Assuming the default email is disabled, we must construct the confirmation link manually.
-        // Since we cannot construct the confirmation link without the token, we must rely on the user clicking the link
-        // sent by the default Supabase email system, OR we use the magic link flow and send that link via Resend.
-        
-        // Let's assume we are using the Magic Link flow (which is often used for confirmation when custom emails are needed)
-        // and we send a generic link to the login page, asking them to check their email for the actual link.
-        
-        // For a robust solution, we must disable the default Supabase confirmation email and use the Edge Function.
-        // Since we cannot get the confirmation token here, we will send a generic message and rely on the user
-        // clicking the link sent by Supabase (if enabled) or manually confirming later.
-        
-        // To fix the ugly email issue, we must use the custom email flow.
-        // Let's use the `signInWithOtp` method to generate the link and send it via our Edge Function.
-        
-        // We need to call the Edge Function with the confirmation link provided by Supabase.
-        // Since we cannot get the confirmation link here, we must configure Supabase to use a custom URL
-        // and then call the Edge Function.
-        
-        // For now, let's assume the user needs to check their email for the confirmation link sent by Supabase.
-        // We will send a custom email *after* the user is created, informing them to check their inbox.
-        
-        // --- Fallback: Send a custom email with a link to the login page ---
-        // This is a compromise, as the user still needs to confirm via the Supabase link.
-        // The best way is to use the `signInWithOtp` method and send the link via Resend.
-        
-        // Let's use the `signInWithOtp` method to generate the link and send it via our Edge Function.
-        
-        const { data: otpData, error: otpError } = await supabase.auth.signInWithOtp({
-            email: values.email,
-            options: {
-                emailRedirectTo: `${window.location.origin}/login`,
-            }
-        });
+      const { error: edgeError } = await supabase.functions.invoke('send-welcome-email', {
+          body: payload,
+      });
 
-        if (otpError) {
-            console.error("Failed to send OTP/Confirmation link:", otpError);
-            throw otpError;
-        }
-        
-        // Now we send the custom email, telling them to check their inbox for the confirmation link.
-        // Since we cannot get the actual confirmation link here, we rely on the user checking their inbox.
-        
-        // We will send a custom email *after* the user is created, informing them to check their inbox.
-        
-        const confirmationLink = `${window.location.origin}/login`; // Generic link to login page
-        
-        const payload = {
-            email: values.email,
-            subject: "Bem-vindo ao CATBACK! Confirme seu Email",
-            bodyText: `Olá ${values.businessName}! Obrigado por se juntar ao CATBACK. Enviámos um email de confirmação para ${values.email}. Por favor, verifique a sua caixa de entrada e clique no link para ativar a sua conta e iniciar o seu teste de 14 dias.`,
-            ctaLink: confirmationLink,
-            ctaText: "Ir para a Página de Login",
-        };
-
-        const { error: edgeError } = await supabase.functions.invoke('send-welcome-email', {
-            body: payload,
-        });
-
-        if (edgeError) {
-            console.error("Failed to send welcome email via Edge Function:", edgeError);
-        }
-        
-        showSuccess("Conta criada com sucesso! Verifique seu email para confirmar o cadastro.");
-        navigate("/login");
+      if (edgeError) {
+          console.error("Failed to send welcome email via Edge Function:", edgeError);
+      }
+      
+      showSuccess("Conta criada com sucesso! Verifique seu email para confirmar o cadastro.");
+      navigate("/login");
 
     } catch (error) {
       const message = getAuthErrorMessage(error);
