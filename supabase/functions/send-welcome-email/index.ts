@@ -10,7 +10,13 @@ const corsHeaders = {
 };
 
 // Helper function to generate a simple, branded HTML email template
-function generateEmailHtml(subject: string, bodyText: string, ctaLink: string, ctaText: string) {
+function generateEmailHtml(subject: string, bodyText: string, ctaLink: string, ctaText: string, logoUrl?: string, businessName?: string) {
+  const logoHtml = logoUrl 
+    ? `<img src="${logoUrl}" alt="${businessName || 'Logo do Negócio'}" style="max-width: 150px; height: auto; border-radius: 4px; margin-bottom: 10px;">`
+    : `<p class="logo-text">CATBACK</p>`;
+
+  const headerStyle = logoUrl ? 'background-color: #ffffff; padding: 20px; text-align: center;' : 'background-color: #7C3AED; padding: 20px; text-align: center;';
+  
   return `
     <!DOCTYPE html>
     <html lang="pt">
@@ -21,8 +27,7 @@ function generateEmailHtml(subject: string, bodyText: string, ctaLink: string, c
         <style>
             body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; }
             .container { max-width: 600px; margin: 20px auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); }
-            .header { background-color: #7C3AED; padding: 20px; text-align: center; }
-            .header img { max-width: 150px; height: auto; }
+            .header { ${headerStyle} }
             .content { padding: 30px; color: #333333; line-height: 1.6; }
             .cta { display: block; width: 80%; margin: 20px auto; padding: 12px 20px; background-color: #F59E0B; color: #ffffff; text-align: center; text-decoration: none; border-radius: 6px; font-weight: bold; }
             .footer { padding: 20px; text-align: center; font-size: 12px; color: #999999; border-top: 1px solid #eeeeee; }
@@ -32,7 +37,7 @@ function generateEmailHtml(subject: string, bodyText: string, ctaLink: string, c
     <body>
         <div class="container">
             <div class="header">
-                <p class="logo-text">CATBACK</p>
+                ${logoHtml}
             </div>
             <div class="content">
                 <h2>${subject}</h2>
@@ -64,13 +69,13 @@ serve(async (req) => {
   }
 
   try {
-    const { email, subject, bodyText, ctaLink, ctaText } = await req.json();
+    const { email, subject, bodyText, ctaLink, ctaText, logoUrl, businessName } = await req.json();
 
     if (!email || !subject || !bodyText || !ctaLink || !ctaText) {
       throw new Error("Dados de email incompletos.");
     }
 
-    const htmlContent = generateEmailHtml(subject, bodyText, ctaLink, ctaText);
+    const htmlContent = generateEmailHtml(subject, bodyText, ctaLink, ctaText, logoUrl, businessName);
 
     const resendResponse = await fetch(RESEND_URL, {
       method: 'POST',
