@@ -12,7 +12,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { useLoyaltyCards } from "@/hooks/use-loyalty-cards"; // <-- Importação adicionada
+import { useLoyaltyCards } from "@/hooks/use-loyalty-cards";
 import { useExternalBusinessSettings } from "@/hooks/use-external-business-settings";
 
 const authSchema = z.object({
@@ -64,7 +64,7 @@ const CustomerAuth: React.FC = () => {
     // Determine the final redirect URL after successful login
     const finalRedirectTo = redirectUrl || `${window.location.origin}/customer-cards`;
 
-    // 1. Request Magic Link from Supabase (This sends the default Supabase email)
+    // 1. Request Magic Link from Supabase (This sends the default Supabase email with the magic link)
     const { error: otpError } = await supabase.auth.signInWithOtp({
         email: email,
         options: {
@@ -76,25 +76,9 @@ const CustomerAuth: React.FC = () => {
         throw otpError;
     }
 
-    // 2. Send Custom Email via Edge Function (This sends our branded email)
-    const payload = {
-        email: email,
-        subject: "Seu Acesso CATBACK - Clique para Entrar",
-        bodyText: `Olá! Enviámos o seu link de acesso. Por favor, procure na sua caixa de entrada por um email com o assunto "Magic Link" ou "Seu Acesso CATBACK". Clique no link para aceder à sua área de cliente e ver os seus cartões de fidelidade e agendamentos.`,
-        ctaLink: finalRedirectTo, // Use the final redirect link
-        ctaText: "Aceder à Minha Área",
-        logoUrl: businessSettings?.logo_url || undefined,
-        businessName: businessSettings?.business_name || undefined,
-    };
-
-    const { error: edgeError } = await supabase.functions.invoke('send-welcome-email', {
-        body: payload,
-    });
-
-    if (edgeError) {
-        console.error("Failed to send custom email via Edge Function:", edgeError);
-        // We still proceed, as the user should receive the default Supabase email.
-    }
+    // NOTE: We are removing the custom email via Edge Function here
+    // to ensure the user only receives the official Supabase Magic Link email,
+    // which contains the actual authentication URL.
   }
 
   async function onSubmit(values: AuthFormValues) {
@@ -142,7 +126,7 @@ const CustomerAuth: React.FC = () => {
                         Verifique seu Email!
                     </p>
                     <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
-                        Enviámos um link de acesso. Procure por um email com o assunto "Magic Link" ou "Seu Acesso CATBACK".
+                        Enviámos um link de acesso. Procure por um email com o assunto "Magic Link" ou "Seu Link Mágico de Acesso CATBACK".
                     </p>
                     <Button variant="link" onClick={() => setIsLinkSent(false)} className="mt-4">
                         Tentar outro email
