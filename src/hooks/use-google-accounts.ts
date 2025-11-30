@@ -43,6 +43,50 @@ export const useGoogleAccount = () => {
   });
 };
 
+// --- Updating GMB Settings ---
+interface UpdateGmbSettingsPayload {
+    id: string;
+    location_resource_name: string;
+    loyalty_card_id_for_5_star_reviews: string | null;
+}
+
+const updateGmbSettings = async (payload: UpdateGmbSettingsPayload): Promise<GoogleAccount> => {
+    const { id, ...updates } = payload;
+    
+    const { data, error } = await supabase
+        .from('google_accounts')
+        .update({
+            location_resource_name: updates.location_resource_name,
+            loyalty_card_id_for_5_star_reviews: updates.loyalty_card_id_for_5_star_reviews,
+            updated_at: new Date().toISOString(),
+        })
+        .eq('id', id)
+        .select()
+        .single();
+
+    if (error) {
+        throw new Error(error.message);
+    }
+    return data as GoogleAccount;
+};
+
+export const useUpdateGmbSettings = () => {
+    const queryClient = useQueryClient();
+    const { user } = useAuth();
+
+    return useMutation<GoogleAccount, Error, UpdateGmbSettingsPayload>({
+        mutationFn: updateGmbSettings,
+        onSuccess: (data) => {
+            queryClient.invalidateQueries({ queryKey: ['googleAccount', user?.id] });
+            showSuccess("Configurações GMB salvas com sucesso!");
+        },
+        onError: (error) => {
+            showError(`Erro ao salvar configurações GMB: ${error.message}`);
+        },
+    });
+};
+
+
 // --- Deleting ---
 const deleteGoogleAccount = async (id: string): Promise<void> => {
   const { error } = await supabase

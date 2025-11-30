@@ -4,18 +4,60 @@ import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Link, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/hooks/use-auth";
-import { useGoogleAccount, useDeleteGoogleAccount } from "@/hooks/use-google-accounts";
-import { Loader2, Link as LinkIcon, Trash, CheckCircle, AlertTriangle, MapPin } from "lucide-react";
+import { useGoogleAccount, useDeleteGoogleAccount, useUpdateGmbSettings } from "@/hooks/use-google-accounts";
+import { Loader2, Link as LinkIcon, Trash, CheckCircle, AlertTriangle, MapPin, Gift } from "lucide-react";
 import { showSuccess, showError } from "@/utils/toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useLoyaltyCards } from "@/hooks/use-loyalty-cards";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+
+// NOTE: In a real application, this list would be fetched from the Google My Business API
+const mockLocations = [
+    { resourceName: "locations/123456789", displayName: "Café da Praça - Lisboa" },
+    { resourceName: "locations/987654321", displayName: "Café da Praça - Porto" },
+];
+
+const gmbConfigSchema = z.object({
+    location_resource_name: z.string().min(1, { message: "Selecione uma localização." }),
+    loyalty_card_id_for_5_star_reviews: z.string().nullable().optional(),
+});
+
+type GmbConfigFormValues = z.infer<typeof gmbConfigSchema>;
+
 
 const GmbSettings: React.FC = () => {
   const { user } = useAuth();
   const { data: account, isLoading: isLoadingAccount } = useGoogleAccount();
+  const { data: loyaltyCards, isLoading: isLoadingLoyalty } = useLoyaltyCards();
   const deleteMutation = useDeleteGoogleAccount();
+  const updateMutation = useUpdateGmbSettings();
+  
   const [searchParams, setSearchParams] = useSearchParams();
   const gmbStatus = searchParams.get('gmb_status');
   const gmbMessage = searchParams.get('message');
+
+  const form = useForm<GmbConfigFormValues>({
+    resolver: zodResolver(gmbConfigSchema),
+    defaultValues: {
+        location_resource_name: "",
+        loyalty_card_id_for_5_star_reviews: "",
+    }
+  });
+
+  // Populate form when account data loads
+  useEffect(() => {
+    if (account) {
+        form.reset({
+            location_resource_name: account.location_resource_name || (mockLocations.length > 0 ? mockLocations[0].resourceName : ""),
+            loyalty_card_id_for_5_star_reviews: account.loyalty_card_id_for_5_star_reviews || "",
+        });
+    }
+  }, [account, form]);
+
 
   // Handle OAuth callback status messages
   useEffect(() => {
@@ -70,6 +112,16 @@ const GmbSettings: React.FC = () => {
     window.location.href = authUrl;
   };
 
+  const onSubmit = (values: GmbConfigFormValues) => {
+    if (!account) return;
+
+    updateMutation.mutate({
+        id: account.id,
+        location_resource_name: values.location_resource_name,
+        loyalty_card_id_for_5_star_reviews: values.loyalty_card_id_for_5_star_reviews || null,
+    });
+  };
+
   if (isLoadingAccount) {
     return (
       <Card className="w-full max-w-lg">
@@ -92,18 +144,90 @@ const GmbSettings: React.FC = () => {
       </CardHeader>
       <CardContent>
         {account ? (
-          <div className="space-y-4">
+          <div className="space-y-6">
             <Alert className="border-catback-success-green text-catback-dark-purple">
               <CheckCircle className="h-4 w-4 text-catback-success-green" />
               <AlertTitle>Conectado!</AlertTitle>
               <AlertDescription>
                 Conta conectada: <span className="font-semibold">{account.business_name}</span>.
-                {account.location_resource_name && (
-                    <span className="block text-sm mt-1">Localização: {account.location_resource_name}</span>
-                )}
               </AlertDescription>
             </Alert>
             
+            <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                    {/* Location Selection (Mocked) */}
+                    <FormField
+                        control={form.control}
+                        name="location_resource_name"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Localização do Negócio (GMB)</FormLabel>
+                                <Select onValueChange={field.onChange} value={field.value}>
+                                    <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Selecione a localização principal" />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        {/* Mocked locations - In real app, fetch from GMB API */}
+                                        {mockLocations.map(loc => (
+                                            <SelectItem key={loc.resourceName} value={loc.resourceName}>
+                                                {loc.displayName}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    {/* Loyalty Card Reward Selection */}
+                    <FormField
+                        control={form.control}
+                        name="loyalty_card_id_for_5_star_reviews"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel className="flex items-center">
+                                    <Gift className="w-4 h-4 mr-2 text-catback-energy-orange" />
+                                    Recompensa por Avaliação 5 Estrelas
+                                </FormLabel>
+                                <Select 
+                                    onValueChange={(value) => field.onChange(value === "none" ? null : value)} 
+                                    value={field.value || "none"}
+                                >
+                                    <FormControl>
+                                        <SelectTrigger disabled={isLoadingLoyalty}>
+                                            <SelectValue placeholder={isLoadingLoyalty ? "A carregar programas..." : "Selecione um programa de fidelidade"} />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        <SelectItem value="none">Nenhuma Recompensa</SelectItem>
+                                        {loyaltyCards?.filter(c => c.is_active).map(card => (
+                                            <SelectItem key={card.id} value={card.id}>
+                                                {card.name} ({card.type})
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                <p className="text-xs text-muted-foreground">
+                                    O cliente receberá um carimbo/ponto bónus ao deixar uma avaliação 5 estrelas.
+                                </p>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    <Button 
+                        type="submit"
+                        className="w-full bg-catback-purple hover:bg-catback-dark-purple"
+                        disabled={updateMutation.isPending}
+                    >
+                        {updateMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : "Salvar Configurações GMB"}
+                    </Button>
+                </form>
+            </Form>
+
             <Button 
                 variant="destructive" 
                 onClick={() => deleteMutation.mutate(account.id)}
@@ -113,15 +237,6 @@ const GmbSettings: React.FC = () => {
                 {deleteMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Trash className="h-4 w-4 mr-2" />}
                 Desconectar Conta Google
             </Button>
-            
-            {/* Future: Location selection and Loyalty Card mapping */}
-            <Alert variant="secondary">
-                <AlertTriangle className="h-4 w-4 text-catback-energy-orange" />
-                <AlertTitle>Próximos Passos</AlertTitle>
-                <AlertDescription>
-                    Selecione a localização do seu negócio e o programa de fidelidade para recompensar avaliações 5 estrelas.
-                </AlertDescription>
-            </Alert>
           </div>
         ) : (
           <div className="space-y-4">
