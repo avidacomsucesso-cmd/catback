@@ -16,7 +16,7 @@ const navItems = [
 
 const Logo = () => (
   <Link to="/" className="flex items-center space-x-2 text-xl font-bold text-catback-dark-purple">
-    <Cat className="w-6 h-6 text-catback-purple" />
+    <img src="/images/catback-logo.png" alt="CATBACK Logo" className="w-6 h-6" />
     <span>CATBACK</span>
   </Link>
 );

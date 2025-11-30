@@ -1,5 +1,5 @@
 import React from "react";
-import { MapPin, CreditCard, Cat, Star } from "lucide-react";
+import { MapPin, CreditCard, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const HeroIllustration: React.FC = () => {
@@ -33,7 +33,7 @@ const HeroIllustration: React.FC = () => {
                     <p className="text-lg font-bold">Cartão Café</p>
                     <p className="text-xs opacity-80">Recompensa: 1 Café Grátis</p>
                 </div>
-                <Cat className="w-6 h-6 fill-white" />
+                <img src="/images/catback-logo.png" alt="Logo" className="w-6 h-6" />
             </div>
             <div className="text-center">
                 <p className="text-4xl font-extrabold">7/10</p>

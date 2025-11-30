@@ -46,7 +46,7 @@ const Footer: React.FC = () => {
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4 lg:grid-cols-5">
           <div className="col-span-2 lg:col-span-1 space-y-4">
             <Link to="/" className="flex items-center space-x-2 text-2xl font-bold text-catback-dark-purple">
-              <Cat className="w-7 h-7 text-catback-purple" />
+              <img src="/images/catback-logo.png" alt="CATBACK Logo" className="w-7 h-7" />
               <span>CATBACK</span>
             </Link>
             <p className="text-sm text-gray-600 dark:text-gray-400">
