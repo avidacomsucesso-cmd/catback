@@ -41,6 +41,8 @@ const Index = () => {
             <p className="text-xl text-gray-600 dark:text-gray-300 max-w-lg lg:max-w-none mx-auto">
               Otimize seu perfil no Google para atrair novos clientes e use ferramentas de fidelização inteligentes para garantir que eles voltem sempre. <br/><strong>Encontrado no Google. Lembrado pelos Clientes.</strong>
             </p>
+            
+            {/* TESTE DE ATUALIZAÇÃO VERCEL: 2024-11-30 15:45 UTC */}
 
             {/* NEW CTAs: Role Selection */}
             <RoleSelectionCTA />
