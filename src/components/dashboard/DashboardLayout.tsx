@@ -7,7 +7,8 @@ import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { showSuccess } from "@/utils/toast";
-import { useProfile } from "@/hooks/use-profile"; // Import useProfile
+import { useProfile } from "@/hooks/use-profile"; 
+import { useBusinessSettings } from "@/hooks/use-business-settings"; // Import useBusinessSettings
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -86,14 +87,21 @@ const Sidebar: React.FC = () => {
 
 const DashboardHeader: React.FC<{ onMenuClick: () => void }> = ({ onMenuClick }) => {
   const { data: profile, isLoading: isLoadingProfile } = useProfile();
+  const { data: businessSettings, isLoading: isLoadingSettings } = useBusinessSettings(); // Use business settings
   const { user } = useAuth();
 
   let businessName = "Carregando...";
-  if (!isLoadingProfile && profile) {
-    const fullName = [profile.first_name, profile.last_name].filter(Boolean).join(' ');
-    businessName = fullName || user?.email?.split('@')[0] || "Lojista";
-  } else if (!isLoadingProfile && user) {
-    businessName = user.email?.split('@')[0] || "Lojista";
+  const isLoading = isLoadingProfile || isLoadingSettings;
+
+  if (!isLoading) {
+    if (businessSettings?.business_name) {
+        businessName = businessSettings.business_name;
+    } else if (profile) {
+        const fullName = [profile.first_name, profile.last_name].filter(Boolean).join(' ');
+        businessName = fullName || user?.email?.split('@')[0] || "Lojista";
+    } else if (user) {
+        businessName = user.email?.split('@')[0] || "Lojista";
+    }
   }
 
   return (

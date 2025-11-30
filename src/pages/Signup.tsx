@@ -50,7 +50,7 @@ const Signup: React.FC = () => {
         password: values.password,
         options: {
           data: {
-            first_name: values.businessName,
+            first_name: values.businessName, // Use business name as first name initially
           },
           emailRedirectTo: `${window.location.origin}/login`,
         },
@@ -69,6 +69,8 @@ const Signup: React.FC = () => {
           bodyText: `Olá ${values.businessName}! Obrigado por se juntar ao CATBACK. Enviámos um email de confirmação para ${values.email}. Por favor, verifique a sua caixa de entrada e clique no link para ativar a sua conta e iniciar o seu teste de 14 dias.`,
           ctaLink: confirmationLink,
           ctaText: "Ir para a Página de Login",
+          // Pass business name for email personalization (logo is not available yet)
+          businessName: values.businessName, 
       };
 
       const { error: edgeError } = await supabase.functions.invoke('send-welcome-email', {

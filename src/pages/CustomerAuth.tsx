@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Cat, Loader2, Mail } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -12,6 +12,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { useLoyaltyCardById } from "@/hooks/use-loyalty-cards"; // Assuming this hook exists or we create it
+import { useExternalBusinessSettings } from "@/hooks/use-external-business-settings";
 
 const authSchema = z.object({
   email: z.string().email({
@@ -21,11 +23,26 @@ const authSchema = z.object({
 
 type AuthFormValues = z.infer<typeof authSchema>;
 
+// Helper hook to fetch a single loyalty card by ID (needed here)
+const useLoyaltyCardById = (id: string | null) => {
+    return useLoyaltyCards().data?.find(card => card.id === id);
+};
+
 const CustomerAuth: React.FC = () => {
   const { user, isLoading } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const redirectUrl = searchParams.get('redirect');
   const [isLinkSent, setIsLinkSent] = useState(false);
   
+  // Try to extract loyaltyCardId from redirect URL if present
+  const loyaltyCardIdMatch = redirectUrl ? new URLSearchParams(redirectUrl.split('?')[1]).get('id') : null;
+  
+  // Fetch loyalty card details to get owner ID
+  const loyaltyCard = useLoyaltyCardById(loyaltyCardIdMatch);
+  const ownerId = loyaltyCard?.user_id;
+  const { data: businessSettings, isLoading: isLoadingSettings } = useExternalBusinessSettings(ownerId);
+
   const form = useForm<AuthFormValues>({
     resolver: zodResolver(authSchema),
     defaultValues: {
@@ -38,16 +55,20 @@ const CustomerAuth: React.FC = () => {
   // Redirect authenticated customers to their cards page
   React.useEffect(() => {
     if (user && !isLoading) {
-      navigate("/customer-cards", { replace: true });
+      // If a redirect URL was provided, use it. Otherwise, go to customer cards.
+      navigate(redirectUrl || "/customer-cards", { replace: true });
     }
-  }, [user, isLoading, navigate]);
+  }, [user, isLoading, navigate, redirectUrl]);
 
   async function sendMagicLinkEmail(email: string) {
+    // Determine the final redirect URL after successful login
+    const finalRedirectTo = redirectUrl || `${window.location.origin}/customer-cards`;
+
     // 1. Request Magic Link from Supabase (This sends the default Supabase email)
     const { error: otpError } = await supabase.auth.signInWithOtp({
         email: email,
         options: {
-            emailRedirectTo: `${window.location.origin}/customer-cards`,
+            emailRedirectTo: finalRedirectTo,
         }
     });
 
@@ -60,8 +81,10 @@ const CustomerAuth: React.FC = () => {
         email: email,
         subject: "Seu Acesso CATBACK - Clique para Entrar",
         bodyText: `Olá! Enviámos o seu link de acesso. Por favor, procure na sua caixa de entrada por um email com o assunto "Magic Link" ou "Seu Acesso CATBACK". Clique no link para aceder à sua área de cliente e ver os seus cartões de fidelidade e agendamentos.`,
-        ctaLink: `${window.location.origin}/customer-cards`, // Generic link, user must click the actual magic link in the Supabase email
+        ctaLink: finalRedirectTo, // Use the final redirect link
         ctaText: "Aceder à Minha Área",
+        logoUrl: businessSettings?.logo_url || undefined,
+        businessName: businessSettings?.business_name || undefined,
     };
 
     const { error: edgeError } = await supabase.functions.invoke('send-welcome-email', {
@@ -85,7 +108,7 @@ const CustomerAuth: React.FC = () => {
     }
   }
 
-  if (isLoading || user) {
+  if (isLoading || user || isLoadingSettings) {
     return (
         <Layout>
             <div className="container py-20 text-center">
@@ -94,14 +117,21 @@ const CustomerAuth: React.FC = () => {
         </Layout>
     );
   }
+  
+  const businessName = businessSettings?.business_name || "CATBACK";
+  const logoUrl = businessSettings?.logo_url;
 
   return (
     <Layout>
       <div className="container py-16 flex justify-center">
         <Card className="w-full max-w-md shadow-xl">
           <CardHeader className="text-center">
-            <Cat className="w-8 h-8 mx-auto text-catback-purple mb-2" />
-            <CardTitle className="text-3xl font-bold text-catback-dark-purple">Acesso Cliente</CardTitle>
+            {logoUrl ? (
+                <img src={logoUrl} alt={businessName} className="w-20 h-20 mx-auto mb-2 object-contain" />
+            ) : (
+                <Cat className="w-8 h-8 mx-auto text-catback-purple mb-2" />
+            )}
+            <CardTitle className="text-3xl font-bold text-catback-dark-purple">Acesso Cliente {businessName !== "CATBACK" && `| ${businessName}`}</CardTitle>
             <p className="text-sm text-gray-500">Entre ou crie sua conta para ver seus cartões de fidelidade.</p>
           </CardHeader>
           <CardContent className="space-y-6">

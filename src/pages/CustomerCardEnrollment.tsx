@@ -8,6 +8,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useFindOrCreateCustomerCard } from "@/hooks/use-customer-cards";
 import { useLoyaltyCards } from "@/hooks/use-loyalty-cards";
 import { showError, showSuccess } from "@/utils/toast";
+import { useExternalBusinessSettings } from "@/hooks/use-external-business-settings"; // Import new hook
 
 const CustomerCardEnrollment: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -20,7 +21,11 @@ const CustomerCardEnrollment: React.FC = () => {
   const { data: loyaltyCards, isLoading: isLoadingPrograms } = useLoyaltyCards();
   const loyaltyCard = loyaltyCards?.find(card => card.id === loyaltyCardId);
 
-  const isLoading = isLoadingAuth || isLoadingPrograms;
+  // Determine the owner ID to fetch business settings
+  const ownerId = loyaltyCard?.user_id;
+  const { data: businessSettings, isLoading: isLoadingSettings } = useExternalBusinessSettings(ownerId);
+
+  const isLoading = isLoadingAuth || isLoadingPrograms || isLoadingSettings;
 
   // 1. Handle Authentication Check
   useEffect(() => {
@@ -95,6 +100,7 @@ const CustomerCardEnrollment: React.FC = () => {
   const isEnrolling = findOrCreateMutation.isPending;
   const enrollmentSuccess = findOrCreateMutation.isSuccess || !!findOrCreateMutation.data;
   const cardName = loyaltyCard?.name || "Cartão de Fidelidade";
+  const businessName = businessSettings?.business_name || "O Lojista";
 
   return (
     <Layout>
@@ -103,7 +109,7 @@ const CustomerCardEnrollment: React.FC = () => {
           <CardHeader>
             <Cat className="w-10 h-10 mx-auto text-catback-purple mb-2" />
             <CardTitle className="text-3xl font-bold text-catback-dark-purple">
-              {enrollmentSuccess ? "Adesão Concluída!" : `Aderir ao ${cardName}`}
+              {enrollmentSuccess ? "Adesão Concluída!" : `Aderir ao Cartão de ${businessName}`}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -118,7 +124,7 @@ const CustomerCardEnrollment: React.FC = () => {
               <div className="p-6 space-y-4">
                 <CheckCircle className="h-12 w-12 text-catback-success-green mx-auto" />
                 <p className="text-lg font-medium text-gray-700 dark:text-gray-300">
-                  Parabéns! Você agora faz parte do programa de fidelidade "{cardName}".
+                  Parabéns! Você agora faz parte do programa de fidelidade "{cardName}" de {businessName}.
                 </p>
                 <Link to="/customer-cards">
                   <Button className="w-full bg-catback-purple hover:bg-catback-dark-purple">
@@ -129,7 +135,7 @@ const CustomerCardEnrollment: React.FC = () => {
             ) : (
                 <div className="p-6 space-y-4">
                     <p className="text-lg font-medium text-gray-700 dark:text-gray-300">
-                        Clique abaixo para adicionar o cartão "{cardName}" à sua conta.
+                        Clique abaixo para adicionar o cartão "{cardName}" de {businessName} à sua conta.
                     </p>
                     <Button 
                         onClick={() => {
