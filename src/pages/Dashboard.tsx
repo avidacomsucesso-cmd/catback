@@ -16,7 +16,8 @@ import MarketingPage from "@/components/dashboard/MarketingPage";
 import TodaysAppointments from "@/components/dashboard/TodaysAppointments";
 import RecentActivity from "@/components/dashboard/RecentActivity";
 import QuickActions from "@/components/dashboard/QuickActions";
-import BusinessSettingsForm from "@/components/dashboard/BusinessSettingsForm"; // Import the new form
+import BusinessSettingsForm from "@/components/dashboard/BusinessSettingsForm"; 
+import GmbSettings from "@/components/dashboard/GmbSettings"; // Import GmbSettings
 
 // Placeholder Pages for Dashboard Sections
 const OverviewPage = () => (
@@ -38,6 +39,7 @@ const SettingsPage = () => (
       Configurações
     </h1>
     <BusinessSettingsForm />
+    <GmbSettings /> {/* Added GMB Settings */}
     <ProfileSettingsForm />
     <PasswordSettingsForm />
     {/* Future: Billing settings */}
