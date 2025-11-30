@@ -16,6 +16,7 @@ import MarketingPage from "@/components/dashboard/MarketingPage";
 import TodaysAppointments from "@/components/dashboard/TodaysAppointments";
 import RecentActivity from "@/components/dashboard/RecentActivity";
 import QuickActions from "@/components/dashboard/QuickActions";
+import BusinessSettingsForm from "@/components/dashboard/BusinessSettingsForm"; // Import the new form
 
 // Placeholder Pages for Dashboard Sections
 const OverviewPage = () => (
@@ -36,6 +37,7 @@ const SettingsPage = () => (
     <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
       Configurações
     </h1>
+    <BusinessSettingsForm />
     <ProfileSettingsForm />
     <PasswordSettingsForm />
     {/* Future: Billing settings */}
