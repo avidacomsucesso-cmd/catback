@@ -42,8 +42,6 @@ const Index = () => {
               Otimize seu perfil no Google para atrair novos clientes e use ferramentas de fidelização inteligentes para garantir que eles voltem sempre. <br/><strong>Encontrado no Google. Lembrado pelos Clientes.</strong>
             </p>
             
-            {/* TESTE DE ATUALIZAÇÃO VERCEL: 2024-11-30 15:45 UTC */}
-
             {/* NEW CTAs: Role Selection */}
             <RoleSelectionCTA />
 
