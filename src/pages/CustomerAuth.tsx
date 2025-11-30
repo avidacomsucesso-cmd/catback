@@ -12,7 +12,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { useLoyaltyCardById } from "@/hooks/use-loyalty-cards"; // Assuming this hook exists or we create it
+import { useLoyaltyCards } from "@/hooks/use-loyalty-cards"; // <-- Importação adicionada
 import { useExternalBusinessSettings } from "@/hooks/use-external-business-settings";
 
 const authSchema = z.object({
