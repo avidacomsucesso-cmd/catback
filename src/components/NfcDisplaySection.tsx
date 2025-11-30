@@ -5,12 +5,12 @@ import { Star, Zap, Nfc, ArrowRight } from "lucide-react";
 
 // Placeholder for the NFC Display illustration
 const NfcDisplayIllustration: React.FC = () => (
-  <div className="relative w-full max-w-xs mx-auto p-6 bg-gray-800 rounded-xl shadow-lg border border-gray-700 flex flex-col items-center justify-center">
-    <Nfc className="w-20 h-20 text-catback-energy-orange animate-pulse" />
-    <p className="mt-4 text-lg font-semibold text-white">
-      Display NFC CATBACK
-    </p>
-    <p className="text-sm text-gray-400">Aproxime para avaliar</p>
+  <div className="relative w-full max-w-xs mx-auto lg:max-w-sm">
+    <img 
+      src="/images/nfc-display.png" 
+      alt="Display NFC CATBACK para Avaliações Google" 
+      className="w-full h-auto rounded-xl shadow-2xl"
+    />
   </div>
 );
 
