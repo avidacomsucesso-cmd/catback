@@ -14,10 +14,14 @@ import * as z from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useLoyaltyCards } from "@/hooks/use-loyalty-cards";
 import { useExternalBusinessSettings } from "@/hooks/use-external-business-settings";
+import { getAuthErrorMessage } from "@/utils/auth-errors"; // Importar para tratamento de erros
 
 const authSchema = z.object({
   email: z.string().email({
     message: "Insira um email válido.",
+  }),
+  password: z.string().min(6, {
+    message: "A senha deve ter pelo menos 6 caracteres.",
   }),
 });
 
@@ -33,7 +37,6 @@ const CustomerAuth: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const redirectUrl = searchParams.get('redirect');
-  const [isLinkSent, setIsLinkSent] = useState(false);
   
   // Try to extract loyaltyCardId from redirect URL if present
   const loyaltyCardIdMatch = redirectUrl ? new URLSearchParams(redirectUrl.split('?')[1]).get('id') : null;
@@ -47,6 +50,7 @@ const CustomerAuth: React.FC = () => {
     resolver: zodResolver(authSchema),
     defaultValues: {
       email: "",
+      password: "",
     },
   });
 
@@ -60,35 +64,25 @@ const CustomerAuth: React.FC = () => {
     }
   }, [user, isLoading, navigate, redirectUrl]);
 
-  async function sendMagicLinkEmail(email: string) {
-    // Determine the final redirect URL after successful login
-    const finalRedirectTo = redirectUrl || `${window.location.origin}/customer-cards`;
-
-    // 1. Request Magic Link from Supabase (This sends the default Supabase email with the magic link)
-    const { error: otpError } = await supabase.auth.signInWithOtp({
-        email: email,
-        options: {
-            emailRedirectTo: finalRedirectTo,
-        }
-    });
-
-    if (otpError) {
-        throw otpError;
-    }
-
-    // NOTE: We are removing the custom email via Edge Function here
-    // to ensure the user only receives the official Supabase Magic Link email,
-    // which contains the actual authentication URL.
-  }
-
   async function onSubmit(values: AuthFormValues) {
     try {
-      await sendMagicLinkEmail(values.email);
-      showSuccess("Link de acesso enviado! Verifique seu email.");
-      setIsLinkSent(true);
+      const { error } = await supabase.auth.signInWithPassword({
+        email: values.email,
+        password: values.password,
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      showSuccess("Login bem-sucedido! Redirecionando...");
+      // Redirect is handled by the useEffect hook after session updates, 
+      // but we can force navigation here for immediate feedback if needed.
+      navigate(redirectUrl || "/customer-cards");
+
     } catch (error) {
-      showError("Erro ao enviar link de acesso. Tente novamente.");
-      console.error(error);
+      const message = getAuthErrorMessage(error);
+      showError(message);
     }
   }
 
@@ -116,52 +110,50 @@ const CustomerAuth: React.FC = () => {
                 <Cat className="w-8 h-8 mx-auto text-catback-purple mb-2" />
             )}
             <CardTitle className="text-3xl font-bold text-catback-dark-purple">Acesso Cliente {businessName !== "CATBACK" && `| ${businessName}`}</CardTitle>
-            <p className="text-sm text-gray-500">Entre ou crie sua conta para ver seus cartões de fidelidade.</p>
+            <p className="text-sm text-gray-500">Entre para ver seus cartões de fidelidade e agendamentos.</p>
           </CardHeader>
           <CardContent className="space-y-6">
-            {isLinkSent ? (
-                <div className="text-center p-6 border rounded-lg bg-gray-50 dark:bg-gray-800">
-                    <Mail className="w-8 h-8 text-catback-success-green mx-auto mb-3" />
-                    <p className="font-semibold text-gray-800 dark:text-gray-200">
-                        Verifique seu Email!
-                    </p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
-                        Enviámos um link de acesso. Procure por um email com o assunto "Magic Link" ou "Seu Link Mágico de Acesso CATBACK".
-                    </p>
-                    <Button variant="link" onClick={() => setIsLinkSent(false)} className="mt-4">
-                        Tentar outro email
+            <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                    <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Email</FormLabel>
+                                <FormControl>
+                                    <Input id="email" type="email" placeholder="seu@email.com" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="password"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Senha</FormLabel>
+                                <FormControl>
+                                    <Input id="password" type="password" placeholder="********" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <Button 
+                        type="submit" 
+                        className="w-full bg-catback-energy-orange hover:bg-catback-energy-orange/90"
+                        disabled={isSubmitting}
+                    >
+                        {isSubmitting ? (
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        ) : (
+                            "Entrar na Minha Área"
+                        )}
                     </Button>
-                </div>
-            ) : (
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                        <FormField
-                            control={form.control}
-                            name="email"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Email</FormLabel>
-                                    <FormControl>
-                                        <Input id="email" type="email" placeholder="seu@email.com" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <Button 
-                            type="submit" 
-                            className="w-full bg-catback-energy-orange hover:bg-catback-energy-orange/90"
-                            disabled={isSubmitting}
-                        >
-                            {isSubmitting ? (
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            ) : (
-                                "Enviar Link de Acesso"
-                            )}
-                        </Button>
-                    </form>
-                </Form>
-            )}
+                </form>
+            </Form>
             
             <div className="text-center text-sm text-gray-500 pt-4">
               <Link to="/login" className="text-catback-purple hover:underline">
