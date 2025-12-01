@@ -2,7 +2,7 @@ import React from "react";
 import { LoyaltyCard, useDeleteLoyaltyCard } from "@/hooks/use-loyalty-cards";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Trash, Eye, Pencil, Users, Share2, RotateCw, Loader2, Cat } from "lucide-react";
+import { Trash, Eye, Pencil, Users, Share2, RotateCw, Loader2, Printer } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 import LoyaltyCardVisual from "./LoyaltyCardVisual"; // Import the extracted visual component
 import LoyaltyCardViewModal from "./LoyaltyCardViewModal"; // Import the new view modal
 import LoyaltyCardShareModal from "./LoyaltyCardShareModal"; // Import the new share modal
+import LoyaltyPosterModal from "./LoyaltyPosterModal"; // Import the new poster modal
 
 interface LoyaltyCardDisplayProps {
   card: LoyaltyCard;
@@ -21,6 +22,7 @@ const LoyaltyCardDisplay: React.FC<LoyaltyCardDisplayProps> = ({ card }) => {
   const [isEditDialogOpen, setIsEditDialogOpen] = React.useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = React.useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = React.useState(false);
+  const [isPosterModalOpen, setIsPosterModalOpen] = React.useState(false); // New state for poster modal
 
   const handleDelete = () => {
     if (window.confirm(`Tem certeza que deseja deletar o cartão '${card.name}'? Isso removerá todos os cartões de clientes associados.`)) {
@@ -112,6 +114,14 @@ const LoyaltyCardDisplay: React.FC<LoyaltyCardDisplayProps> = ({ card }) => {
           </div>
           
           <Button 
+            variant="outline" 
+            className="w-full mt-3 text-catback-dark-purple border-catback-dark-purple hover:bg-catback-light-purple/20" 
+            onClick={() => setIsPosterModalOpen(true)} // New button action
+          >
+            <Printer className="w-4 h-4 mr-2" /> Imprimir Poster
+          </Button>
+
+          <Button 
             variant="destructive" 
             className="w-full mt-3" 
             onClick={handleDelete}
@@ -137,6 +147,11 @@ const LoyaltyCardDisplay: React.FC<LoyaltyCardDisplayProps> = ({ card }) => {
         card={card}
         isOpen={isShareModalOpen}
         onClose={() => setIsShareModalOpen(false)}
+      />
+      <LoyaltyPosterModal
+        card={card}
+        isOpen={isPosterModalOpen}
+        onClose={() => setIsPosterModalOpen(false)}
       />
     </>
   );
