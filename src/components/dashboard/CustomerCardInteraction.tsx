@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { showError } from "@/utils/toast";
+import { cn } from "@/lib/utils"; // Import cn for conditional styling
 
 interface CustomerCardInteractionProps {
   card: CustomerCard;
@@ -152,8 +153,12 @@ const CustomerCardInteraction: React.FC<CustomerCardInteractionProps> = ({ card,
                       <Button 
                           onClick={handleRedeemStampCard}
                           disabled={isMutating || !isComplete}
-                          variant="outline"
-                          className="border-catback-success-green text-catback-success-green hover:bg-catback-success-green/10 flex-grow"
+                          className={cn(
+                            "flex-grow",
+                            isComplete 
+                                ? "bg-catback-success-green text-white hover:bg-catback-success-green/90"
+                                : "bg-gray-200 text-gray-500 border border-gray-300 cursor-not-allowed hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-400 dark:border-gray-600"
+                          )}
                       >
                           {isMutating && isComplete ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Gift className="h-4 w-4 mr-2" />}
                           Resgatar
