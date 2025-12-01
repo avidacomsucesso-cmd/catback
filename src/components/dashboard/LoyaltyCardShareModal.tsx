@@ -40,8 +40,11 @@ const LoyaltyCardShareModal: React.FC<LoyaltyCardShareModalProps> = ({ card, isO
         showSuccess("Código público copiado!");
     };
 
+    // --- Nova Mensagem de Compartilhamento ---
+    const whatsappMessage = `🎉 Fidelize-se e ganhe! Aderir ao Cartão ${card.name} e receba a recompensa: ${card.reward_description}. Clique para aderir agora: ${publicUrl}`;
+
     const socialShareOptions = [
-        { name: "WhatsApp", icon: MessageSquare, color: "bg-[#25D366] hover:bg-[#1DA851]", url: `https://wa.me/?text=${encodeURIComponent(`Aderir ao Cartão de Fidelidade ${card.name}: ${publicUrl}`)}` },
+        { name: "WhatsApp", icon: MessageSquare, color: "bg-[#25D366] hover:bg-[#1DA851]", url: `https://wa.me/?text=${encodeURIComponent(whatsappMessage)}` },
         { name: "Facebook", icon: Facebook, color: "bg-[#1877F2] hover:bg-[#145CB3]", url: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(publicUrl)}&quote=${encodeURIComponent(`Aderir ao Cartão de Fidelidade ${card.name}`)}` },
         { name: "X (Twitter)", icon: Twitter, color: "bg-black dark:bg-white dark:text-black hover:bg-gray-800", url: `https://twitter.com/intent/tweet?text=${encodeURIComponent(`Aderir ao Cartão de Fidelidade ${card.name} via CATBACK: ${publicUrl}`)}` },
         // Instagram and TikTok usually require native app sharing or deep links, which are complex. We'll use placeholders/links to the platforms.
