@@ -36,21 +36,23 @@ const LoyaltyCardVisual: React.FC<LoyaltyCardVisualProps> = ({ card, isFlipped, 
         >
             {/* Card Front (QR Code View) */}
             <div className="absolute w-full h-full backface-hidden rounded-xl p-4 bg-gray-200 dark:bg-gray-700 shadow-lg flex flex-col items-center justify-center text-center">
-            <div className="w-16 h-16 rounded-full bg-white dark:bg-gray-800 mb-2 overflow-hidden flex items-center justify-center">
-                <Cat className="w-10 h-10 text-catback-purple" />
+            
+            <div className="flex items-center space-x-2 mb-2">
+                <img src="/images/catback-logo.png" alt="Logo" className="w-8 h-8" />
+                <p className="font-semibold text-gray-800 dark:text-gray-200">
+                    {card.name}
+                </p>
             </div>
-            <p className="font-semibold text-gray-800 dark:text-gray-200">
-                {card.name}
-            </p>
-            <div className="w-28 h-28 bg-white p-1 rounded-md mt-2">
+
+            <div className="w-32 h-32 bg-white p-1 rounded-md mt-2">
                 <QRCodeSVG 
                     value={qrCodeValue} 
-                    size={100} 
+                    size={120} 
                     level="H" 
                     className="w-full h-full"
                 />
             </div>
-            <p className="text-xs text-gray-600 dark:text-gray-400 mt-1 font-mono">
+            <p className="text-xs text-gray-600 dark:text-gray-400 mt-2 font-mono">
                 {displayCode}
             </p>
             </div>
