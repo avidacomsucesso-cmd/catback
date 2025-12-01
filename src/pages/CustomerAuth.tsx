@@ -98,6 +98,7 @@ const CustomerAuth: React.FC = () => {
   
   const businessName = businessSettings?.business_name || "CATBACK";
   const logoUrl = businessSettings?.logo_url;
+  const signupRedirect = `/customer-signup?redirect=${encodeURIComponent(redirectUrl || "/customer-cards")}`;
 
   return (
     <Layout>
@@ -155,6 +156,12 @@ const CustomerAuth: React.FC = () => {
                 </form>
             </Form>
             
+            <div className="text-center text-sm text-gray-500">
+              Não tem conta?{" "}
+              <Link to={signupRedirect} className="text-catback-energy-orange hover:underline">
+                Criar Conta Cliente
+              </Link>
+            </div>
             <div className="text-center text-sm text-gray-500 pt-4">
               <Link to="/login" className="text-catback-purple hover:underline">
                 Acesso para Lojistas
