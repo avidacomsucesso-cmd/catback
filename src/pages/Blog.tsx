@@ -8,38 +8,56 @@ const mockPosts = [
   {
     id: 1,
     title: "5 Estratégias de Fidelização para Cafés em 2024",
-    summary: "Descubra como os cartões de selos digitais podem aumentar a retenção de clientes em 65%.",
+    summary: "Descubra como os cartões de selos digitais podem aumentar a retenção de clientes em 65%. Um guia prático para o seu negócio de restauração.",
     date: "15 de Outubro, 2024",
     category: "Fidelização",
-    image: "/placeholder.svg",
+    image: "/placeholder-cafe.jpg", // Placeholder image
     slug: "5-estrategias-fidelizacao-cafes",
   },
   {
     id: 2,
     title: "Como Reduzir No-Shows em Barbearias com Lembretes Automáticos",
-    summary: "Aprenda a usar o Agendamento Online do CATBACK para garantir que seus clientes apareçam.",
+    summary: "Aprenda a usar o Agendamento Online do CATBACK para garantir que seus clientes apareçam e otimizar o tempo do seu staff.",
     date: "10 de Outubro, 2024",
     category: "Agendamento",
-    image: "/placeholder.svg",
+    image: "/placeholder-barber.jpg", // Placeholder image
     slug: "reduzir-no-shows-barbearias",
   },
   {
     id: 3,
     title: "CRM para Pequenos Negócios: O Guia Essencial",
-    summary: "Entenda como uma base de clientes centralizada pode impulsionar suas vendas e marketing.",
+    summary: "Entenda como uma base de clientes centralizada pode impulsionar suas vendas e marketing, transformando dados em lucro.",
     date: "01 de Outubro, 2024",
     category: "CRM",
-    image: "/placeholder.svg",
+    image: "/placeholder-crm.jpg", // Placeholder image
     slug: "crm-pequenos-negocios-guia",
   },
   {
     id: 4,
     title: "Cashback vs. Pontos: Qual o Melhor para o Seu Restaurante?",
-    summary: "Análise detalhada dos dois principais métodos de recompensa para o setor de restauração.",
+    summary: "Análise detalhada dos dois principais métodos de recompensa para o setor de restauração e como escolher o ideal.",
     date: "25 de Setembro, 2024",
     category: "Restauração",
-    image: "/placeholder.svg",
+    image: "/placeholder-cashback.jpg", // Placeholder image
     slug: "cashback-vs-pontos-restaurante",
+  },
+  {
+    id: 5,
+    title: "O Poder do Display NFC: Avaliações 5 Estrelas Sem Esforço",
+    summary: "Descubra como a tecnologia NFC pode simplificar a coleta de avaliações positivas no Google My Business.",
+    date: "20 de Setembro, 2024",
+    category: "Marketing",
+    image: "/placeholder-nfc.jpg", // Placeholder image
+    slug: "o-poder-do-display-nfc",
+  },
+  {
+    id: 6,
+    title: "Maximizando o LTV: Estratégias de Retenção Pós-Compra",
+    summary: "Técnicas avançadas para garantir que o cliente volte após a primeira visita, usando automações de marketing.",
+    date: "10 de Setembro, 2024",
+    category: "Estratégia",
+    image: "/placeholder-ltv.jpg", // Placeholder image
+    slug: "maximizando-o-ltv",
   },
 ];
 

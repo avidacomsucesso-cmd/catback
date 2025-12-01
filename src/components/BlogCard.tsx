@@ -20,12 +20,18 @@ interface BlogCardProps {
 const BlogCard: React.FC<BlogCardProps> = ({ post }) => {
   return (
     <Card className="overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col h-full">
-      <div className="relative h-48 w-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
-        {/* Placeholder for image */}
+      <div className="relative h-48 w-full bg-gray-200 dark:bg-gray-700">
+        {/* Image or Placeholder */}
         <img 
           src={post.image} 
           alt={post.title} 
           className="w-full h-full object-cover"
+          onError={(e) => {
+            // Fallback to a generic placeholder if image fails to load
+            e.currentTarget.onerror = null; 
+            e.currentTarget.src = "/placeholder.svg";
+            e.currentTarget.className = "w-1/3 h-1/3 object-contain mx-auto my-auto p-4";
+          }}
         />
         <span className="absolute top-3 left-3 bg-catback-purple text-white text-xs font-semibold px-3 py-1 rounded-full">
           {post.category}
