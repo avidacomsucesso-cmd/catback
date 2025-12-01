@@ -24,6 +24,7 @@ import BlogPost from "./pages/BlogPost";
 import Dashboard from "./pages/Dashboard";
 import CustomerCards from "./pages/CustomerCards"; 
 import CustomerAuth from "./pages/CustomerAuth";
+import CustomerSignup from "./pages/CustomerSignup"; // Import CustomerSignup
 import CustomerCardEnrollment from "./pages/CustomerCardEnrollment";
 import CustomerBooking from "./pages/CustomerBooking";
 import CustomerSettings from "./pages/CustomerSettings"; // Import the new settings page
@@ -57,6 +58,7 @@ const App = () => (
             
             {/* Customer Routes */}
             <Route path="/customer-auth" element={<CustomerAuth />} />
+            <Route path="/customer-signup" element={<CustomerSignup />} /> {/* New Customer Signup Route */}
             <Route path="/enroll" element={<CustomerCardEnrollment />} />
             
             {/* Protected Routes (Lojista) */}
