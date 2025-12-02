@@ -86,16 +86,11 @@ serve(async (req) => {
     
     let subject = '';
     let bodyText = '';
-    let ctaText = 'Ver Meus Agendamentos';
+    let ctaText = 'Acessar Minha Área';
     
-    // --- CORRECTION: Use SUPABASE_URL as base and redirect to customer-auth first ---
+    // --- CORRECTION: Point directly to the customer authentication page ---
     const appBaseUrl = Deno.env.get('SUPABASE_URL') ?? 'https://xwwvhlwoxmbczqkcxqxg.supabase.co';
-    
-    // The final destination after login/auth
-    const finalDestination = '/customer-cards?tab=appointments';
-    
-    // The CTA link must point to the customer authentication page, passing the final destination as a redirect parameter.
-    let ctaLink = `${appBaseUrl}/customer-auth?redirect=${encodeURIComponent(finalDestination)}`;
+    let ctaLink = `${appBaseUrl}/customer-auth`;
     // ----------------------------------------------------------------
 
     if (type === 'confirmation') {
