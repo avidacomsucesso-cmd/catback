@@ -115,12 +115,22 @@ const CustomerCards: React.FC = () => {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
+    // 1. Sign out from Supabase
     await supabase.auth.signOut();
     showSuccess("Sessão encerrada.");
-    navigate("/customer-auth");
+    
+    // 2. Force navigation to the login page immediately
+    navigate("/customer-auth", { replace: true });
   };
 
-  const displayIdentifier = user?.email || user?.phone || 'Cliente';
+  // If user is null (which should be handled by ProtectedRoute, but we use it for display)
+  if (!user) {
+    // This should ideally be caught by ProtectedRoute, but if we reach here, we navigate away.
+    // We return null or a loading state to prevent rendering stale data.
+    return null; 
+  }
+
+  const displayIdentifier = user.email || user.phone || 'Cliente';
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col items-center pt-8 pb-16">
