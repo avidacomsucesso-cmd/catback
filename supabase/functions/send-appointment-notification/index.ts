@@ -38,6 +38,7 @@ async function sendWhatsAppMessage(recipientPhone: string, templateName: string,
     console.log(`--- Meta API Call ---`);
     console.log(`Recipient: ${recipientPhone}`);
     console.log(`Template: ${templateName}`);
+    console.log(`Payload: ${JSON.stringify(payload)}`); // LOGGING PAYLOAD
     
     const response = await fetch(META_API_URL, {
         method: 'POST',
@@ -49,9 +50,9 @@ async function sendWhatsAppMessage(recipientPhone: string, templateName: string,
     });
 
     if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Meta API Error:", errorData);
-        throw new Error(`Falha ao enviar mensagem via Meta API: ${JSON.stringify(errorData)}`);
+        const errorText = await response.text();
+        console.error("Meta API Error Response:", errorText); // LOGGING ERROR RESPONSE
+        throw new Error(`Falha ao enviar mensagem via Meta API: ${errorText}`);
     }
 
     return { success: true, message: "Mensagem enviada com sucesso." };
@@ -86,6 +87,9 @@ serve(async (req) => {
 
     const targetPhone = customer?.phone;
     
+    console.log(`Customer Identifier: ${customer_identifier}`);
+    console.log(`Target Phone Retrieved: ${targetPhone}`); // LOGGING PHONE
+
     const formattedTime = new Date(start_time).toLocaleString('pt-PT', { 
         dateStyle: 'short', 
         timeStyle: 'short' 
