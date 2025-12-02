@@ -15,14 +15,15 @@ const META_API_URL = `https://graph.facebook.com/v19.0/${WHATSAPP_PHONE_NUMBER_I
 const TEMPLATE_CONFIRMATION = 'appointment_confirmation';
 const TEMPLATE_REMINDER = 'appointment_reminder';
 
-// Function to simulate sending a message via Meta API
+// Function to send a message via Meta API (REAL IMPLEMENTATION)
 async function sendWhatsAppMessage(recipientPhone: string, templateName: string, components: any[]) {
     if (!WHATSAPP_ACCESS_TOKEN || !WHATSAPP_PHONE_NUMBER_ID) {
-        console.error("Meta API secrets not configured. Skipping real send.");
-        return { success: false, message: "Meta API not configured." };
+        throw new Error("Meta API secrets not configured.");
     }
 
-    // NOTE: This is a simulation of the fetch call structure.
+    // Meta API requires phone number to start with country code (e.g., 35191...)
+    // Assuming the stored phone number is correctly formatted for Meta API.
+    
     const payload = {
         messaging_product: "whatsapp",
         to: recipientPhone,
@@ -34,13 +35,10 @@ async function sendWhatsAppMessage(recipientPhone: string, templateName: string,
         },
     };
 
-    console.log(`--- Meta API Call Simulation ---`);
+    console.log(`--- Meta API Call ---`);
     console.log(`Recipient: ${recipientPhone}`);
     console.log(`Template: ${templateName}`);
-    console.log(`Payload: ${JSON.stringify(payload)}`);
     
-    // In a real app, the fetch call would be here:
-    /*
     const response = await fetch(META_API_URL, {
         method: 'POST',
         headers: {
@@ -52,11 +50,11 @@ async function sendWhatsAppMessage(recipientPhone: string, templateName: string,
 
     if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(`Meta API Error: ${JSON.stringify(errorData)}`);
+        console.error("Meta API Error:", errorData);
+        throw new Error(`Falha ao enviar mensagem via Meta API: ${JSON.stringify(errorData)}`);
     }
-    */
 
-    return { success: true, message: "Meta API call simulated successfully." };
+    return { success: true, message: "Mensagem enviada com sucesso." };
 }
 
 
@@ -122,19 +120,17 @@ serve(async (req) => {
         throw new Error("Tipo de notificação inválido.");
     }
 
-    let notificationResult = { success: false, message: "Nenhuma notificação enviada." };
+    let notificationResult = { success: false, message: "Nenhuma notificação enviada. Telefone não encontrado." };
 
     if (targetPhone) {
-        // Meta API requires phone number to start with country code (e.g., 35191...)
-        // Assuming the stored phone number is correctly formatted for Meta API.
+        // Execute the real API call
         notificationResult = await sendWhatsAppMessage(targetPhone, templateName, components);
     } else {
-        // Fallback to email if phone is missing (optional, but good practice)
-        console.log(`No phone number found for identifier: ${customer_identifier}. Skipping WhatsApp.`);
+        console.log(`No phone number found for identifier: ${customer_identifier}. WhatsApp notification skipped.`);
     }
     
     return new Response(
-      JSON.stringify({ success: true, message: `Simulação de envio de WhatsApp concluída. Resultado: ${notificationResult.message}` }),
+      JSON.stringify({ success: true, message: `Notificação de WhatsApp processada. Resultado: ${notificationResult.message}` }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 200,
