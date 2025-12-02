@@ -9,10 +9,11 @@ import StampCardVisual from "@/components/customer/StampCardVisual";
 import PointsCashbackCardVisual from "@/components/customer/PointsCashbackCardVisual";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
-import { showSuccess } from "@/utils/toast";
+import { showSuccess, showError } from "@/utils/toast"; // Import showError
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CustomerAppointmentsList from "@/components/customer/CustomerAppointmentsList";
 import TransactionHistory from "@/components/customer/TransactionHistory";
+import { useQueryClient } from "@tanstack/react-query"; // Import useQueryClient
 
 // --- Componente Visual do Cartão do Cliente ---
 const CustomerCardVisual: React.FC<{ card: CustomerCard }> = ({ card }) => {
@@ -113,20 +114,37 @@ const LoyaltyCardsTab: React.FC = () => {
 const CustomerCards: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const queryClient = useQueryClient(); // Obter a instância do QueryClient
 
   const handleLogout = async () => {
-    // 1. Sign out from Supabase
-    await supabase.auth.signOut();
-    showSuccess("Sessão encerrada.");
-    
-    // 2. Force navigation to the login page immediately
-    navigate("/customer-auth", { replace: true });
+    try {
+      // 1. Limpar explicitamente o token de sessão do Supabase do armazenamento local
+      // O ID do projeto Supabase é 'xwwvhlwoxmbczqkcxqxg'
+      localStorage.removeItem('sb-xwwvhlwoxmbczqkcxqxg-auth-token'); 
+      
+      // 2. Chamar a função signOut do Supabase
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        throw error;
+      }
+
+      // 3. Limpar o cache de dados do react-query
+      queryClient.clear(); 
+      showSuccess("Sessão encerrada.");
+      
+      // 4. Forçar um recarregamento completo da página e redirecionar
+      // Isso garante que todo o estado da aplicação React e do router seja reiniciado.
+      window.location.replace("/customer-auth"); 
+
+    } catch (error: any) {
+      console.error("Erro ao encerrar sessão:", error);
+      showError(`Erro ao encerrar sessão: ${error.message}`);
+    }
   };
 
-  // If user is null (which should be handled by ProtectedRoute, but we use it for display)
+  // Se user for null, o ProtectedRoute já deve ter redirecionado.
+  // Este componente só deve ser renderizado se user for válido.
   if (!user) {
-    // This should ideally be caught by ProtectedRoute, but if we reach here, we navigate away.
-    // We return null or a loading state to prevent rendering stale data.
     return null; 
   }
 
