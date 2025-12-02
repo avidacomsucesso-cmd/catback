@@ -8,6 +8,22 @@ import { pt } from "date-fns/locale";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+
+const getStatusBadge = (status: string) => {
+    switch (status) {
+        case 'confirmed':
+            return <Badge className="bg-catback-success-green hover:bg-catback-success-green/90">Confirmado</Badge>;
+        case 'pending':
+            return <Badge variant="secondary">Pendente</Badge>;
+        case 'cancelled':
+            return <Badge variant="destructive">Cancelado</Badge>;
+        case 'completed':
+            return <Badge className="bg-catback-dark-purple hover:bg-catback-dark-purple/90">Concluído</Badge>;
+        default:
+            return <Badge variant="secondary">{status}</Badge>;
+    }
+};
 
 const CustomerAppointmentsList: React.FC = () => {
   const { user } = useAuth();
@@ -33,8 +49,8 @@ const CustomerAppointmentsList: React.FC = () => {
     return <div className="text-center p-10 text-red-500">Erro ao carregar agendamentos.</div>;
   }
 
-  const upcomingAppointments = appointments?.filter(a => new Date(a.start_time) >= new Date()) || [];
-  const pastAppointments = appointments?.filter(a => new Date(a.start_time) < new Date()) || [];
+  const upcomingAppointments = appointments?.filter(a => new Date(a.start_time) >= new Date() && a.status !== 'cancelled') || [];
+  const pastAppointments = appointments?.filter(a => new Date(a.start_time) < new Date() || a.status === 'cancelled') || [];
 
   return (
     <div className="space-y-8">
@@ -80,11 +96,17 @@ const CustomerAppointmentsList: React.FC = () => {
 
       {/* Past Appointments */}
       <div>
-        <h3 className="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">Histórico</h3>
+        <h3 className="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">Histórico e Cancelados</h3>
         {pastAppointments.length > 0 ? (
           <div className="space-y-4">
             {pastAppointments.map(app => (
-              <Card key={app.id} className="shadow-sm bg-gray-50 dark:bg-gray-800/50 opacity-80">
+              <Card 
+                key={app.id} 
+                className={cn(
+                    "shadow-sm",
+                    app.status === 'cancelled' ? "bg-red-50 dark:bg-red-900/20 opacity-90" : "bg-gray-50 dark:bg-gray-800/50 opacity-80"
+                )}
+              >
                 <CardContent className="p-4 flex justify-between items-center">
                   <div>
                     <p className="font-bold text-gray-700 dark:text-gray-300">{app.services.name}</p>
@@ -92,9 +114,12 @@ const CustomerAppointmentsList: React.FC = () => {
                       {format(new Date(app.start_time), "d 'de' MMMM 'de' yyyy", { locale: pt })}
                     </p>
                   </div>
-                  <Badge variant="outline">
-                    {format(new Date(app.start_time), "HH:mm")}
-                  </Badge>
+                  <div className="flex flex-col items-end space-y-1">
+                    {getStatusBadge(app.status)}
+                    <Badge variant="outline">
+                        {format(new Date(app.start_time), "HH:mm")}
+                    </Badge>
+                  </div>
                 </CardContent>
               </Card>
             ))}
