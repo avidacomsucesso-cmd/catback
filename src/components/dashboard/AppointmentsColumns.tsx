@@ -3,7 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { Appointment, useDeleteAppointment } from "@/hooks/use-appointments"
 import { Button } from "@/components/ui/button"
-import { ArrowUpDown, MoreHorizontal, Pencil, Trash } from "lucide-react"
+import { ArrowUpDown, MoreHorizontal, Pencil, Trash, Bell } from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,6 +18,7 @@ import AppointmentForm from "./AppointmentForm"
 import React from "react"
 import { format } from "date-fns"
 import { pt } from "date-fns/locale"
+import { useSendAppointmentNotification } from "@/hooks/use-notifications" // Import the new hook
 
 const getStatusBadge = (status: string) => {
     switch (status) {
@@ -90,12 +91,20 @@ export const columns: ColumnDef<Appointment>[] = [
     cell: ({ row }) => {
       const appointment = row.original
       const deleteMutation = useDeleteAppointment()
+      const sendNotificationMutation = useSendAppointmentNotification() // Use the new hook
       const [isEditDialogOpen, setIsEditDialogOpen] = React.useState(false)
 
       const handleDelete = () => {
         if (window.confirm(`Tem certeza que deseja cancelar o agendamento para '${appointment.services.name}'?`)) {
           deleteMutation.mutate(appointment.id)
         }
+      }
+      
+      const handleSendReminder = () => {
+        sendNotificationMutation.mutate({
+            appointment: appointment,
+            type: 'reminder'
+        });
       }
 
       return (
@@ -112,6 +121,17 @@ export const columns: ColumnDef<Appointment>[] = [
               <DropdownMenuItem onClick={() => setIsEditDialogOpen(true)}>
                 <Pencil className="mr-2 h-4 w-4" />
                 Editar
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                onClick={handleSendReminder}
+                disabled={sendNotificationMutation.isPending}
+              >
+                {sendNotificationMutation.isPending ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                    <Bell className="mr-2 h-4 w-4" />
+                )}
+                Enviar Lembrete
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={handleDelete} className="text-red-500">
