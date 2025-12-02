@@ -1,13 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { CustomerCard, useUpdateCustomerCardProgress, useRedeemStampCard } from "@/hooks/use-customer-cards";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Loader2, Stamp, Gift, Plus, Minus, History } from "lucide-react";
+import { Loader2, Stamp, Gift, Plus, Minus, History, TrendingUp, DollarSign } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { showError } from "@/utils/toast";
-import { cn } from "@/lib/utils"; // Import cn for conditional styling
+import { cn } from "@/lib/utils";
 
 interface CustomerCardInteractionProps {
   card: CustomerCard;
@@ -34,6 +34,17 @@ const CustomerCardInteraction: React.FC<CustomerCardInteractionProps> = ({ card,
   const currencySymbol = isCashback ? '€' : 'Pts';
   const isMutating = updateProgressMutation.isPending || redeemStampCardMutation.isPending;
 
+  const progressChange = useMemo(() => {
+    if (purchaseValue <= 0) return 0;
+    if (isPoints) {
+        return purchaseValue * (loyaltyCard.config?.points_per_euro || 0);
+    } else if (isCashback) {
+        return purchaseValue * ((loyaltyCard.config?.cashback_percentage || 0) / 100);
+    }
+    return 0;
+  }, [purchaseValue, isPoints, isCashback, loyaltyCard.config]);
+
+
   const handleStamp = () => {
     if (isStamps && card.current_progress < requiredStamps) {
       updateProgressMutation.mutate({ 
@@ -47,27 +58,18 @@ const CustomerCardInteraction: React.FC<CustomerCardInteractionProps> = ({ card,
   };
 
   const handleAddProgress = () => {
-    if (purchaseValue <= 0) {
+    if (purchaseValue <= 0 || progressChange <= 0) {
       showError("Insira um valor de compra válido.");
       return;
     }
 
-    let progressChange = 0;
-    if (isPoints) {
-      progressChange = purchaseValue * (loyaltyCard.config?.points_per_euro || 0);
-    } else if (isCashback) {
-      progressChange = purchaseValue * ((loyaltyCard.config?.cashback_percentage || 0) / 100);
-    }
-
-    if (progressChange > 0) {
-      updateProgressMutation.mutate({ 
+    updateProgressMutation.mutate({ 
         cardId: card.id, 
         progressChange,
         description: `Compra de €${purchaseValue.toFixed(2)}`,
         customer_identifier: card.customer_identifier,
         loyalty_card_id: card.loyalty_card_id,
-      }, { onSuccess: () => setPurchaseValue(0) });
-    }
+    }, { onSuccess: () => setPurchaseValue(0) });
   };
 
   const handleRedeemProgress = () => {
@@ -83,7 +85,7 @@ const CustomerCardInteraction: React.FC<CustomerCardInteractionProps> = ({ card,
     updateProgressMutation.mutate({ 
       cardId: card.id, 
       progressChange: -redeemValue,
-      description: `Uso de saldo de ${redeemValue.toFixed(2)} ${currencySymbol}`,
+      description: `Uso de saldo de ${redeemValue.toFixed(isCashback ? 2 : 0)} ${currencySymbol}`,
       customer_identifier: card.customer_identifier,
       loyalty_card_id: card.loyalty_card_id,
     }, { onSuccess: () => setRedeemValue(0) });
@@ -133,9 +135,13 @@ const CustomerCardInteraction: React.FC<CustomerCardInteractionProps> = ({ card,
           ) : (
               <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg text-center">
                   <p className="text-sm text-gray-500 dark:text-gray-400">Saldo Atual:</p>
-                  <p className="text-3xl font-extrabold text-catback-energy-orange">
-                      {card.current_progress.toFixed(isCashback ? 2 : 0)} {currencySymbol}
-                  </p>
+                  <div className="flex items-center justify-center space-x-2">
+                    {(isPoints ? <TrendingUp className="w-6 h-6 text-catback-energy-orange" /> : <DollarSign className="w-6 h-6 text-catback-energy-orange" />)}
+                    <p className="text-3xl font-extrabold text-catback-energy-orange">
+                        {card.current_progress.toFixed(isCashback ? 2 : 0)}
+                    </p>
+                    <span className="text-xl font-semibold opacity-90">{currencySymbol}</span>
+                  </div>
               </div>
           )}
           
@@ -167,10 +173,27 @@ const CustomerCardInteraction: React.FC<CustomerCardInteractionProps> = ({ card,
               ) : (
                   <div className="space-y-4">
                       <div className="space-y-2 p-3 border rounded-md">
-                          <p className="text-sm font-medium">Adicionar {currencySymbol}</p>
+                          <p className="text-sm font-medium flex justify-between items-center">
+                            <span>Adicionar {currencySymbol} (Acumular)</span>
+                            {purchaseValue > 0 && (
+                                <span className="text-catback-success-green font-bold">
+                                    +{progressChange.toFixed(isCashback ? 2 : 0)} {currencySymbol}
+                                </span>
+                            )}
+                          </p>
                           <div className="flex space-x-2">
-                              <Input type="number" placeholder="Valor da Compra (€)" value={purchaseValue || ''} onChange={(e) => setPurchaseValue(parseFloat(e.target.value) || 0)} />
-                              <Button onClick={handleAddProgress} disabled={isMutating || purchaseValue <= 0} className="bg-catback-success-green hover:bg-catback-success-green/90">
+                              <Input 
+                                type="number" 
+                                placeholder="Valor da Compra (€)" 
+                                value={purchaseValue || ''} 
+                                onChange={(e) => setPurchaseValue(parseFloat(e.target.value) || 0)} 
+                                step={0.01}
+                              />
+                              <Button 
+                                onClick={handleAddProgress} 
+                                disabled={isMutating || purchaseValue <= 0 || progressChange <= 0} 
+                                className="bg-catback-success-green hover:bg-catback-success-green/90"
+                              >
                                   <Plus className="h-4 w-4" />
                               </Button>
                           </div>
@@ -178,8 +201,18 @@ const CustomerCardInteraction: React.FC<CustomerCardInteractionProps> = ({ card,
                       <div className="space-y-2 p-3 border rounded-md">
                           <p className="text-sm font-medium">Usar Saldo ({currencySymbol})</p>
                           <div className="flex space-x-2">
-                              <Input type="number" placeholder={`Valor a usar em ${currencySymbol}`} value={redeemValue || ''} onChange={(e) => setRedeemValue(parseFloat(e.target.value) || 0)} />
-                              <Button onClick={handleRedeemProgress} disabled={isMutating || redeemValue <= 0} variant="destructive">
+                              <Input 
+                                type="number" 
+                                placeholder={`Valor a usar em ${currencySymbol}`} 
+                                value={redeemValue || ''} 
+                                onChange={(e) => setRedeemValue(parseFloat(e.target.value) || 0)} 
+                                step={isCashback ? 0.01 : 1}
+                              />
+                              <Button 
+                                onClick={handleRedeemProgress} 
+                                disabled={isMutating || redeemValue <= 0 || redeemValue > card.current_progress} 
+                                variant="destructive"
+                              >
                                   <Minus className="h-4 w-4" />
                               </Button>
                           </div>
