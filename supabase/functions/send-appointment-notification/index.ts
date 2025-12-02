@@ -30,6 +30,7 @@ serve(async (req) => {
     const { data: customer, error: customerError } = await supabaseAdmin
         .from('customers')
         .select('email')
+        // NOTE: We assume customer_identifier is the email or phone stored in the identifier column
         .eq('identifier', customer_identifier)
         .maybeSingle();
 
@@ -39,6 +40,7 @@ serve(async (req) => {
     
     if (!targetEmail) {
         console.log(`No email found for identifier: ${customer_identifier}. Email notification skipped.`);
+        // Return 200 OK even if email is skipped, as this is expected behavior if data is missing
         return new Response(
             JSON.stringify({ success: true, message: "Email do cliente não encontrado. Notificação ignorada." }),
             { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
@@ -75,7 +77,7 @@ serve(async (req) => {
     let subject = '';
     let bodyText = '';
     let ctaText = 'Ver Meus Agendamentos';
-    let ctaLink = `${req.url.split('/functions')[0]}/customer-cards?tab=appointments`; // Link to customer area
+    let ctaLink = `${req.url.split('/functions')[0]}/customer-cards?tab=appointments`;
 
     if (type === 'confirmation') {
         subject = `Confirmação de Agendamento com ${businessName}`;
@@ -102,14 +104,15 @@ serve(async (req) => {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            // We don't need to pass the JWT here since send-email uses RESEND_API_KEY
         },
         body: JSON.stringify(emailPayload),
     });
 
     if (!emailResponse.ok) {
+        // Read the error response from the send-email function for better debugging
         const errorData = await emailResponse.json();
         console.error("Email Function Error:", errorData);
+        // Throw an error to return a non-2xx status code to the client
         throw new Error(`Falha ao enviar email: ${errorData.error || emailResponse.statusText}`);
     }
     
@@ -125,7 +128,7 @@ serve(async (req) => {
     console.error("Edge Function Error:", error);
     return new Response(JSON.stringify({ error: error.message }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      status: 400,
+      status: 400, // Return 400 status code on error
     });
   }
 });

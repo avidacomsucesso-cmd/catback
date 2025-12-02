@@ -62,7 +62,8 @@ serve(async (req) => {
   }
 
   if (!RESEND_API_KEY) {
-    return new Response(JSON.stringify({ error: 'RESEND_API_KEY not configured' }), {
+    // CRITICAL ERROR: Return 500 if API key is missing
+    return new Response(JSON.stringify({ error: 'RESEND_API_KEY not configured in Supabase Secrets.' }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 500,
     });
@@ -95,7 +96,8 @@ serve(async (req) => {
     if (!resendResponse.ok) {
       const errorData = await resendResponse.json();
       console.error("Resend API Error:", errorData);
-      throw new Error(`Falha ao enviar email via Resend: ${resendResponse.statusText}`);
+      // Propagate the error message from Resend
+      throw new Error(`Falha ao enviar email via Resend: ${errorData.message || resendResponse.statusText}`);
     }
 
     return new Response(JSON.stringify({ success: true }), {
