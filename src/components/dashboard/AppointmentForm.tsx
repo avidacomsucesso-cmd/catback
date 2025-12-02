@@ -16,7 +16,7 @@ import { useServices } from "@/hooks/use-services";
 import { useCreateAppointment, useUpdateAppointment, Appointment } from "@/hooks/use-appointments";
 
 const formSchema = z.object({
-  service_id: z.string({ required_error: "Selecione um serviço." }),
+  service_id: z.string({ required_error: "Selecione um serviço." }).min(1, { message: "Selecione um serviço." }),
   customer_identifier: z.string().min(3, { message: "Identificador do cliente é obrigatório." }),
   start_time: z.date({ required_error: "A data é obrigatória." }),
   time: z.string({ required_error: "A hora é obrigatória." }),
@@ -56,6 +56,9 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ appointment, onFinish
         status: appointment?.status || "confirmed",
     }
   });
+
+  // Watch service_id to ensure it's selected
+  const serviceIdWatch = form.watch("service_id");
 
   // Populate form when appointment data loads (only relevant if we were fetching it here, but good practice)
   useEffect(() => {
@@ -239,7 +242,11 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ appointment, onFinish
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full bg-catback-purple hover:bg-catback-dark-purple" disabled={isSubmitting}>
+        <Button 
+          type="submit" 
+          className="w-full bg-catback-purple hover:bg-catback-dark-purple" 
+          disabled={isSubmitting || !serviceIdWatch} // Disable if submitting or service is not selected
+        >
           {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : (isEditing ? "Salvar Alterações" : "Criar Agendamento")}
         </Button>
       </form>
