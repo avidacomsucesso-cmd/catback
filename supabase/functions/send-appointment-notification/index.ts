@@ -88,9 +88,9 @@ serve(async (req) => {
     let bodyText = '';
     let ctaText = 'Ver Meus Agendamentos';
     
-    // --- CORRECTION HERE: Extract the base URL of the application ---
-    // The base URL is the Supabase URL without the /functions/v1/... path.
-    const appBaseUrl = req.url.split('/functions')[0];
+    // --- CORRECTION: Use the SUPABASE_URL environment variable as the base URL for the application ---
+    // This variable is guaranteed to be the root URL of the project (e.g., https://<project_id>.supabase.co)
+    const appBaseUrl = Deno.env.get('SUPABASE_URL') ?? 'https://xwwvhlwoxmbczqkcxqxg.supabase.co';
     let ctaLink = `${appBaseUrl}/customer-cards?tab=appointments`;
     // ----------------------------------------------------------------
 
