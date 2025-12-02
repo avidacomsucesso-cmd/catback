@@ -28,7 +28,9 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    // 1. Get customer details (we need the email)
+    let targetEmail: string | null = null;
+
+    // 1. Try to get customer details from the 'customers' table
     const { data: customer, error: customerError } = await supabaseAdmin
         .from('customers')
         .select('email')
@@ -37,10 +39,15 @@ serve(async (req) => {
 
     if (customerError) throw customerError;
 
-    const targetEmail = customer?.email;
+    if (customer?.email) {
+        targetEmail = customer.email;
+    } else if (customer_identifier.includes('@')) {
+        // 2. Fallback: If identifier looks like an email, use it directly
+        targetEmail = customer_identifier;
+    }
     
     if (!targetEmail) {
-        console.log(`[Notification] No email found for identifier: ${customer_identifier}. Email notification skipped.`);
+        console.log(`[Notification] No valid email found for identifier: ${customer_identifier}. Email notification skipped.`);
         return new Response(
             JSON.stringify({ success: true, message: "Email do cliente não encontrado. Notificação ignorada." }),
             { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
@@ -50,7 +57,7 @@ serve(async (req) => {
     console.log(`[Notification] Target Email found: ${targetEmail}`);
 
 
-    // 2. Get business settings for branding
+    // 3. Get business settings for branding
     const authHeader = req.headers.get('Authorization')!;
     const jwt = authHeader.split('Bearer ')[1];
     const { data: { user } } = await supabaseAdmin.auth.getUser(jwt);
@@ -71,7 +78,7 @@ serve(async (req) => {
         }
     }
 
-    // 3. Prepare Email Content
+    // 4. Prepare Email Content
     const formattedTime = new Date(start_time).toLocaleString('pt-PT', { 
         dateStyle: 'full', 
         timeStyle: 'short' 
@@ -92,7 +99,7 @@ serve(async (req) => {
         throw new Error("Tipo de notificação inválido.");
     }
 
-    // 4. Call the generic send-email function
+    // 5. Call the generic send-email function
     const emailPayload = {
         email: targetEmail,
         subject: subject,
