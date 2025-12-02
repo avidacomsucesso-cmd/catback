@@ -73,7 +73,8 @@ const Signup: React.FC = () => {
           businessName: values.businessName, 
       };
 
-      const { error: edgeError } = await supabase.functions.invoke('send-welcome-email', {
+      // NOTE: Renamed from 'send-welcome-email' to 'send-email'
+      const { error: edgeError } = await supabase.functions.invoke('send-email', {
           body: payload,
       });
 
