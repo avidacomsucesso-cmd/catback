@@ -9,6 +9,9 @@ const corsHeaders = {
 // URL da Edge Function genérica de envio de email
 const SEND_EMAIL_URL = 'https://xwwvhlwoxmbczqkcxqxg.supabase.co/functions/v1/send-email';
 
+// --- DOMÍNIO DE PRODUÇÃO DO FRONTEND ---
+const FRONTEND_BASE_URL = 'https://catback.vercel.app';
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
@@ -88,9 +91,8 @@ serve(async (req) => {
     let bodyText = '';
     let ctaText = 'Acessar Minha Área';
     
-    // --- CORRECTION: Point directly to the customer authentication page ---
-    const appBaseUrl = Deno.env.get('SUPABASE_URL') ?? 'https://xwwvhlwoxmbczqkcxqxg.supabase.co';
-    let ctaLink = `${appBaseUrl}/customer-auth`;
+    // --- CORRECTION: Use the hardcoded Vercel domain ---
+    let ctaLink = `${FRONTEND_BASE_URL}/customer-auth`;
     // ----------------------------------------------------------------
 
     if (type === 'confirmation') {
