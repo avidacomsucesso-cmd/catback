@@ -21,7 +21,16 @@ const sendAppointmentNotification = async ({ appointment, type }: SendNotificati
     });
 
     if (error) {
-        throw new Error(error.message);
+        // Attempt to parse the error message if it's a JSON string from the function
+        try {
+            const errorJson = JSON.parse(error.message);
+            if (errorJson.error) {
+                throw new Error(errorJson.error);
+            }
+        } catch (e) {
+            // If parsing fails, use the original message
+        }
+        throw error;
     }
 };
 
