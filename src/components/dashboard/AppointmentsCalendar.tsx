@@ -1,18 +1,20 @@
 import React, { useState, useMemo } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import { useAppointments, useDeleteAppointment, Appointment } from "@/hooks/use-appointments";
-import { Loader2, Trash, Clock, Pencil } from "lucide-react";
+import { useSendAppointmentNotification } from "@/hooks/use-notifications"; // Import the new hook
+import { Loader2, Trash, Clock, Pencil, Bell } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { format, isSameDay } from "date-fns";
 import { pt } from "date-fns/locale";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import AppointmentForm from "./AppointmentForm";
 
 // Helper component for displaying and managing a single appointment
 const AppointmentItem: React.FC<{ appointment: Appointment }> = ({ appointment }) => {
     const deleteMutation = useDeleteAppointment();
+    const sendNotificationMutation = useSendAppointmentNotification(); // Use the new hook
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
     const handleDelete = () => {
@@ -20,6 +22,13 @@ const AppointmentItem: React.FC<{ appointment: Appointment }> = ({ appointment }
             deleteMutation.mutate(appointment.id);
         }
     };
+    
+    const handleSendReminder = () => {
+        sendNotificationMutation.mutate({
+            appointment: appointment,
+            type: 'reminder'
+        });
+    }
 
     const getStatusBadge = (status: string) => {
         switch (status) {
@@ -53,8 +62,23 @@ const AppointmentItem: React.FC<{ appointment: Appointment }> = ({ appointment }
                     <Button
                         variant="ghost"
                         size="icon"
+                        className="text-catback-energy-orange hover:bg-catback-energy-orange/20 h-8 w-8"
+                        onClick={handleSendReminder}
+                        disabled={sendNotificationMutation.isPending}
+                        title="Enviar Lembrete"
+                    >
+                        {sendNotificationMutation.isPending ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                            <Bell className="w-4 h-4" />
+                        )}
+                    </Button>
+                    <Button
+                        variant="ghost"
+                        size="icon"
                         className="text-catback-purple hover:bg-catback-light-purple/20 h-8 w-8"
                         onClick={() => setIsEditDialogOpen(true)}
+                        title="Editar Agendamento"
                     >
                         <Pencil className="w-4 h-4" />
                     </Button>
@@ -64,6 +88,7 @@ const AppointmentItem: React.FC<{ appointment: Appointment }> = ({ appointment }
                         className="text-red-500 hover:bg-red-500/10 h-8 w-8"
                         onClick={handleDelete}
                         disabled={deleteMutation.isPending}
+                        title="Cancelar Agendamento"
                     >
                         <Trash className="w-4 h-4" />
                     </Button>
