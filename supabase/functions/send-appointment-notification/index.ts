@@ -87,7 +87,12 @@ serve(async (req) => {
     let subject = '';
     let bodyText = '';
     let ctaText = 'Ver Meus Agendamentos';
-    let ctaLink = `${req.url.split('/functions')[0]}/customer-cards?tab=appointments`;
+    
+    // --- CORRECTION HERE: Extract the base URL of the application ---
+    // The base URL is the Supabase URL without the /functions/v1/... path.
+    const appBaseUrl = req.url.split('/functions')[0];
+    let ctaLink = `${appBaseUrl}/customer-cards?tab=appointments`;
+    // ----------------------------------------------------------------
 
     if (type === 'confirmation') {
         subject = `Confirmação de Agendamento com ${businessName}`;
