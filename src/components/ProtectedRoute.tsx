@@ -10,8 +10,6 @@ interface ProtectedRouteProps {
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ redirectPath = '/login' }) => {
   const { user, isLoading } = useAuth();
 
-  console.log("ProtectedRoute: user =", user, "isLoading =", isLoading); // Log para depuração
-
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -21,7 +19,6 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ redirectPath = '/login'
   }
 
   if (!user) {
-    console.log("ProtectedRoute: User is null, redirecting to", redirectPath); // Log para depuração
     return <Navigate to={redirectPath} replace />;
   }
 
