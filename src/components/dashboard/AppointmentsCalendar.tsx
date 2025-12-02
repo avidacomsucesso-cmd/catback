@@ -45,6 +45,9 @@ const AppointmentItem: React.FC<{ appointment: Appointment }> = ({ appointment }
         }
     };
 
+    const startTime = new Date(appointment.start_time);
+    const formattedTime = isNaN(startTime.getTime()) ? 'N/A' : format(startTime, "HH:mm");
+
     return (
         <>
             <div className="p-3 rounded-lg border bg-gray-50 dark:bg-gray-800">
@@ -55,7 +58,7 @@ const AppointmentItem: React.FC<{ appointment: Appointment }> = ({ appointment }
                     </div>
                     <div className="flex flex-col items-end space-y-1">
                         {getStatusBadge(appointment.status)}
-                        <Badge variant="secondary">{format(new Date(appointment.start_time), "HH:mm")}</Badge>
+                        <Badge variant="secondary">{formattedTime}</Badge>
                     </div>
                 </div>
                 <div className="flex justify-end mt-2 space-x-2">
@@ -116,13 +119,21 @@ const AppointmentsCalendar: React.FC = () => {
   const { data: appointments, isLoading, error } = useAppointments();
 
   const eventDays = useMemo(() => {
-    return appointments?.map(a => new Date(a.start_time)) || [];
+    return appointments
+        ?.map(a => {
+            const date = new Date(a.start_time);
+            return isNaN(date.getTime()) ? null : date;
+        })
+        .filter((date): date is Date => date !== null) || [];
   }, [appointments]);
 
   const appointmentsForSelectedDay = useMemo(() => {
     if (!selectedDate || !appointments) return [];
     return appointments
-        .filter(a => isSameDay(new Date(a.start_time), selectedDate))
+        .filter(a => {
+            const date = new Date(a.start_time);
+            return !isNaN(date.getTime()) && isSameDay(date, selectedDate);
+        })
         .sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime());
   }, [selectedDate, appointments]);
 
