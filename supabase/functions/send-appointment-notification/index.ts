@@ -7,7 +7,7 @@ const corsHeaders = {
 };
 
 // NOTE: In a real scenario, you would use Twilio or a similar service here.
-// We are simulating the external API call.
+// We are simulating the external API call using environment variables like TWILIO_ACCOUNT_SID, etc.
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -27,7 +27,6 @@ serve(async (req) => {
     );
 
     // 1. Get customer details (phone/email)
-    // Since customer_identifier can be email or phone, we need to check the 'customers' table
     const { data: customer, error: customerError } = await supabaseAdmin
         .from('customers')
         .select('phone, email')
@@ -36,7 +35,9 @@ serve(async (req) => {
 
     if (customerError) throw customerError;
 
-    const targetContact = customer?.phone || customer?.email || customer_identifier;
+    // Determine the best contact method (prioritize phone for WhatsApp/SMS)
+    const targetPhone = customer?.phone;
+    const targetEmail = customer?.email;
     
     const formattedTime = new Date(start_time).toLocaleString('pt-PT', { 
         dateStyle: 'short', 
@@ -55,15 +56,22 @@ serve(async (req) => {
     // --- SIMULATION LOGIC ---
     console.log(`--- Notification Simulation ---`);
     console.log(`Type: ${type}`);
-    console.log(`To: ${targetContact}`);
+    
+    if (targetPhone) {
+        console.log(`Attempting to send via WhatsApp/SMS to: ${targetPhone}`);
+        // In a real app, Twilio/WhatsApp API call would go here
+    } else if (targetEmail) {
+        console.log(`Attempting to send via Email to: ${targetEmail}`);
+        // In a real app, Resend API call would go here
+    } else {
+        console.log(`No contact method found for identifier: ${customer_identifier}. Notification skipped.`);
+    }
+    
     console.log(`Message: ${messageBody}`);
     // --------------------------
 
-    // In a real app, you would call Twilio API here:
-    // await twilioClient.messages.create({...});
-
     return new Response(
-      JSON.stringify({ success: true, message: `Simulação de envio de ${type} para ${targetContact}` }),
+      JSON.stringify({ success: true, message: `Simulação de envio de ${type} concluída.` }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 200,
