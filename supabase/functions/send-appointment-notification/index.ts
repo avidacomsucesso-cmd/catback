@@ -6,58 +6,8 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// Meta API Configuration (Requires secrets to be set in Supabase)
-const WHATSAPP_ACCESS_TOKEN = Deno.env.get('WHATSAPP_ACCESS_TOKEN');
-const WHATSAPP_PHONE_NUMBER_ID = Deno.env.get('WHATSAPP_PHONE_NUMBER_ID');
-const META_API_URL = `https://graph.facebook.com/v19.0/${WHATSAPP_PHONE_NUMBER_ID}/messages`;
-
-// Template names (These must be pre-approved by Meta)
-const TEMPLATE_CONFIRMATION = 'appointment_confirmation';
-const TEMPLATE_REMINDER = 'appointment_reminder';
-
-// Function to send a message via Meta API (REAL IMPLEMENTATION)
-async function sendWhatsAppMessage(recipientPhone: string, templateName: string, components: any[]) {
-    if (!WHATSAPP_ACCESS_TOKEN || !WHATSAPP_PHONE_NUMBER_ID) {
-        throw new Error("Meta API secrets not configured.");
-    }
-
-    // Meta API requires phone number to start with country code (e.g., 35191...)
-    // Assuming the stored phone number is correctly formatted for Meta API.
-    
-    const payload = {
-        messaging_product: "whatsapp",
-        to: recipientPhone,
-        type: "template",
-        template: {
-            name: templateName,
-            language: { code: "pt_PT" },
-            components: components,
-        },
-    };
-
-    console.log(`--- Meta API Call ---`);
-    console.log(`Recipient: ${recipientPhone}`);
-    console.log(`Template: ${templateName}`);
-    console.log(`Payload: ${JSON.stringify(payload)}`); // LOGGING PAYLOAD
-    
-    const response = await fetch(META_API_URL, {
-        method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${WHATSAPP_ACCESS_TOKEN}`,
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-    });
-
-    if (!response.ok) {
-        const errorText = await response.text();
-        console.error("Meta API Error Response:", errorText); // LOGGING ERROR RESPONSE
-        throw new Error(`Falha ao enviar mensagem via Meta API: ${errorText}`);
-    }
-
-    return { success: true, message: "Mensagem enviada com sucesso." };
-}
-
+// URL da Edge Function genérica de envio de email
+const SEND_EMAIL_URL = 'https://xwwvhlwoxmbczqkcxqxg.supabase.co/functions/v1/send-email';
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -76,65 +26,95 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    // 1. Get customer details (phone/email)
+    // 1. Get customer details (we need the email)
     const { data: customer, error: customerError } = await supabaseAdmin
         .from('customers')
-        .select('phone, email')
+        .select('email')
         .eq('identifier', customer_identifier)
         .maybeSingle();
 
     if (customerError) throw customerError;
 
-    const targetPhone = customer?.phone;
+    const targetEmail = customer?.email;
     
-    console.log(`Customer Identifier: ${customer_identifier}`);
-    console.log(`Target Phone Retrieved: ${targetPhone}`); // LOGGING PHONE
+    if (!targetEmail) {
+        console.log(`No email found for identifier: ${customer_identifier}. Email notification skipped.`);
+        return new Response(
+            JSON.stringify({ success: true, message: "Email do cliente não encontrado. Notificação ignorada." }),
+            { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+        );
+    }
 
+    // 2. Get business settings for branding
+    const authHeader = req.headers.get('Authorization')!;
+    const jwt = authHeader.split('Bearer ')[1];
+    const { data: { user } } = await supabaseAdmin.auth.getUser(jwt);
+    
+    let businessName = "CATBACK";
+    let logoUrl = null;
+
+    if (user) {
+        const { data: settings } = await supabaseAdmin
+            .from('business_settings')
+            .select('business_name, logo_url')
+            .eq('user_id', user.id)
+            .maybeSingle();
+        
+        if (settings) {
+            businessName = settings.business_name;
+            logoUrl = settings.logo_url;
+        }
+    }
+
+    // 3. Prepare Email Content
     const formattedTime = new Date(start_time).toLocaleString('pt-PT', { 
-        dateStyle: 'short', 
+        dateStyle: 'full', 
         timeStyle: 'short' 
     });
-
-    let templateName = '';
-    let components: any[] = [];
+    
+    let subject = '';
+    let bodyText = '';
+    let ctaText = 'Ver Meus Agendamentos';
+    let ctaLink = `${req.url.split('/functions')[0]}/customer-cards?tab=appointments`; // Link to customer area
 
     if (type === 'confirmation') {
-        templateName = TEMPLATE_CONFIRMATION;
-        components = [
-            {
-                type: "body",
-                parameters: [
-                    { type: "text", text: service_name },
-                    { type: "text", text: formattedTime },
-                ],
-            },
-        ];
+        subject = `Confirmação de Agendamento com ${businessName}`;
+        bodyText = `O seu agendamento para o serviço <strong>${service_name}</strong> foi confirmado com sucesso para o dia <strong>${formattedTime}</strong>. Estamos ansiosos pela sua visita!`;
     } else if (type === 'reminder') {
-        templateName = TEMPLATE_REMINDER;
-        components = [
-            {
-                type: "body",
-                parameters: [
-                    { type: "text", text: service_name },
-                    { type: "text", text: formattedTime },
-                ],
-            },
-        ];
+        subject = `Lembrete: Agendamento com ${businessName}`;
+        bodyText = `Este é um lembrete amigável sobre o seu agendamento para <strong>${service_name}</strong>, que está marcado para <strong>${formattedTime}</strong>. Por favor, confirme a sua presença.`;
     } else {
         throw new Error("Tipo de notificação inválido.");
     }
 
-    let notificationResult = { success: false, message: "Nenhuma notificação enviada. Telefone não encontrado." };
+    // 4. Call the generic send-email function
+    const emailPayload = {
+        email: targetEmail,
+        subject: subject,
+        bodyText: bodyText,
+        ctaLink: ctaLink,
+        ctaText: ctaText,
+        logoUrl: logoUrl,
+        businessName: businessName,
+    };
 
-    if (targetPhone) {
-        // Execute the real API call
-        notificationResult = await sendWhatsAppMessage(targetPhone, templateName, components);
-    } else {
-        console.log(`No phone number found for identifier: ${customer_identifier}. WhatsApp notification skipped.`);
+    const emailResponse = await fetch(SEND_EMAIL_URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            // We don't need to pass the JWT here since send-email uses RESEND_API_KEY
+        },
+        body: JSON.stringify(emailPayload),
+    });
+
+    if (!emailResponse.ok) {
+        const errorData = await emailResponse.json();
+        console.error("Email Function Error:", errorData);
+        throw new Error(`Falha ao enviar email: ${errorData.error || emailResponse.statusText}`);
     }
     
     return new Response(
-      JSON.stringify({ success: true, message: `Notificação de WhatsApp processada. Resultado: ${notificationResult.message}` }),
+      JSON.stringify({ success: true, message: `Notificação de Email processada com sucesso.` }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 200,

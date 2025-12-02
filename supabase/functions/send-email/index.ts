@@ -69,6 +69,7 @@ serve(async (req) => {
   }
 
   try {
+    // Expecting generic email data
     const { email, subject, bodyText, ctaLink, ctaText, logoUrl, businessName } = await req.json();
 
     if (!email || !subject || !bodyText || !ctaLink || !ctaText) {
