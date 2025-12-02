@@ -2,7 +2,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
 const RESEND_URL = 'https://api.resend.com/emails';
-const SENDER_EMAIL = 'avidacomsucesso@gmail.com'; // Revertido para Gmail, pois o domínio verificado falhou na API
+const SENDER_EMAIL = 'comercial@modello.pt'; // Usando o email no domínio verificado 'modello.pt'
 const SENDER_NAME = 'CATBACK'; // Nome que aparecerá como remetente
 
 const corsHeaders = {
