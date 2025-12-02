@@ -3,6 +3,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
 const RESEND_URL = 'https://api.resend.com/emails';
 const SENDER_EMAIL = 'avidacomsucesso@gmail.com'; // Usando o email verificado do usuário
+const SENDER_NAME = 'CATBACK'; // Nome que aparecerá como remetente
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -78,6 +79,9 @@ serve(async (req) => {
     }
 
     const htmlContent = generateEmailHtml(subject, bodyText, ctaLink, ctaText, logoUrl, businessName);
+    
+    // Use the full sender format: "Name <email@example.com>"
+    const fullSender = `${SENDER_NAME} <${SENDER_EMAIL}>`;
 
     const resendResponse = await fetch(RESEND_URL, {
       method: 'POST',
@@ -86,7 +90,7 @@ serve(async (req) => {
         'Authorization': `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: SENDER_EMAIL,
+        from: fullSender, // Use o formato completo
         to: email,
         subject: subject,
         html: htmlContent,
