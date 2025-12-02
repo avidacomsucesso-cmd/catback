@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Calendar, List, Clock } from "lucide-react";
+import { PlusCircle, Calendar, List, Clock, Send } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,6 +13,7 @@ import { columns as appointmentsColumns } from "./AppointmentsColumns"; // Impor
 import ServiceForm from "./ServiceForm";
 import AppointmentForm from "./AppointmentForm";
 import AppointmentsCalendar from "./AppointmentsCalendar";
+import TestNotificationModal from "./TestNotificationModal"; // Import the new modal
 
 const AppointmentsListTab: React.FC = () => {
     const { data: appointments, isLoading, error } = useAppointments();
@@ -45,6 +46,7 @@ const AppointmentsListTab: React.FC = () => {
 const SchedulingPage: React.FC = () => {
   const [isCreateServiceOpen, setIsCreateServiceOpen] = React.useState(false);
   const [isCreateAppointmentOpen, setIsCreateAppointmentOpen] = React.useState(false);
+  const [isTestNotificationOpen, setIsTestNotificationOpen] = React.useState(false); // New state
   const { data: services, isLoading: isLoadingServices, error: servicesError } = useServices();
 
   return (
@@ -59,6 +61,7 @@ const SchedulingPage: React.FC = () => {
                     <TabsTrigger value="list"><List className="w-4 h-4 mr-2" />Lista</TabsTrigger>
                     <TabsTrigger value="services"><List className="w-4 h-4 mr-2" />Serviços</TabsTrigger>
                 </TabsList>
+                
                 <Dialog open={isCreateAppointmentOpen} onOpenChange={setIsCreateAppointmentOpen}>
                     <DialogTrigger asChild>
                         <Button className="bg-catback-purple hover:bg-catback-dark-purple flex-shrink-0">
@@ -71,6 +74,16 @@ const SchedulingPage: React.FC = () => {
                         </DialogHeader>
                         <AppointmentForm onFinished={() => setIsCreateAppointmentOpen(false)} />
                     </DialogContent>
+                </Dialog>
+                
+                {/* New Test Notification Button */}
+                <Dialog open={isTestNotificationOpen} onOpenChange={setIsTestNotificationOpen}>
+                    <DialogTrigger asChild>
+                        <Button variant="outline" className="flex-shrink-0 hidden sm:flex">
+                            <Send className="w-4 h-4" />
+                        </Button>
+                    </DialogTrigger>
+                    <TestNotificationModal onClose={() => setIsTestNotificationOpen(false)} />
                 </Dialog>
             </div>
         </div>
