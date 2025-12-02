@@ -24,10 +24,12 @@ import BlogPost from "./pages/BlogPost";
 import Dashboard from "./pages/Dashboard";
 import CustomerCards from "./pages/CustomerCards"; 
 import CustomerAuth from "./pages/CustomerAuth";
-import CustomerSignup from "./pages/CustomerSignup"; // Import CustomerSignup
+import CustomerSignup from "./pages/CustomerSignup"; 
 import CustomerCardEnrollment from "./pages/CustomerCardEnrollment";
 import CustomerBooking from "./pages/CustomerBooking";
-import CustomerSettings from "./pages/CustomerSettings"; // Import the new settings page
+import CustomerSettings from "./pages/CustomerSettings"; 
+import PublicBooking from "./pages/PublicBooking"; // Import PublicBooking
+import CustomerBookingConfirm from "./pages/CustomerBookingConfirm"; // Import CustomerBookingConfirm
 
 const queryClient = new QueryClient();
 
@@ -56,21 +58,23 @@ const App = () => (
             <Route path="/about" element={<About />} />
             <Route path="/careers" element={<Careers />} />
             
-            {/* Customer Routes */}
+            {/* Customer Routes (Public/Auth Entry) */}
             <Route path="/customer-auth" element={<CustomerAuth />} />
-            <Route path="/customer-signup" element={<CustomerSignup />} /> {/* New Customer Signup Route */}
+            <Route path="/customer-signup" element={<CustomerSignup />} /> 
             <Route path="/enroll" element={<CustomerCardEnrollment />} />
+            <Route path="/public-booking" element={<PublicBooking />} /> {/* New Public Booking Route */}
             
-            {/* Protected Routes (Lojista) */}
-            <Route element={<ProtectedRoute />}>
-              <Route path="/dashboard/*" element={<Dashboard />} /> 
-            </Route>
-
             {/* Protected Customer Routes */}
             <Route element={<ProtectedRoute redirectPath="/customer-auth" />}>
                 <Route path="/customer-cards" element={<CustomerCards />} />
                 <Route path="/customer-booking" element={<CustomerBooking />} />
+                <Route path="/customer-booking-confirm" element={<CustomerBookingConfirm />} /> {/* New Confirmation Route */}
                 <Route path="/customer-settings" element={<CustomerSettings />} />
+            </Route>
+
+            {/* Protected Routes (Lojista) */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="/dashboard/*" element={<Dashboard />} /> 
             </Route>
 
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
