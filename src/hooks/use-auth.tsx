@@ -18,9 +18,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        setIsLoading(false);
+        if (event === 'SIGNED_OUT') {
+            // Explicitly clear user and session immediately on sign out event
+            setSession(null);
+            setUser(null);
+            setIsLoading(false);
+        } else {
+            setSession(session);
+            setUser(session?.user ?? null);
+            setIsLoading(false);
+        }
       }
     );
 
