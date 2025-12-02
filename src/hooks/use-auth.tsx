@@ -18,6 +18,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (event, session) => {
+        console.log("Auth event in useAuth:", event, "session:", session); // Log para depuração
         setSession(session);
         setUser(session?.user ?? null);
         setIsLoading(false);
@@ -26,6 +27,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // Fetch initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log("Initial session in useAuth:", session); // Log para depuração
       setSession(session);
       setUser(session?.user ?? null);
       setIsLoading(false);
