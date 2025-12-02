@@ -19,19 +19,23 @@ serve(async (req) => {
     return new Response('ok', { headers: corsHeaders });
   }
 
-  const url = new URL(req.url);
-  const code = url.searchParams.get('code');
-  const state = url.searchParams.get('state'); // Contains the user's JWT
-
-  if (!code || !state) {
-    return new Response('Missing code or state parameter.', { status: 400 });
+  // CRITICAL ERROR: Check for required environment variables
+  if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {
+    return new Response('Server configuration error: Missing GOOGLE_CLIENT_ID or GOOGLE_CLIENT_SECRET secrets.', { status: 500 });
   }
-
-  if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET || !SUPABASE_SERVICE_ROLE_KEY) {
-    return new Response('Server configuration error: Missing Google or Supabase secrets.', { status: 500 });
+  if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
+    return new Response('Server configuration error: Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY secrets.', { status: 500 });
   }
 
   try {
+    const url = new URL(req.url);
+    const code = url.searchParams.get('code');
+    const state = url.searchParams.get('state'); // Contains the user's JWT
+
+    if (!code || !state) {
+      return new Response('Missing code or state parameter.', { status: 400 });
+    }
+
     // 1. Authenticate user using the JWT from the state parameter
     const supabaseAdmin = createClient(SUPABASE_URL!, SUPABASE_SERVICE_ROLE_KEY!);
     const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(state);

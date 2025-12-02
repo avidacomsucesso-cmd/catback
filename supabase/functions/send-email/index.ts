@@ -1,8 +1,8 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
+const SENDER_EMAIL_ADDRESS = Deno.env.get('SENDER_EMAIL_ADDRESS'); // Nova variável de ambiente
 const RESEND_URL = 'https://api.resend.com/emails';
-const SENDER_EMAIL = 'comercial@modello.pt'; // Usando o email no domínio verificado 'modello.pt'
 const SENDER_NAME = 'CATBACK'; // Nome que aparecerá como remetente
 
 const corsHeaders = {
@@ -63,15 +63,20 @@ serve(async (req) => {
   }
 
   if (!RESEND_API_KEY) {
-    // CRITICAL ERROR: Return 500 if API key is missing
     return new Response(JSON.stringify({ error: 'RESEND_API_KEY not configured in Supabase Secrets.' }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 500,
     });
   }
 
+  if (!SENDER_EMAIL_ADDRESS) {
+    return new Response(JSON.stringify({ error: 'SENDER_EMAIL_ADDRESS not configured in Supabase Secrets.' }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: 500,
+    });
+  }
+
   try {
-    // Expecting generic email data
     const { email, subject, bodyText, ctaLink, ctaText, logoUrl, businessName } = await req.json();
 
     if (!email || !subject || !bodyText || !ctaLink || !ctaText) {
@@ -80,8 +85,7 @@ serve(async (req) => {
 
     const htmlContent = generateEmailHtml(subject, bodyText, ctaLink, ctaText, logoUrl, businessName);
     
-    // Use the full sender format: "Name <email@example.com>"
-    const fullSender = `${SENDER_NAME} <${SENDER_EMAIL}>`;
+    const fullSender = `${SENDER_NAME} <${SENDER_EMAIL_ADDRESS}>`;
 
     const resendResponse = await fetch(RESEND_URL, {
       method: 'POST',
@@ -90,7 +94,7 @@ serve(async (req) => {
         'Authorization': `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: fullSender, // Use o formato completo
+        from: fullSender,
         to: email,
         subject: subject,
         html: htmlContent,
@@ -100,7 +104,6 @@ serve(async (req) => {
     if (!resendResponse.ok) {
       const errorData = await resendResponse.json();
       console.error("Resend API Error:", errorData);
-      // Propagate the error message from Resend
       throw new Error(`Falha ao enviar email via Resend: ${errorData.message || resendResponse.statusText}`);
     }
 
