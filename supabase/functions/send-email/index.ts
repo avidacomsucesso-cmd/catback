@@ -2,7 +2,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
 const RESEND_URL = 'https://api.resend.com/emails';
-const SENDER_EMAIL = 'onboarding@catback.pt'; // Use a verified domain/email
+const SENDER_EMAIL = 'avidacomsucesso@gmail.com'; // Usando o email verificado do usuário
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
