@@ -96,6 +96,7 @@ const CustomerAuth: React.FC = () => {
   const businessName = businessSettings?.business_name || "CATBACK";
   const logoUrl = businessSettings?.logo_url;
   const signupRedirect = `/customer-signup?redirect=${encodeURIComponent(redirectUrl || "/customer-cards")}`;
+  const forgotPasswordRedirect = `/forgot-password-cliente?redirect=${encodeURIComponent(redirectUrl || "/customer-cards")}`;
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center p-4">
@@ -138,6 +139,11 @@ const CustomerAuth: React.FC = () => {
                           </FormItem>
                       )}
                   />
+                  <div className="flex justify-end text-sm">
+                    <Link to={forgotPasswordRedirect} className="text-catback-energy-orange hover:underline">
+                        Esqueceu a senha?
+                    </Link>
+                  </div>
                   <Button 
                       type="submit" 
                       className="w-full bg-catback-energy-orange hover:bg-catback-energy-orange/90"
