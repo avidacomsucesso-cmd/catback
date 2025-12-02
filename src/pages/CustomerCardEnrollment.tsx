@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { useParams, useSearchParams, useNavigate, Link } from "react-router-dom";
-import Layout from "@/components/Layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Loader2, Cat, CheckCircle, ArrowRight } from "lucide-react";
@@ -72,28 +71,28 @@ const CustomerCardEnrollment: React.FC = () => {
 
   if (isLoading || (user && !loyaltyCard)) {
     return (
-      <Layout>
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center p-4">
         <div className="container py-20 text-center">
           <Loader2 className="h-8 w-8 animate-spin text-catback-purple mx-auto" />
           <p className="mt-4 text-gray-600 dark:text-gray-400">
             {loyaltyCardId ? "A carregar programa de fidelidade..." : "ID do cartão inválido."}
           </p>
         </div>
-      </Layout>
+      </div>
     );
   }
 
   if (!user) {
     // This state should be brief as the useEffect should redirect quickly
     return (
-        <Layout>
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center p-4">
             <div className="container py-20 text-center">
                 <Loader2 className="h-8 w-8 animate-spin text-catback-purple mx-auto" />
                 <p className="mt-4 text-gray-600 dark:text-gray-400">
                     Redirecionando para autenticação...
                 </p>
             </div>
-        </Layout>
+        </div>
     );
   }
 
@@ -101,63 +100,66 @@ const CustomerCardEnrollment: React.FC = () => {
   const enrollmentSuccess = findOrCreateMutation.isSuccess || !!findOrCreateMutation.data;
   const cardName = loyaltyCard?.name || "Cartão de Fidelidade";
   const businessName = businessSettings?.business_name || "O Lojista";
+  const logoUrl = businessSettings?.logo_url;
 
   return (
-    <Layout>
-      <div className="container py-16 flex justify-center">
-        <Card className="w-full max-w-md shadow-xl text-center">
-          <CardHeader>
-            <Cat className="w-10 h-10 mx-auto text-catback-purple mb-2" />
-            <CardTitle className="text-3xl font-bold text-catback-dark-purple">
-              {enrollmentSuccess ? "Adesão Concluída!" : `Aderir ao Cartão de ${businessName}`}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {isEnrolling ? (
-              <div className="p-6">
-                <Loader2 className="h-8 w-8 animate-spin text-catback-purple mx-auto" />
-                <p className="mt-4 text-gray-600 dark:text-gray-400">
-                  A processar sua adesão...
-                </p>
-              </div>
-            ) : enrollmentSuccess ? (
-              <div className="p-6 space-y-4">
-                <CheckCircle className="h-12 w-12 text-catback-success-green mx-auto" />
-                <p className="text-lg font-medium text-gray-700 dark:text-gray-300">
-                  Parabéns! Você agora faz parte do programa de fidelidade "{cardName}" de {businessName}.
-                </p>
-                <Link to="/customer-cards">
-                  <Button className="w-full bg-catback-purple hover:bg-catback-dark-purple">
-                    Ver Meus Cartões <ArrowRight className="w-4 h-4 ml-2" />
-                  </Button>
-                </Link>
-              </div>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center p-4">
+      <Card className="w-full max-w-md shadow-xl text-center">
+        <CardHeader>
+            {logoUrl ? (
+                <img src={logoUrl} alt={businessName} className="w-10 h-10 mx-auto mb-2 object-contain" />
             ) : (
-                <div className="p-6 space-y-4">
-                    <p className="text-lg font-medium text-gray-700 dark:text-gray-300">
-                        Clique abaixo para adicionar o cartão "{cardName}" de {businessName} à sua conta.
-                    </p>
-                    <Button 
-                        onClick={() => {
-                            // Manually trigger the mutation if it hasn't run yet (e.g., if user was already logged in)
-                            const customerIdentifier = user?.email || user?.phone;
-                            if (customerIdentifier) {
-                                findOrCreateMutation.mutate({
-                                    loyalty_card_id: loyaltyCardId!,
-                                    customer_identifier: customerIdentifier,
-                                });
-                            }
-                        }}
-                        className="w-full bg-catback-energy-orange hover:bg-catback-energy-orange/90"
-                    >
-                        Aderir Agora
-                    </Button>
-                </div>
+                <Cat className="w-10 h-10 mx-auto text-catback-purple mb-2" />
             )}
-          </CardContent>
-        </Card>
-      </div>
-    </Layout>
+          <CardTitle className="text-3xl font-bold text-catback-dark-purple">
+            {enrollmentSuccess ? "Adesão Concluída!" : `Aderir ao Cartão de ${businessName}`}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {isEnrolling ? (
+            <div className="p-6">
+              <Loader2 className="h-8 w-8 animate-spin text-catback-purple mx-auto" />
+              <p className="mt-4 text-gray-600 dark:text-gray-400">
+                A processar sua adesão...
+              </p>
+            </div>
+          ) : enrollmentSuccess ? (
+            <div className="p-6 space-y-4">
+              <CheckCircle className="h-12 w-12 text-catback-success-green mx-auto" />
+              <p className="text-lg font-medium text-gray-700 dark:text-gray-300">
+                Parabéns! Você agora faz parte do programa de fidelidade "{cardName}" de {businessName}.
+              </p>
+              <Link to="/customer-cards">
+                <Button className="w-full bg-catback-purple hover:bg-catback-dark-purple">
+                  Ver Meus Cartões <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              </Link>
+            </div>
+          ) : (
+              <div className="p-6 space-y-4">
+                  <p className="text-lg font-medium text-gray-700 dark:text-gray-300">
+                      Clique abaixo para adicionar o cartão "{cardName}" de {businessName} à sua conta.
+                  </p>
+                  <Button 
+                      onClick={() => {
+                          // Manually trigger the mutation if it hasn't run yet (e.g., if user was already logged in)
+                          const customerIdentifier = user?.email || user?.phone;
+                          if (customerIdentifier) {
+                              findOrCreateMutation.mutate({
+                                  loyalty_card_id: loyaltyCardId!,
+                                  customer_identifier: customerIdentifier,
+                              });
+                          }
+                      }}
+                      className="w-full bg-catback-energy-orange hover:bg-catback-energy-orange/90"
+                  >
+                      Aderir Agora
+                  </Button>
+              </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 

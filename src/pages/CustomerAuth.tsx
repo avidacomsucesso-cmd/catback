@@ -4,7 +4,6 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Cat, Loader2, Mail } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
-import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { showSuccess, showError } from "@/utils/toast";
@@ -88,11 +87,9 @@ const CustomerAuth: React.FC = () => {
 
   if (isLoading || user || isLoadingSettings) {
     return (
-        <Layout>
-            <div className="container py-20 text-center">
-                <Loader2 className="h-8 w-8 animate-spin text-catback-purple mx-auto" />
-            </div>
-        </Layout>
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+            <Loader2 className="h-8 w-8 animate-spin text-catback-purple mx-auto" />
+        </div>
     );
   }
   
@@ -101,76 +98,74 @@ const CustomerAuth: React.FC = () => {
   const signupRedirect = `/customer-signup?redirect=${encodeURIComponent(redirectUrl || "/customer-cards")}`;
 
   return (
-    <Layout>
-      <div className="container py-16 flex justify-center">
-        <Card className="w-full max-w-md shadow-xl">
-          <CardHeader className="text-center">
-            {logoUrl ? (
-                <img src={logoUrl} alt={businessName} className="w-20 h-20 mx-auto mb-2 object-contain" />
-            ) : (
-                <Cat className="w-8 h-8 mx-auto text-catback-purple mb-2" />
-            )}
-            <CardTitle className="text-3xl font-bold text-catback-dark-purple">Acesso Cliente {businessName !== "CATBACK" && `| ${businessName}`}</CardTitle>
-            <p className="text-sm text-gray-500">Entre para ver seus cartões de fidelidade e agendamentos.</p>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                    <FormField
-                        control={form.control}
-                        name="email"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Email</FormLabel>
-                                <FormControl>
-                                    <Input id="email" type="email" placeholder="seu@email.com" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name="password"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Senha</FormLabel>
-                                <FormControl>
-                                    <Input id="password" type="password" placeholder="********" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <Button 
-                        type="submit" 
-                        className="w-full bg-catback-energy-orange hover:bg-catback-energy-orange/90"
-                        disabled={isSubmitting}
-                    >
-                        {isSubmitting ? (
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        ) : (
-                            "Entrar na Minha Área"
-                        )}
-                    </Button>
-                </form>
-            </Form>
-            
-            <div className="text-center text-sm text-gray-500">
-              Não tem conta?{" "}
-              <Link to={signupRedirect} className="text-catback-energy-orange hover:underline">
-                Criar Conta Cliente
-              </Link>
-            </div>
-            <div className="text-center text-sm text-gray-500 pt-4">
-              <Link to="/login" className="text-catback-purple hover:underline">
-                Acesso para Lojistas
-              </Link>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    </Layout>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center p-4">
+      <Card className="w-full max-w-md shadow-xl">
+        <CardHeader className="text-center">
+          {logoUrl ? (
+              <img src={logoUrl} alt={businessName} className="w-20 h-20 mx-auto mb-2 object-contain" />
+          ) : (
+              <Cat className="w-8 h-8 mx-auto text-catback-purple mb-2" />
+          )}
+          <CardTitle className="text-3xl font-bold text-catback-dark-purple">Acesso Cliente {businessName !== "CATBACK" && `| ${businessName}`}</CardTitle>
+          <p className="text-sm text-gray-500">Entre para ver seus cartões de fidelidade e agendamentos.</p>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                  <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                          <FormItem>
+                              <FormLabel>Email</FormLabel>
+                              <FormControl>
+                                  <Input id="email" type="email" placeholder="seu@email.com" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                          </FormItem>
+                      )}
+                  />
+                  <FormField
+                      control={form.control}
+                      name="password"
+                      render={({ field }) => (
+                          <FormItem>
+                              <FormLabel>Senha</FormLabel>
+                              <FormControl>
+                                  <Input id="password" type="password" placeholder="********" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                          </FormItem>
+                      )}
+                  />
+                  <Button 
+                      type="submit" 
+                      className="w-full bg-catback-energy-orange hover:bg-catback-energy-orange/90"
+                      disabled={isSubmitting}
+                  >
+                      {isSubmitting ? (
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      ) : (
+                          "Entrar na Minha Área"
+                      )}
+                  </Button>
+              </form>
+          </Form>
+          
+          <div className="text-center text-sm text-gray-500">
+            Não tem conta?{" "}
+            <Link to={signupRedirect} className="text-catback-energy-orange hover:underline">
+              Criar Conta Cliente
+            </Link>
+          </div>
+          <div className="text-center text-sm text-gray-500 pt-4">
+            <Link to="/login" className="text-catback-purple hover:underline">
+              Acesso para Lojistas
+            </Link>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 

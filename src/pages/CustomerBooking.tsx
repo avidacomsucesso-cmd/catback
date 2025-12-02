@@ -1,5 +1,4 @@
 import React, { useState, useMemo } from "react";
-import Layout from "@/components/Layout";
 import { useServices, Service } from "@/hooks/use-services";
 import { useCreateAppointment } from "@/hooks/use-appointments";
 import { useAuth } from "@/hooks/use-auth";
@@ -123,35 +122,33 @@ const CustomerBooking: React.FC = () => {
   };
 
   if (isLoadingServices) {
-    return <Layout><div className="container py-10 text-center"><Loader2 className="h-8 w-8 animate-spin mx-auto" /></div></Layout>;
+    return <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center"><Loader2 className="h-8 w-8 animate-spin text-catback-purple mx-auto" /></div>;
   }
 
   if (step === 3) {
     return (
-        <Layout>
-            <div className="container py-16 flex justify-center">
-                <Card className="w-full max-w-lg text-center shadow-xl">
-                    <CardContent className="p-8">
-                        <CheckCircle className="w-16 h-16 text-catback-success-green mx-auto mb-4" />
-                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Agendamento Confirmado!</h2>
-                        <p className="text-gray-600 dark:text-gray-400 mt-2">
-                            O seu agendamento para <strong>{selectedService?.name}</strong> no dia <strong>{selectedDate && format(selectedDate, "PPP", { locale: pt })}</strong> às <strong>{selectedTime}</strong> foi realizado com sucesso.
-                        </p>
-                        <Button onClick={() => navigate('/customer-cards')} className="mt-6 w-full bg-catback-purple hover:bg-catback-dark-purple">
-                            Ver Meus Cartões e Agendamentos
-                        </Button>
-                    </CardContent>
-                </Card>
-            </div>
-        </Layout>
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center p-4">
+            <Card className="w-full max-w-lg text-center shadow-xl">
+                <CardContent className="p-8">
+                    <CheckCircle className="w-16 h-16 text-catback-success-green mx-auto mb-4" />
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Agendamento Confirmado!</h2>
+                    <p className="text-gray-600 dark:text-gray-400 mt-2">
+                        O seu agendamento para <strong>{selectedService?.name}</strong> no dia <strong>{selectedDate && format(selectedDate, "PPP", { locale: pt })}</strong> às <strong>{selectedTime}</strong> foi realizado com sucesso.
+                    </p>
+                    <Button onClick={() => navigate('/customer-cards')} className="mt-6 w-full bg-catback-purple hover:bg-catback-dark-purple">
+                        Ver Meus Cartões e Agendamentos
+                    </Button>
+                </CardContent>
+            </Card>
+        </div>
     );
   }
 
   return (
-    <Layout>
-      <div className="container py-10">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col items-center pt-8 pb-16">
+      <div className="w-full max-w-2xl px-4">
         {step === 2 && (
-          <Button variant="ghost" onClick={() => setStep(1)} className="mb-4">
+          <Button variant="ghost" onClick={() => setStep(1)} className="mb-4 text-catback-purple hover:text-catback-dark-purple">
             <ArrowLeft className="w-4 h-4 mr-2" /> Voltar à Lista de Serviços
           </Button>
         )}
@@ -174,7 +171,7 @@ const CustomerBooking: React.FC = () => {
                       <p className="font-bold">{service.name}</p>
                       <p className="text-sm text-gray-500">{service.duration_minutes} min - {new Intl.NumberFormat("pt-PT", { style: "currency", currency: "EUR" }).format(service.price)}</p>
                     </div>
-                    <Button onClick={() => handleSelectService(service)}>Agendar</Button>
+                    <Button onClick={() => handleSelectService(service)} className="bg-catback-energy-orange hover:bg-catback-energy-orange/90">Agendar</Button>
                   </Card>
                 ))}
               </div>
@@ -230,7 +227,7 @@ const CustomerBooking: React.FC = () => {
           </CardContent>
         </Card>
       </div>
-    </Layout>
+    </div>
   );
 };
 

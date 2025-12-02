@@ -1,7 +1,6 @@
 import React from "react";
-import Layout from "@/components/Layout";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Cat, Loader2 } from "lucide-react";
@@ -13,6 +12,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { showSuccess, showError } from "@/utils/toast";
 import { getAuthErrorMessage } from "@/utils/auth-errors";
 import { useExternalBusinessSettings } from "@/hooks/use-external-business-settings";
+import { useLoyaltyCards } from "@/hooks/use-loyalty-cards";
 
 const signupSchema = z.object({
   email: z.string().email({
@@ -78,83 +78,76 @@ const CustomerSignup: React.FC = () => {
 
   if (isLoadingSettings) {
     return (
-        <Layout>
-            <div className="container py-20 text-center">
-                <Loader2 className="h-8 w-8 animate-spin text-catback-purple mx-auto" />
-            </div>
-        </Layout>
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+            <Loader2 className="h-8 w-8 animate-spin text-catback-purple mx-auto" />
+        </div>
     );
   }
 
   return (
-    <Layout>
-      <div className="container py-16 flex justify-center">
-        <Card className="w-full max-w-md shadow-xl">
-          <CardHeader className="text-center">
-            {logoUrl ? (
-                <img src={logoUrl} alt={businessName} className="w-20 h-20 mx-auto mb-2 object-contain" />
-            ) : (
-                <Cat className="w-8 h-8 mx-auto text-catback-purple mb-2" />
-            )}
-            <CardTitle className="text-3xl font-bold text-catback-dark-purple">Criar Conta Cliente</CardTitle>
-            <p className="text-sm text-gray-500">Cadastre-se para gerenciar seus cartões de fidelidade.</p>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <Input id="email" type="email" placeholder="seu@email.com" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Criar Senha</FormLabel>
-                      <FormControl>
-                        <Input id="password" type="password" placeholder="********" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <Button 
-                  type="submit" 
-                  className="w-full bg-catback-energy-orange hover:bg-catback-energy-orange/90"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  ) : (
-                    "Criar Conta e Aderir"
-                  )}
-                </Button>
-              </form>
-            </Form>
-            <div className="text-center text-sm text-gray-500">
-              Já tem conta?{" "}
-              <Link to={`/customer-auth?redirect=${encodeURIComponent(redirectUrl)}`} className="text-catback-purple hover:underline">
-                Entrar
-              </Link>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    </Layout>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center p-4">
+      <Card className="w-full max-w-md shadow-xl">
+        <CardHeader className="text-center">
+          {logoUrl ? (
+              <img src={logoUrl} alt={businessName} className="w-20 h-20 mx-auto mb-2 object-contain" />
+          ) : (
+              <Cat className="w-8 h-8 mx-auto text-catback-purple mb-2" />
+          )}
+          <CardTitle className="text-3xl font-bold text-catback-dark-purple">Criar Conta Cliente</CardTitle>
+          <p className="text-sm text-gray-500">Cadastre-se para gerenciar seus cartões de fidelidade.</p>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input id="email" type="email" placeholder="seu@email.com" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Criar Senha</FormLabel>
+                    <FormControl>
+                      <Input id="password" type="password" placeholder="********" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button 
+                type="submit" 
+                className="w-full bg-catback-energy-orange hover:bg-catback-energy-orange/90"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  "Criar Conta e Aderir"
+                )}
+              </Button>
+            </form>
+          </Form>
+          <div className="text-center text-sm text-gray-500">
+            Já tem conta?{" "}
+            <Link to={`/customer-auth?redirect=${encodeURIComponent(redirectUrl)}`} className="text-catback-purple hover:underline">
+              Entrar
+            </Link>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
-
-// Need to import useLoyaltyCards here since it's used in the component
-import { useLoyaltyCards } from "@/hooks/use-loyalty-cards";
 
 export default CustomerSignup;
