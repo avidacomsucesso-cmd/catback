@@ -110,7 +110,7 @@ serve(async (req) => {
         businessName: businessName,
     };
     
-    console.log(`[Notification] Calling send-email for: ${targetEmail}`);
+    console.log(`[Notification] Calling send-email with payload: ${JSON.stringify(emailPayload)}`);
 
     const emailResponse = await fetch(SEND_EMAIL_URL, {
         method: 'POST',
@@ -123,7 +123,8 @@ serve(async (req) => {
     if (!emailResponse.ok) {
         const errorData = await emailResponse.json();
         console.error("Email Function Error:", errorData);
-        throw new Error(`Falha ao enviar email: ${errorData.error || emailResponse.statusText}`);
+        // Throw a detailed error message that includes the response status and body
+        throw new Error(`Falha ao enviar email (Status: ${emailResponse.status}): ${JSON.stringify(errorData)}`);
     }
     
     console.log(`[Notification] Email successfully sent via send-email function.`);
