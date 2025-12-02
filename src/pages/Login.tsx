@@ -95,6 +95,11 @@ const Login: React.FC = () => {
                     </FormItem>
                   )}
                 />
+                <div className="flex justify-end text-sm">
+                    <Link to="/forgot-password-lojista" className="text-catback-purple hover:underline">
+                        Esqueceu a senha?
+                    </Link>
+                </div>
                 <Button 
                   type="submit" 
                   className="w-full bg-catback-purple hover:bg-catback-dark-purple"

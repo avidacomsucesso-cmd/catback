@@ -30,6 +30,8 @@ import CustomerBooking from "./pages/CustomerBooking";
 import CustomerSettings from "./pages/CustomerSettings"; 
 import PublicBooking from "./pages/PublicBooking"; // Import PublicBooking
 import CustomerBookingConfirm from "./pages/CustomerBookingConfirm"; // Import CustomerBookingConfirm
+import ForgotPasswordLojista from "./pages/ForgotPasswordLojista"; // Import Lojista Forgot Password
+import ForgotPasswordCliente from "./pages/ForgotPasswordCliente"; // Import Cliente Forgot Password
 
 const queryClient = new QueryClient();
 
@@ -58,17 +60,21 @@ const App = () => (
             <Route path="/about" element={<About />} />
             <Route path="/careers" element={<Careers />} />
             
+            {/* Forgot Password Routes */}
+            <Route path="/forgot-password-lojista" element={<ForgotPasswordLojista />} />
+            <Route path="/forgot-password-cliente" element={<ForgotPasswordCliente />} />
+            
             {/* Customer Routes (Public/Auth Entry) */}
             <Route path="/customer-auth" element={<CustomerAuth />} />
             <Route path="/customer-signup" element={<CustomerSignup />} /> 
             <Route path="/enroll" element={<CustomerCardEnrollment />} />
-            <Route path="/public-booking" element={<PublicBooking />} /> {/* New Public Booking Route */}
+            <Route path="/public-booking" element={<PublicBooking />} /> 
             
             {/* Protected Customer Routes */}
             <Route element={<ProtectedRoute redirectPath="/customer-auth" />}>
                 <Route path="/customer-cards" element={<CustomerCards />} />
                 <Route path="/customer-booking" element={<CustomerBooking />} />
-                <Route path="/customer-booking-confirm" element={<CustomerBookingConfirm />} /> {/* New Confirmation Route */}
+                <Route path="/customer-booking-confirm" element={<CustomerBookingConfirm />} /> 
                 <Route path="/customer-settings" element={<CustomerSettings />} />
             </Route>
 
