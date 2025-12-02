@@ -20,6 +20,8 @@ serve(async (req) => {
     if (!customer_identifier || !start_time || !service_name || !type) {
       throw new Error("Dados de notificação incompletos.");
     }
+    
+    console.log(`[Notification] Processing request for identifier: ${customer_identifier}, type: ${type}`);
 
     const supabaseAdmin = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
@@ -30,7 +32,6 @@ serve(async (req) => {
     const { data: customer, error: customerError } = await supabaseAdmin
         .from('customers')
         .select('email')
-        // NOTE: We assume customer_identifier is the email or phone stored in the identifier column
         .eq('identifier', customer_identifier)
         .maybeSingle();
 
@@ -39,13 +40,15 @@ serve(async (req) => {
     const targetEmail = customer?.email;
     
     if (!targetEmail) {
-        console.log(`No email found for identifier: ${customer_identifier}. Email notification skipped.`);
-        // Return 200 OK even if email is skipped, as this is expected behavior if data is missing
+        console.log(`[Notification] No email found for identifier: ${customer_identifier}. Email notification skipped.`);
         return new Response(
             JSON.stringify({ success: true, message: "Email do cliente não encontrado. Notificação ignorada." }),
             { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
         );
     }
+    
+    console.log(`[Notification] Target Email found: ${targetEmail}`);
+
 
     // 2. Get business settings for branding
     const authHeader = req.headers.get('Authorization')!;
@@ -99,6 +102,8 @@ serve(async (req) => {
         logoUrl: logoUrl,
         businessName: businessName,
     };
+    
+    console.log(`[Notification] Calling send-email for: ${targetEmail}`);
 
     const emailResponse = await fetch(SEND_EMAIL_URL, {
         method: 'POST',
@@ -109,12 +114,12 @@ serve(async (req) => {
     });
 
     if (!emailResponse.ok) {
-        // Read the error response from the send-email function for better debugging
         const errorData = await emailResponse.json();
         console.error("Email Function Error:", errorData);
-        // Throw an error to return a non-2xx status code to the client
         throw new Error(`Falha ao enviar email: ${errorData.error || emailResponse.statusText}`);
     }
+    
+    console.log(`[Notification] Email successfully sent via send-email function.`);
     
     return new Response(
       JSON.stringify({ success: true, message: `Notificação de Email processada com sucesso.` }),
