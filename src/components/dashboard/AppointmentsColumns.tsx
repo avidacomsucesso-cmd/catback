@@ -118,12 +118,12 @@ export const columns: ColumnDef<Appointment>[] = [
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Ações</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => setIsEditDialogOpen(true)}>
+              <DropdownMenuItem onSelect={() => setIsEditDialogOpen(true)}>
                 <Pencil className="mr-2 h-4 w-4" />
                 Editar
               </DropdownMenuItem>
               <DropdownMenuItem 
-                onClick={handleSendReminder}
+                onSelect={handleSendReminder} // Use onSelect to handle the action and close the menu
                 disabled={sendNotificationMutation.isPending}
               >
                 {sendNotificationMutation.isPending ? (
@@ -134,7 +134,7 @@ export const columns: ColumnDef<Appointment>[] = [
                 Enviar Lembrete
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={handleDelete} className="text-red-500">
+              <DropdownMenuItem onSelect={handleDelete} className="text-red-500">
                 <Trash className="mr-2 h-4 w-4" />
                 Cancelar
               </DropdownMenuItem>
