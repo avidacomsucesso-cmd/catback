@@ -1,5 +1,4 @@
 import React from "react";
-import Layout from "@/components/Layout";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import CustomerProfileForm from "@/components/customer/CustomerProfileForm";
@@ -7,8 +6,8 @@ import CustomerPasswordForm from "@/components/customer/CustomerPasswordForm";
 
 const CustomerSettings: React.FC = () => {
   return (
-    <Layout>
-      <div className="container py-10">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col items-center pt-8 pb-16">
+      <div className="w-full max-w-2xl px-4">
         <Link to="/customer-cards" className="flex items-center text-catback-purple hover:text-catback-dark-purple mb-6">
           <ArrowLeft className="w-4 h-4 mr-2" /> Voltar para Minha Área
         </Link>
@@ -22,7 +21,7 @@ const CustomerSettings: React.FC = () => {
           <CustomerPasswordForm />
         </div>
       </div>
-    </Layout>
+    </div>
   );
 };
 
