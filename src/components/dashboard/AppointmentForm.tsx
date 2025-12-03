@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -11,9 +11,10 @@ import { CalendarIcon, Loader2 } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { format, setHours, setMinutes } from "date-fns";
+import { format, setHours, setMinutes, addMinutes, startOfDay, isSameDay } from "date-fns";
 import { useServices } from "@/hooks/use-services";
 import { useCreateAppointment, useUpdateAppointment, Appointment } from "@/hooks/use-appointments";
+import { useOccupiedSlots } from "@/hooks/use-occupied-slots"; // Import useOccupiedSlots
 
 const formSchema = z.object({
   service_id: z.string({ required_error: "Selecione um serviço." }).min(1, { message: "Selecione um serviço." }),
@@ -21,16 +22,30 @@ const formSchema = z.object({
   start_time: z.date({ required_error: "A data é obrigatória." }),
   time: z.string({ required_error: "A hora é obrigatória." }),
   notes: z.string().optional(),
-  status: z.string().optional(), // Added status for editing
+  status: z.string().optional(),
 });
 
 type AppointmentFormValues = z.infer<typeof formSchema>;
 
-const timeSlots = Array.from({ length: 24 * 2 }, (_, i) => {
-    const hours = Math.floor(i / 2);
-    const minutes = (i % 2) * 30;
-    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
-});
+// Horários de abertura/fecho (Exemplo: 9:00 às 18:00)
+const OPEN_HOUR = 9;
+const CLOSE_HOUR = 18;
+const SLOT_INTERVAL_MINUTES = 30;
+
+const generateTimeSlots = () => {
+    const slots: string[] = [];
+    const start = setHours(startOfDay(new Date()), OPEN_HOUR);
+    const end = setHours(startOfDay(new Date()), CLOSE_HOUR);
+    let current = start;
+
+    while (current < end) {
+        slots.push(format(current, 'HH:mm'));
+        current = addMinutes(current, SLOT_INTERVAL_MINUTES);
+    }
+    return slots;
+};
+
+const allTimeSlots = generateTimeSlots();
 
 interface AppointmentFormProps {
     appointment?: Appointment;
@@ -57,10 +72,66 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ appointment, onFinish
     }
   });
 
-  // Watch service_id to ensure it's selected
   const serviceIdWatch = form.watch("service_id");
+  const dateWatch = form.watch("start_time");
 
-  // Populate form when appointment data loads (only relevant if we were fetching it here, but good practice)
+  const selectedService = services?.find(s => s.id === serviceIdWatch);
+  const serviceDuration = selectedService?.duration_minutes || 0;
+
+  // Fetch occupied slots for the selected date
+  const { data: occupiedSlots, isLoading: isLoadingSlots } = useOccupiedSlots(dateWatch);
+
+  // Calculate available slots based on occupied slots and service duration
+  const availableTimeSlots = useMemo(() => {
+    if (!dateWatch || !occupiedSlots || serviceDuration === 0) return [];
+
+    return allTimeSlots.filter(timeSlot => {
+        const [hours, minutes] = timeSlot.split(':').map(Number);
+        
+        // 1. Calculate proposed appointment interval
+        const proposedStart = new Date(dateWatch);
+        proposedStart.setHours(hours, minutes, 0, 0);
+        
+        const proposedEnd = addMinutes(proposedStart, serviceDuration);
+
+        // 2. Check if the proposed slot is outside business hours
+        const businessEnd = setHours(startOfDay(dateWatch), CLOSE_HOUR);
+        if (proposedEnd > businessEnd) {
+            return false;
+        }
+
+        // 3. Check for overlap with occupied slots
+        const isOverlapping = occupiedSlots.some(slot => {
+            const occupiedStart = new Date(slot.start_time);
+            const occupiedEnd = new Date(slot.end_time);
+            
+            // If editing, allow overlap with the current appointment being edited
+            if (isEditing && appointment.id) {
+                const currentAppStart = new Date(appointment.start_time);
+                const currentAppEnd = new Date(appointment.end_time);
+                
+                // If the occupied slot is the current appointment, ignore it for overlap check
+                if (isSameDay(occupiedStart, currentAppStart) && occupiedStart.getTime() === currentAppStart.getTime()) {
+                    return false;
+                }
+            }
+
+            // Overlap occurs if: (Start A < End B) AND (End A > Start B)
+            return (proposedStart < occupiedEnd) && (proposedEnd > occupiedStart);
+        });
+
+        // 4. Check if the slot is in the past (only for today)
+        if (isSameDay(dateWatch, new Date())) {
+            if (proposedStart < new Date()) {
+                return false;
+            }
+        }
+
+        return !isOverlapping;
+    });
+  }, [dateWatch, occupiedSlots, serviceDuration, isEditing, appointment]);
+
+
   useEffect(() => {
     if (appointment) {
         const startTime = new Date(appointment.start_time);
@@ -170,7 +241,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ appointment, onFinish
                         mode="single"
                         selected={field.value}
                         onSelect={field.onChange}
-                        disabled={(date) => date < new Date() && !isEditing} // Allow editing past dates if needed
+                        disabled={(date) => date < startOfDay(new Date()) && !isEditing}
                         initialFocus
                     />
                     </PopoverContent>
@@ -184,17 +255,21 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ appointment, onFinish
                 name="time"
                 render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Hora</FormLabel>
+                        <FormLabel>Hora ({serviceDuration} min)</FormLabel>
                         <Select onValueChange={field.onChange} value={field.value}>
                             <FormControl>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Selecione a hora" />
+                                <SelectTrigger disabled={!dateWatch || !serviceIdWatch || isLoadingSlots}>
+                                    <SelectValue placeholder={isLoadingSlots ? "A verificar horários..." : "Selecione a hora"} />
                                 </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                                {timeSlots.map(time => (
-                                    <SelectItem key={time} value={time}>{time}</SelectItem>
-                                ))}
+                                {availableTimeSlots.length > 0 ? (
+                                    availableTimeSlots.map(time => (
+                                        <SelectItem key={time} value={time}>{time}</SelectItem>
+                                    ))
+                                ) : (
+                                    <SelectItem value="" disabled>Nenhum horário disponível</SelectItem>
+                                )}
                             </SelectContent>
                         </Select>
                         <FormMessage />
@@ -245,7 +320,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ appointment, onFinish
         <Button 
           type="submit" 
           className="w-full bg-catback-purple hover:bg-catback-dark-purple" 
-          disabled={isSubmitting || !serviceIdWatch} // Disable if submitting or service is not selected
+          disabled={isSubmitting || !serviceIdWatch}
         >
           {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : (isEditing ? "Salvar Alterações" : "Criar Agendamento")}
         </Button>
