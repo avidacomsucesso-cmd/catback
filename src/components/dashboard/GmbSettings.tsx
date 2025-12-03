@@ -5,7 +5,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Link, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/hooks/use-auth";
 import { useGoogleAccount, useDeleteGoogleAccount, useUpdateGmbSettings } from "@/hooks/use-google-accounts";
-import { Loader2, Link as LinkIcon, Trash, CheckCircle, AlertTriangle, MapPin, Gift } from "lucide-react";
+import { Loader2, Link as LinkIcon, Trash, CheckCircle, AlertTriangle, MapPin, Gift, Star } from "lucide-react";
 import { showSuccess, showError } from "@/utils/toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useLoyaltyCards } from "@/hooks/use-loyalty-cards";
@@ -14,6 +14,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input"; // Import Input for the test field
 
 // NOTE: In a real application, this list would be fetched from the Google My Business API
 const mockLocations = [
@@ -28,6 +29,12 @@ const gmbConfigSchema = z.object({
 
 type GmbConfigFormValues = z.infer<typeof gmbConfigSchema>;
 
+const TestReviewSchema = z.object({
+    test_identifier: z.string().min(3, { message: "Insira um identificador de cliente (email/telefone)." }),
+});
+
+type TestReviewFormValues = z.infer<typeof TestReviewSchema>;
+
 
 const GmbSettings: React.FC = () => {
   const { user } = useAuth();
@@ -40,23 +47,32 @@ const GmbSettings: React.FC = () => {
   const gmbStatus = searchParams.get('gmb_status');
   const gmbMessage = searchParams.get('message');
 
-  const form = useForm<GmbConfigFormValues>({
+  const configForm = useForm<GmbConfigFormValues>({
     resolver: zodResolver(gmbConfigSchema),
     defaultValues: {
         location_resource_name: "",
         loyalty_card_id_for_5_star_reviews: "",
     }
   });
+  
+  const testForm = useForm<TestReviewFormValues>({
+    resolver: zodResolver(TestReviewSchema),
+    defaultValues: {
+        test_identifier: "",
+    }
+  });
+  
+  const { isSubmitting: isTesting } = testForm.formState;
 
-  // Populate form when account data loads
+  // Populate config form when account data loads
   useEffect(() => {
     if (account) {
-        form.reset({
+        configForm.reset({
             location_resource_name: account.location_resource_name || (mockLocations.length > 0 ? mockLocations[0].resourceName : ""),
             loyalty_card_id_for_5_star_reviews: account.loyalty_card_id_for_5_star_reviews || "",
         });
     }
-  }, [account, form]);
+  }, [account, configForm]);
 
 
   // Handle OAuth callback status messages
@@ -91,7 +107,7 @@ const GmbSettings: React.FC = () => {
     const REDIRECT_URI = `${SUPABASE_URL}/functions/v1/google-oauth-callback`;
     
     // NOTE: GOOGLE_CLIENT_ID must be configured as a secret in Supabase Edge Functions
-    const GOOGLE_CLIENT_ID = Deno.env.get('GOOGLE_CLIENT_ID'); 
+    const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID_HERE'; // Placeholder, actual value is read by Edge Function
     
     const scope = [
         'https://www.googleapis.com/auth/userinfo.email',
@@ -99,7 +115,7 @@ const GmbSettings: React.FC = () => {
     ].join(' ');
 
     const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` + new URLSearchParams({
-        client_id: GOOGLE_CLIENT_ID || 'YOUR_GOOGLE_CLIENT_ID_HERE', // Placeholder if secret isn't available client-side
+        client_id: GOOGLE_CLIENT_ID,
         redirect_uri: REDIRECT_URI,
         response_type: 'code',
         scope: scope,
@@ -112,7 +128,7 @@ const GmbSettings: React.FC = () => {
     window.location.href = authUrl;
   };
 
-  const onSubmit = (values: GmbConfigFormValues) => {
+  const onSubmitConfig = (values: GmbConfigFormValues) => {
     if (!account) return;
 
     updateMutation.mutate({
@@ -120,6 +136,33 @@ const GmbSettings: React.FC = () => {
         location_resource_name: values.location_resource_name,
         loyalty_card_id_for_5_star_reviews: values.loyalty_card_id_for_5_star_reviews || null,
     });
+  };
+  
+  const onTestReviewSubmit = async (values: TestReviewFormValues) => {
+    if (!user) {
+        showError("Usuário não autenticado.");
+        return;
+    }
+    
+    try {
+        const { error } = await supabase.functions.invoke('process-gmb-review', {
+            body: {
+                user_id: user.id, // The owner of the business
+                rating: 5,
+                customer_identifier: values.test_identifier,
+            },
+        });
+
+        if (error) {
+            throw new Error(error.message);
+        }
+        
+        showSuccess(`Simulação de avaliação 5 estrelas enviada para ${values.test_identifier}. Verifique o cartão de fidelidade.`);
+        testForm.reset();
+        
+    } catch (error: any) {
+        showError(`Erro na simulação: ${error.message}`);
+    }
   };
 
   if (isLoadingAccount) {
@@ -153,11 +196,11 @@ const GmbSettings: React.FC = () => {
               </AlertDescription>
             </Alert>
             
-            <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <Form {...configForm}>
+                <form onSubmit={configForm.handleSubmit(onSubmitConfig)} className="space-y-4">
                     {/* Location Selection (Mocked) */}
                     <FormField
-                        control={form.control}
+                        control={configForm.control}
                         name="location_resource_name"
                         render={({ field }) => (
                             <FormItem>
@@ -184,7 +227,7 @@ const GmbSettings: React.FC = () => {
 
                     {/* Loyalty Card Reward Selection */}
                     <FormField
-                        control={form.control}
+                        control={configForm.control}
                         name="loyalty_card_id_for_5_star_reviews"
                         render={({ field }) => (
                             <FormItem>
@@ -227,6 +270,39 @@ const GmbSettings: React.FC = () => {
                     </Button>
                 </form>
             </Form>
+            
+            {/* Test Section */}
+            {account.loyalty_card_id_for_5_star_reviews && (
+                <div className="pt-4 border-t border-gray-200 dark:border-gray-700 space-y-4">
+                    <h3 className="text-lg font-semibold flex items-center text-catback-energy-orange">
+                        <Star className="w-5 h-5 mr-2" /> Testar Recompensa 5 Estrelas
+                    </h3>
+                    <Form {...testForm}>
+                        <form onSubmit={testForm.handleSubmit(onTestReviewSubmit)} className="space-y-3">
+                            <FormField
+                                control={testForm.control}
+                                name="test_identifier"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Identificador do Cliente (Email/Telefone)</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="cliente@email.com ou 912345678" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <Button 
+                                type="submit"
+                                className="w-full bg-catback-energy-orange hover:bg-catback-energy-orange/90"
+                                disabled={isTesting}
+                            >
+                                {isTesting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : "Simular Avaliação 5 Estrelas"}
+                            </Button>
+                        </form>
+                    </Form>
+                </div>
+            )}
 
             <Button 
                 variant="destructive" 
