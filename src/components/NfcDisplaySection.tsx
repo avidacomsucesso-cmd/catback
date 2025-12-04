@@ -35,7 +35,7 @@ const NfcDisplaySection: React.FC = () => {
             
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
                 <div className="text-4xl font-extrabold text-catback-energy-orange">
-                    €14,90
+                    €39,90
                 </div>
                 <div className="text-lg font-semibold">
                     Pagamento Único
@@ -49,7 +49,7 @@ const NfcDisplaySection: React.FC = () => {
                 <div>
                   <h3 className="font-bold text-white">Automação Inteligente</h3>
                   <p className="text-sm text-catback-light-purple">
-                    Recompense automaticamente clientes que deixam uma avaliação de 5 estrelas com selos ou pontos bónus no seu programa de fidelidade. (Ex: <strong>5★ → +2 Selos Bónus</strong>)
+                    O CATBACK liga as suas avaliações do Google ao seu CRM, permitindo-lhe monitorizar e responder a todas as opiniões diretamente do seu dashboard.
                   </p>
                 </div>
               </CardContent>
