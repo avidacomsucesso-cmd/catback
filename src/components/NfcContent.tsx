@@ -39,8 +39,8 @@ const benefits = [
     {
         icon: Zap,
         title: "Integração com Fidelização (Killer Feature)",
-        subtitle: "O Único Display que Recompensa os Seus Fãs.",
-        description: "Apenas com o CATBACK, pode ativar a nossa automação exclusiva: sempre que um cliente deixa uma avaliação 5 estrelas através do display, ele recebe automaticamente 2 selos bónus no seu cartão de fidelidade. Recompense os seus melhores clientes e incentive-os a voltar.",
+        subtitle: "O Único Display que Liga Reviews ao CRM.",
+        description: "Apenas com o CATBACK, pode ligar as avaliações 5 estrelas diretamente ao seu programa de fidelidade, recompensando os seus melhores clientes com pontos ou selos bónus. Use o poder das reviews para incentivar o retorno.",
         color: "text-catback-success-green",
     },
     {
@@ -96,7 +96,7 @@ const NfcContent: React.FC = () => {
             
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
                 <div className="text-5xl font-extrabold text-catback-purple">
-                    €14,90
+                    €39,90
                 </div>
                 <div className="text-xl font-semibold text-gray-900 dark:text-white">
                     Pagamento Único
@@ -104,13 +104,13 @@ const NfcContent: React.FC = () => {
                 </div>
             </div>
 
-            {/* Killer Feature Badge */}
+            {/* Killer Feature Badge - Adjusted text */}
             <Card className="bg-catback-energy-orange/80 border-catback-energy-orange">
               <CardContent className="p-4 flex items-center justify-center space-x-4">
                 <Zap className="w-8 h-8 text-white fill-white" />
                 <div className="text-white text-center">
                   <h3 className="font-extrabold text-xl">🏆 EXCLUSIVO CATBACK</h3>
-                  <p className="text-lg font-semibold">5★ → +2 Selos Automáticos</p>
+                  <p className="text-lg font-semibold">Integração Automática com Fidelização</p>
                 </div>
               </CardContent>
             </Card>
