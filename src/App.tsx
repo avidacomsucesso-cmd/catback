@@ -32,6 +32,7 @@ import PublicBooking from "./pages/PublicBooking"; // Import PublicBooking
 import CustomerBookingConfirm from "./pages/CustomerBookingConfirm"; // Import CustomerBookingConfirm
 import ForgotPasswordLojista from "./pages/ForgotPasswordLojista"; // Import Lojista Forgot Password
 import ForgotPasswordCliente from "./pages/ForgotPasswordCliente"; // Import Cliente Forgot Password
+import NfcDisplay from "./pages/NfcDisplay"; // Import NfcDisplay
 
 const queryClient = new QueryClient();
 
@@ -46,6 +47,7 @@ const App = () => (
             {/* Public Routes */}
             <Route path="/" element={<Index />} />
             <Route path="/features" element={<Features />} />
+            <Route path="/nfc-display" element={<NfcDisplay />} /> {/* Nova Rota */}
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/industries" element={<Industries />} />
             <Route path="/how-it-works" element={<HowItWorks />} />
