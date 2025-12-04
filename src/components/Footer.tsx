@@ -10,6 +10,7 @@ const Footer: React.FC = () => {
       title: "Plataforma",
       links: [
         { name: "Funcionalidades", href: "/features" },
+        { name: "Display NFC", href: "/nfc-display" }, // Novo link
         { name: "Preços", href: "/pricing" },
         { name: "Como Funciona", href: "/how-it-works" },
         { name: "Para Quem", href: "/industries" },
