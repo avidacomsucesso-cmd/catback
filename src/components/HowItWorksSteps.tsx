@@ -32,7 +32,7 @@ const HowItWorksSteps: React.FC = () => {
     <section className="py-20 bg-gray-100 dark:bg-gray-800">
       <div className="container text-center">
         <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-12">
-          Comece em 3 Passos Simples
+          Crie Cartões de Fidelidade em 3 passos
         </h2>
 
         <div className="flex flex-col lg:flex-row justify-center items-center lg:items-start gap-8">
