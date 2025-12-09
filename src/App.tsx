@@ -13,7 +13,7 @@ import Industries from "./pages/Industries";
 import HowItWorks from "./pages/HowItWorks";
 import Blog from "./pages/Blog";
 import Help from "./pages/Help";
-import Login from "./pages/Login";
+import Login from "./pages/Login"; // Re-importing Login
 import Signup from "./pages/Signup";
 import Contact from "./pages/Contact";
 import Terms from "./pages/Terms";
@@ -21,8 +21,8 @@ import Privacy from "./pages/Privacy";
 import About from "./pages/About";
 import Careers from "./pages/Careers";
 import BlogPost from "./pages/BlogPost";
-import Dashboard from "./pages/Dashboard";
-import CustomerCards from "./pages/CustomerCards"; 
+import Dashboard from "./pages/Dashboard"; // Re-importing Dashboard
+import CustomerCards from "./pages/CustomerCards"; // Re-importing CustomerCards
 import CustomerAuth from "./pages/CustomerAuth";
 import CustomerSignup from "./pages/CustomerSignup"; 
 import CustomerCardEnrollment from "./pages/CustomerCardEnrollment";
@@ -33,8 +33,8 @@ import CustomerBookingConfirm from "./pages/CustomerBookingConfirm";
 import ForgotPasswordLojista from "./pages/ForgotPasswordLojista"; 
 import ForgotPasswordCliente from "./pages/ForgotPasswordCliente"; 
 import NfcDisplay from "./pages/NfcDisplay"; 
-import NfcCheckout from "./pages/NfcCheckout"; // Import NfcCheckout
-import CheckoutSuccess from "./pages/CheckoutSuccess"; // Import CheckoutSuccess
+import NfcCheckout from "./pages/NfcCheckout"; 
+import CheckoutSuccess from "./pages/CheckoutSuccess"; 
 
 const queryClient = new QueryClient();
 
@@ -50,8 +50,8 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/features" element={<Features />} />
             <Route path="/nfc-display" element={<NfcDisplay />} /> 
-            <Route path="/nfc-display/checkout" element={<NfcCheckout />} /> {/* Nova Rota de Checkout */}
-            <Route path="/nfc-display/success" element={<CheckoutSuccess />} /> {/* Nova Rota de Sucesso */}
+            <Route path="/nfc-display/checkout" element={<NfcCheckout />} /> 
+            <Route path="/nfc-display/success" element={<CheckoutSuccess />} /> 
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/industries" element={<Industries />} />
             <Route path="/how-it-works" element={<HowItWorks />} />
