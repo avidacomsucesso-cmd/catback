@@ -28,11 +28,13 @@ import CustomerSignup from "./pages/CustomerSignup";
 import CustomerCardEnrollment from "./pages/CustomerCardEnrollment";
 import CustomerBooking from "./pages/CustomerBooking";
 import CustomerSettings from "./pages/CustomerSettings"; 
-import PublicBooking from "./pages/PublicBooking"; // Import PublicBooking
-import CustomerBookingConfirm from "./pages/CustomerBookingConfirm"; // Import CustomerBookingConfirm
-import ForgotPasswordLojista from "./pages/ForgotPasswordLojista"; // Import Lojista Forgot Password
-import ForgotPasswordCliente from "./pages/ForgotPasswordCliente"; // Import Cliente Forgot Password
-import NfcDisplay from "./pages/NfcDisplay"; // Import NfcDisplay
+import PublicBooking from "./pages/PublicBooking"; 
+import CustomerBookingConfirm from "./pages/CustomerBookingConfirm"; 
+import ForgotPasswordLojista from "./pages/ForgotPasswordLojista"; 
+import ForgotPasswordCliente from "./pages/ForgotPasswordCliente"; 
+import NfcDisplay from "./pages/NfcDisplay"; 
+import NfcCheckout from "./pages/NfcCheckout"; // Import NfcCheckout
+import CheckoutSuccess from "./pages/CheckoutSuccess"; // Import CheckoutSuccess
 
 const queryClient = new QueryClient();
 
@@ -47,7 +49,9 @@ const App = () => (
             {/* Public Routes */}
             <Route path="/" element={<Index />} />
             <Route path="/features" element={<Features />} />
-            <Route path="/nfc-display" element={<NfcDisplay />} /> {/* Nova Rota */}
+            <Route path="/nfc-display" element={<NfcDisplay />} /> 
+            <Route path="/nfc-display/checkout" element={<NfcCheckout />} /> {/* Nova Rota de Checkout */}
+            <Route path="/nfc-display/success" element={<CheckoutSuccess />} /> {/* Nova Rota de Sucesso */}
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/industries" element={<Industries />} />
             <Route path="/how-it-works" element={<HowItWorks />} />

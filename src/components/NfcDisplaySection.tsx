@@ -2,6 +2,7 @@ import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Star, Zap, Nfc, ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 // Placeholder for the NFC Display illustration
 const NfcDisplayIllustration: React.FC = () => (
@@ -56,9 +57,11 @@ const NfcDisplaySection: React.FC = () => {
             </Card>
 
             <div className="pt-4">
-                <Button size="lg" className="bg-catback-energy-orange hover:bg-catback-energy-orange/90 text-white text-lg px-8 py-6 shadow-lg">
-                    Quero o Meu Display <ArrowRight className="w-5 h-5 ml-2" />
-                </Button>
+                <Link to="/nfc-display/checkout">
+                    <Button size="lg" className="bg-catback-energy-orange hover:bg-catback-energy-orange/90 text-white text-lg px-8 py-6 shadow-lg">
+                        Quero o Meu Display <ArrowRight className="w-5 h-5 ml-2" />
+                    </Button>
+                </Link>
             </div>
           </div>
         </div>

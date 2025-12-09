@@ -14,19 +14,7 @@ import FinalCTA from "@/components/FinalCTA";
 import RoleSelectionCTA from "@/components/RoleSelectionCTA";
 import GmbSection from "@/components/GmbSection";
 import NfcDisplaySection from "@/components/NfcDisplaySection";
-import HeroIllustration from "@/components/HeroIllustration"; // Importando o novo componente
-
-// Removendo o placeholder antigo
-// const CatbackIllustration: React.FC = () => (
-//   <div className="relative w-full max-w-md mx-auto lg:mx-0 p-8 bg-catback-light-purple/30 rounded-xl shadow-lg border border-catback-light-purple/50">
-//     <div className="flex flex-col items-center justify-center h-64">
-//       <Cat className="w-20 h-20 text-catback-purple animate-bounce" />
-//       <p className="mt-4 text-lg font-semibold text-catback-dark-purple">
-//         Ilustração: Gato CATBACK com cartão de fidelidade digital
-//       </p>
-//     </div>
-//   </div>
-// );
+import HeroIllustration from "@/components/HeroIllustration"; 
 
 const Index = () => {
   return (
