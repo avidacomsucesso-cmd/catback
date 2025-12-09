@@ -8,7 +8,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 const navItems = [
   { name: "Funcionalidades", href: "/features" },
-  { name: "Display NFC", href: "/nfc-display" }, // Novo item
+  { name: "Display NFC", href: "/nfc-display" }, // Rota da página de detalhes
   { name: "Preços", href: "/pricing" },
   { name: "Para Quem", href: "/industries" },
   { name: "Como Funciona", href: "/how-it-works" },
