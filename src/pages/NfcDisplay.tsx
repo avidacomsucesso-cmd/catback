@@ -14,7 +14,7 @@ const NfcDisplay: React.FC = () => {
       <div className="container text-center py-12">
         <Link to="/nfc-display/checkout">
             <Button size="lg" className="w-full sm:w-auto bg-catback-energy-orange hover:bg-catback-energy-orange/90 text-white text-lg px-8 py-6 shadow-lg">
-                Comprar Display Agora (€39,90) <ArrowRight className="w-5 h-5 ml-2" />
+                Comprar Display Agora (€29,90) <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
         </Link>
       </div>

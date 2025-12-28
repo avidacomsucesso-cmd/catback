@@ -285,7 +285,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({ appointment, onFinish
                 render={({ field }) => (
                     <FormItem>
                         <FormLabel>Status</FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value}>
+                        <Select onValueChange={field.onChange} value={field.value || "confirmed"}>
                             <FormControl>
                                 <SelectTrigger>
                                     <SelectValue placeholder="Selecione o status" />

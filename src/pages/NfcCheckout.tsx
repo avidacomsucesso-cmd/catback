@@ -50,7 +50,7 @@ const NfcCheckout: React.FC = () => {
     navigate("/nfc-display/success", { replace: true });
   }
 
-  const price = 39.90;
+  const price = 29.90; // Atualizado para 29.90
 
   return (
     <Layout>
@@ -71,7 +71,7 @@ const NfcCheckout: React.FC = () => {
                     <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Seu Pedido</h3>
                     <div className="flex justify-between text-sm">
                         <span>Display NFC CATBACK</span>
-                        <span className="font-semibold">€39.90</span>
+                        <span className="font-semibold">€29.90</span>
                     </div>
                     <div className="flex justify-between text-sm">
                         <span>Portes de Envio (Portugal Continental)</span>
@@ -169,7 +169,7 @@ const NfcCheckout: React.FC = () => {
                             {isSubmitting ? (
                                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                             ) : (
-                                "Pagar Agora €39.90 (Simulação)"
+                                "Pagar Agora €29.90 (Simulação)"
                             )}
                         </Button>
                         <Link to="/nfc-display" className="flex items-center justify-center text-sm text-gray-500 hover:text-catback-purple mt-2">

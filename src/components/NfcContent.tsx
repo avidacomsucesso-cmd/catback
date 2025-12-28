@@ -97,7 +97,7 @@ const NfcContent: React.FC = () => {
             
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
                 <div className="text-5xl font-extrabold text-catback-purple">
-                    €39,90
+                    €29,90
                 </div>
                 <div className="text-xl font-semibold text-gray-900 dark:text-white">
                     Pagamento Único
@@ -118,7 +118,7 @@ const NfcContent: React.FC = () => {
 
             <div className="pt-4">
                 <Link to="/nfc-display/checkout">
-                    <Button size="lg" className="w-full sm:w-auto bg-catback-energy-orange hover:bg-catback-energy-orange/90 text-white text-lg px-8 py-6 shadow-lg">
+                    <Button size="lg" className="bg-catback-energy-orange hover:bg-catback-energy-orange/90 text-white text-lg px-8 py-6 shadow-lg">
                         Quero o Meu Display <ArrowRight className="w-5 h-5 ml-2" />
                     </Button>
                 </Link>
@@ -139,7 +139,7 @@ const NfcContent: React.FC = () => {
                             <CardTitle className="text-xl text-gray-900 dark:text-white">{benefit.subtitle}</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <h3 className="text-lg font-semibold text-catback-dark-purple dark:text-catback-light-purple mb-2">{benefit.title}</h3>
+                            <h3 className="text-lg font-semibold text-catback-dark-purple dark:text-back-light-purple mb-2">{benefit.title}</h3>
                             <p className="text-gray-600 dark:text-gray-400">{benefit.description}</p>
                         </CardContent>
                     </Card>
