@@ -14,7 +14,8 @@ import FinalCTA from "@/components/FinalCTA";
 import RoleSelectionCTA from "@/components/RoleSelectionCTA";
 import GmbSection from "@/components/GmbSection";
 import NfcDisplaySection from "@/components/NfcDisplaySection";
-import HeroIllustration from "@/components/HeroIllustration"; 
+import HeroIllustration from "@/components/HeroIllustration";
+import SupabaseTest from "@/components/SupabaseTest";
 
 const Index = () => {
   return (
@@ -30,24 +31,24 @@ const Index = () => {
             <p className="text-xl text-gray-600 dark:text-gray-300 max-w-lg lg:max-w-none mx-auto">
               Otimize seu perfil no Google para atrair novos clientes e use ferramentas de fidelização inteligentes para garantir que eles voltem sempre. <br/><strong>Encontrado no Google. Lembrado pelos Clientes.</strong>
             </p>
-            
             {/* NEW CTAs: Role Selection */}
             <RoleSelectionCTA />
-
             {/* Social Proof */}
             <div className="flex flex-wrap justify-center lg:justify-start gap-x-6 gap-y-2 text-sm text-gray-500 dark:text-gray-400 font-medium pt-4">
               <span className="flex items-center">
-                <Check className="w-4 h-4 mr-1 text-catback-success-green" /> Sem cartão de crédito
+                <Check className="w-4 h-4 mr-1 text-catback-success-green" />
+                Sem cartão de crédito
               </span>
               <span className="flex items-center">
-                <Check className="w-4 h-4 mr-1 text-catback-success-green" /> Configuração em 5 minutos
+                <Check className="w-4 h-4 mr-1 text-catback-success-green" />
+                Configuração em 5 minutos
               </span>
               <span className="flex items-center">
-                <Check className="w-4 h-4 mr-1 text-catback-success-green" /> Suporte em português
+                <Check className="w-4 h-4 mr-1 text-catback-success-green" />
+                Suporte em português
               </span>
             </div>
           </div>
-
           {/* Right Illustration */}
           <div className="flex justify-center lg:justify-end">
             <HeroIllustration />
@@ -57,33 +58,39 @@ const Index = () => {
       
       {/* Nova Secção GMB */}
       <GmbSection />
-
+      
       {/* Nova Secção Display NFC */}
       <NfcDisplaySection />
-
+      
       {/* 1. Números de Impacto */}
       <ImpactNumbers />
-
+      
       {/* 2. Problema e Solução */}
       <ProblemSolution />
-
+      
       {/* 3. Como Funciona (3 Passos Simples) */}
       <HowItWorksSteps />
-
+      
       {/* 4. Funcionalidades Principais (Cards Interativos) */}
       <FeatureCards />
-
+      
       {/* 5. Planos e Preços (Preview) */}
       <PricingPreview />
-
+      
       {/* 6. Prova Social (Testemunhos) */}
       <TestimonialsSection />
-
+      
       {/* 7. Para Quem é o CATBACK */}
       <IndustriesPreview />
-
+      
       {/* 8. CTA Final */}
       <FinalCTA />
+      
+      {/* Supabase Test Section */}
+      <div className="container py-16">
+        <h2 className="text-3xl font-bold text-center mb-8">Teste de Integração com Supabase</h2>
+        <SupabaseTest />
+      </div>
     </Layout>
   );
 };
