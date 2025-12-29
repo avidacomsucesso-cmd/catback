@@ -1,7 +1,6 @@
+"use client";
+
 import React from "react";
-import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Check, Cat, Play } from "lucide-react";
 import Layout from "@/components/Layout";
 import ImpactNumbers from "@/components/ImpactNumbers";
 import ProblemSolution from "@/components/ProblemSolution";
@@ -15,7 +14,7 @@ import RoleSelectionCTA from "@/components/RoleSelectionCTA";
 import GmbSection from "@/components/GmbSection";
 import NfcDisplaySection from "@/components/NfcDisplaySection";
 import HeroIllustration from "@/components/HeroIllustration";
-import SupabaseTest from "@/components/SupabaseTest";
+import { Check } from "lucide-react";
 
 const Index = () => {
   return (
@@ -85,12 +84,6 @@ const Index = () => {
       
       {/* 8. CTA Final */}
       <FinalCTA />
-      
-      {/* Supabase Test Section */}
-      <div className="container py-16">
-        <h2 className="text-3xl font-bold text-center mb-8">Teste de Integração com Supabase</h2>
-        <SupabaseTest />
-      </div>
     </Layout>
   );
 };
