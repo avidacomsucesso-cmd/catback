@@ -23,7 +23,7 @@ const CalendlyWidget: React.FC = () => {
         // @ts-ignore
         window.Calendly.initBadgeWidget({
           url: 'https://calendly.com/catbackgmn/30min',
-          text: 'Agende uma demonstração',
+          text: 'Agende uma Reunião de 15 minutos',
           color: '#8400ff',
           textColor: '#ffffff',
           branding: true
