@@ -23,10 +23,10 @@ const CalendlyWidget: React.FC = () => {
         // @ts-ignore
         window.Calendly.initBadgeWidget({
           url: 'https://calendly.com/catbackgmn/30min',
-          text: 'Agende uma Reunião de 15 minutos',
+          text: 'Agende uma Reunião (apenas 15 min.)',
           color: '#8400ff',
           textColor: '#ffffff',
-          branding: true
+          branding: false // Removendo o 'powered by Calendly'
         });
       }
     };
@@ -35,10 +35,6 @@ const CalendlyWidget: React.FC = () => {
 
     // Cleanup: remover o widget e os scripts quando o componente for desmontado
     return () => {
-      // Remover os elementos adicionados (opcional, dependendo do comportamento desejado)
-      // document.head.removeChild(link);
-      // document.body.removeChild(script);
-      
       // Para remover o widget do Calendly do DOM
       const badge = document.querySelector('.calendly-badge-widget');
       if (badge) {
@@ -47,7 +43,7 @@ const CalendlyWidget: React.FC = () => {
     };
   }, []);
 
-  return null; // O componente não renderiza nada visualmente no seu lugar, apenas injeta o widget global
+  return null; 
 };
 
 export default CalendlyWidget;
