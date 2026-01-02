@@ -17,8 +17,7 @@ const CalendlyWidget: React.FC = () => {
     script.type = 'text/javascript';
     
     script.onload = () => {
-      // Inicializar o widget quando o script for carregado
-      // @ts-ignore - Calendly é adicionado ao window globalmente pelo script
+      // @ts-ignore
       if (window.Calendly) {
         // @ts-ignore
         window.Calendly.initBadgeWidget({
@@ -26,16 +25,46 @@ const CalendlyWidget: React.FC = () => {
           text: 'Agende uma Reunião (apenas 15 min.)',
           color: '#8400ff',
           textColor: '#ffffff',
-          branding: false // Removendo o 'powered by Calendly'
+          branding: false
         });
+
+        // 3. Injetar CSS para formatar o texto do selo
+        // Como o Calendly não suporta quebra de linha nativa no parâmetro 'text',
+        // usamos CSS para manipular o conteúdo do texto injetado.
+        const style = document.createElement('style');
+        style.innerHTML = `
+          .calendly-badge-content {
+            display: flex !important;
+            flex-direction: column !important;
+            line-height: 1.2 !important;
+            padding: 10px 20px !important;
+            height: auto !important;
+            text-align: center !important;
+          }
+          /* Esconde o texto original e reconstrói com quebra de linha */
+          .calendly-badge-content {
+            font-size: 0 !important;
+          }
+          .calendly-badge-content::before {
+            content: "Agende uma Reunião";
+            font-size: 16px !important;
+            display: block !important;
+            margin-bottom: 4px !important;
+          }
+          .calendly-badge-content::after {
+            content: "(apenas 15 min.)";
+            font-size: 13px !important;
+            display: block !important;
+            opacity: 0.9 !important;
+          }
+        `;
+        document.head.appendChild(style);
       }
     };
 
     document.body.appendChild(script);
 
-    // Cleanup: remover o widget e os scripts quando o componente for desmontado
     return () => {
-      // Para remover o widget do Calendly do DOM
       const badge = document.querySelector('.calendly-badge-widget');
       if (badge) {
         badge.remove();
