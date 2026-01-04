@@ -2,10 +2,10 @@
 
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Check, Search, Camera, Bot, Star, ArrowRight, Zap, TrendingUp } from "lucide-react";
+import { Check, Search, Camera, Bot, Star, ArrowRight, Zap, TrendingUp, MapPin, MessageSquare, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { cn } from "@/lib/utils"; // Importação adicionada para corrigir o erro
+import { cn } from "@/lib/utils";
 
 const gmbFeatures = [
   {
@@ -46,6 +46,75 @@ const gmbFeatures = [
   },
 ];
 
+// Custom dynamic illustration components to replace broken images
+const GmbIntroIllustration = () => (
+  <div className="relative w-full h-[300px] bg-gradient-to-br from-catback-light-purple/20 to-catback-purple/10 rounded-2xl flex items-center justify-center p-8 border border-catback-purple/10">
+    <div className="relative bg-white dark:bg-gray-800 p-6 rounded-xl shadow-2xl w-full max-w-sm">
+        <div className="flex items-center space-x-3 mb-4 border-b pb-2">
+            <MapPin className="text-red-500 w-5 h-5" />
+            <div className="h-3 w-32 bg-gray-200 rounded animate-pulse" />
+        </div>
+        <div className="space-y-3">
+            <div className="flex space-x-1">
+                {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 fill-catback-energy-orange text-catback-energy-orange" />)}
+            </div>
+            <div className="h-2 w-full bg-gray-100 rounded" />
+            <div className="h-2 w-2/3 bg-gray-100 rounded" />
+            <div className="pt-2 flex justify-end">
+                <div className="bg-catback-purple/10 p-2 rounded-full">
+                    <Bot className="w-6 h-6 text-catback-purple" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div className="absolute top-10 right-10 animate-bounce">
+        <div className="bg-white p-3 rounded-lg shadow-lg flex items-center space-x-2">
+            <TrendingUp className="text-catback-success-green w-5 h-5" />
+            <span className="text-xs font-bold text-gray-700">+300%</span>
+        </div>
+    </div>
+  </div>
+);
+
+const GmbComparisonIllustration = () => (
+  <div className="grid grid-cols-2 gap-4 w-full">
+    <div className="bg-red-50 dark:bg-red-900/10 p-4 rounded-xl border border-red-100 dark:border-red-900/20 opacity-60">
+        <div className="flex space-x-1 mb-2">
+            <Star className="w-3 h-3 text-gray-300" />
+            <Star className="w-3 h-3 text-gray-300" />
+        </div>
+        <div className="h-2 w-full bg-gray-200 rounded mb-1" />
+        <p className="text-[10px] text-gray-400">Sem resposta há 3 meses</p>
+    </div>
+    <div className="bg-green-50 dark:bg-green-900/10 p-4 rounded-xl border border-green-100 dark:border-green-900/20 shadow-lg scale-105">
+        <div className="flex space-x-1 mb-2">
+            {[...Array(5)].map((_, i) => <Star key={i} className="w-3 h-3 fill-catback-energy-orange text-catback-energy-orange" />)}
+        </div>
+        <div className="h-2 w-full bg-gray-200 rounded mb-2" />
+        <div className="bg-catback-purple/5 p-2 rounded-md border-l-2 border-catback-purple">
+            <p className="text-[10px] italic text-catback-purple font-medium">"Obrigado pelo seu feedback! A IA Catback..."</p>
+        </div>
+    </div>
+  </div>
+);
+
+const GmbBenefitsIllustration = () => (
+  <div className="relative w-full h-[250px] bg-white/5 rounded-2xl flex items-center justify-center overflow-hidden border border-white/10">
+    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-catback-energy-orange/20 via-transparent to-transparent" />
+    <div className="relative z-10 flex flex-col items-center">
+        <Zap className="w-16 h-16 text-catback-energy-orange mb-4 animate-pulse" />
+        <div className="flex -space-x-2">
+            <div className="w-10 h-10 rounded-full bg-catback-purple border-2 border-white flex items-center justify-center">
+                <Nfc className="w-5 h-5 text-white" />
+            </div>
+            <div className="w-10 h-10 rounded-full bg-catback-success-green border-2 border-white flex items-center justify-center">
+                <Check className="w-5 h-5 text-white" />
+            </div>
+        </div>
+    </div>
+  </div>
+);
+
 const GoogleMeuNegocio: React.FC = () => {
   return (
     <div className="space-y-16">
@@ -78,8 +147,8 @@ const GoogleMeuNegocio: React.FC = () => {
             </Button>
           </Link>
         </div>
-        <div className="relative rounded-2xl overflow-hidden shadow-2xl">
-          <img src="/images/gmb/gmb-intro.png" alt="Google Meu Negócio Illustration" className="w-full h-auto" />
+        <div className="relative">
+          <GmbIntroIllustration />
         </div>
       </div>
 
@@ -96,12 +165,12 @@ const GoogleMeuNegocio: React.FC = () => {
                     <p className="text-sm text-gray-600 dark:text-gray-400">Poucas avaliações, perfil desatualizado, clientes satisfeitos que se esquecem de avaliar e críticas sem resposta.</p>
                 </div>
                 <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md border-l-4 border-l-catback-success-green">
-                    <h4 className="font-bold text-catback-success-green flex-center flex items-center mb-2 underline">✅ Com a CATBACK no Balcão</h4>
+                    <h4 className="font-bold text-catback-success-green flex items-center mb-2 underline">✅ Com a CATBACK no Balcão</h4>
                     <p className="text-sm text-gray-600 dark:text-gray-400">Enxurrada de avaliações 5 estrelas, fotos profissionais semanais, IA a responder a todos e destaque total no Google Maps.</p>
                 </div>
             </div>
-            <div className="rounded-xl overflow-hidden shadow-lg border border-gray-200 dark:border-gray-700">
-                <img src="/images/gmb/gmb-comparison.png" alt="Comparativo GMB" className="w-full h-auto" />
+            <div className="p-2">
+                <GmbComparisonIllustration />
             </div>
         </div>
       </div>
@@ -132,7 +201,7 @@ const GoogleMeuNegocio: React.FC = () => {
       {/* Benefits Banner */}
       <div className="bg-catback-dark-purple text-white p-8 md:p-12 rounded-3xl flex flex-col lg:flex-row items-center gap-12 shadow-xl">
         <div className="lg:w-1/2 space-y-6">
-            <Badge className="bg-catback-energy-orange text-white text-sm font-bold px-4 py-1">SOLUÇÃO COMPLETA</Badge>
+            <Badge className="bg-catback-energy-orange text-white text-sm font-bold px-4 py-1 uppercase tracking-wider">Solução Completa</Badge>
             <h3 className="text-3xl md:text-4xl font-bold leading-tight">Receba Avaliações 5 Estrelas em 5 Segundos</h3>
             <p className="text-catback-light-purple text-lg">
                 Coloque o nosso Display NFC no seu balcão e transforme o atendimento de hoje no faturamento de amanhã.
@@ -148,17 +217,17 @@ const GoogleMeuNegocio: React.FC = () => {
                 </div>
             </div>
         </div>
-        <div className="lg:w-1/2">
-            <img src="/images/gmb/gmb-benefits.png" alt="Benefícios GMB" className="rounded-xl shadow-lg border border-white/10 w-full h-auto" />
+        <div className="lg:w-1/2 w-full">
+            <GmbBenefitsIllustration />
         </div>
       </div>
     </div>
   );
 };
 
-// Helper Badge component since it's not imported
+// Helper Badge component
 const Badge: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className }) => (
-    <span className={cn("inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2", className)}>
+    <span className={cn("inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors", className)}>
         {children}
     </span>
 );
