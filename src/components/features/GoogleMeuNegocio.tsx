@@ -19,7 +19,7 @@ const gmbFeatures = [
       "Informação de contacto verificada",
       "Ligação direta ao seu site",
     ],
-    color: "text-catback-success-green",
+    color: "text-catback-back-success-green",
   },
   {
     title: "Gestão de Conteúdo",
@@ -99,19 +99,12 @@ const GmbComparisonIllustration = () => (
 );
 
 const GmbBenefitsIllustration = () => (
-  <div className="relative w-full h-[250px] bg-white/5 rounded-2xl flex items-center justify-center overflow-hidden border border-white/10">
-    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-catback-energy-orange/20 via-transparent to-transparent" />
-    <div className="relative z-10 flex flex-col items-center">
-        <Zap className="w-16 h-16 text-catback-energy-orange mb-4 animate-pulse" />
-        <div className="flex -space-x-2">
-            <div className="w-10 h-10 rounded-full bg-catback-purple border-2 border-white flex items-center justify-center">
-                <Nfc className="w-5 h-5 text-white" />
-            </div>
-            <div className="w-10 h-10 rounded-full bg-catback-success-green border-2 border-white flex items-center justify-center">
-                <Check className="w-5 h-5 text-white" />
-            </div>
-        </div>
-    </div>
+  <div className="relative w-full rounded-2xl overflow-hidden shadow-2xl border border-white/10">
+    <img 
+      src="/images/gmb/display_catback1.png" 
+      alt="Benefícios Display NFC CATBACK" 
+      className="w-full h-auto object-cover"
+    />
   </div>
 );
 
