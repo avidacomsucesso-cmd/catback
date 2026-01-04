@@ -13,7 +13,6 @@ const navItems = [
   { name: "Fidelização", href: "/fidelizacao" }, // Anexo 2: Quarto
   { name: "Preços", href: "/pricing" },
   { name: "Para Quem", href: "/industries" },
-  { name: "Como Funciona", href: "/how-it-works" },
 ];
 
 const Logo = () => (
