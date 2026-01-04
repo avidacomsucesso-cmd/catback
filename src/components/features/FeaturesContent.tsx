@@ -1,10 +1,10 @@
 import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CreditCard, Calendar, Users, Megaphone } from "lucide-react";
+import { CreditCard, Calendar, Users, MapPin } from "lucide-react";
 import FidelizacaoDigital from "./FidelizacaoDigital";
 import AgendamentoOnline from "./AgendamentoOnline";
 import CrmInteligente from "./CrmInteligente";
-import MarketingAutomatizado from "./MarketingAutomatizado";
+import GoogleMeuNegocio from "./GoogleMeuNegocio";
 import { cn } from "@/lib/utils";
 
 const featuresTabs = [
@@ -27,10 +27,10 @@ const featuresTabs = [
     content: <CrmInteligente />,
   },
   {
-    value: "marketing",
-    label: "Marketing Automatizado",
-    icon: Megaphone,
-    content: <MarketingAutomatizado />,
+    value: "gmb",
+    label: "Google Meu Negócio",
+    icon: MapPin,
+    content: <GoogleMeuNegocio />,
   },
 ];
 

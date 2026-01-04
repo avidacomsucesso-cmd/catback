@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { CreditCard, Calendar, Users, Megaphone, ArrowRight } from "lucide-react";
+import { CreditCard, Calendar, Users, MapPin, ArrowRight } from "lucide-react";
 
 const features = [
   {
@@ -44,16 +44,16 @@ const features = [
     color: "text-catback-dark-purple",
   },
   {
-    icon: Megaphone,
-    title: "Marketing Automatizado",
-    description: "Campanhas de SMS/WhatsApp, E-mail marketing e gestão de redes sociais.",
+    icon: MapPin,
+    title: "Google Meu Negócio",
+    description: "Otimização de perfil, gestão de página e respostas automáticas com IA.",
     details: [
-      "Campanhas de SMS/WhatsApp",
-      "E-mail marketing",
-      "Gestão de redes sociais",
-      "Cupons e promoções",
+      "Otimização do Perfil Google",
+      "Gestão de Página GMN",
+      "Posts e Fotos Semanais",
+      "Respostas Automáticas com IA",
     ],
-    href: "/features#marketing",
+    href: "/features#gmb",
     color: "text-catback-success-green",
   },
 ];

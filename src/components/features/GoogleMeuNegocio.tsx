@@ -1,47 +1,47 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Check, MessageSquare, Mail, Share2, Zap } from "lucide-react";
+import { Check, Search, Camera, Bot, Star } from "lucide-react";
 
 const features = [
   {
-    title: "Campanhas SMS e WhatsApp",
-    description: "Comunique-se diretamente com seus clientes inativos ou VIPs usando mensagens personalizadas e de alto impacto.",
-    icon: MessageSquare,
+    title: "Otimização do Perfil",
+    description: "Garantimos que o seu negócio é encontrado. Otimizamos o seu perfil Google para máxima visibilidade e presença online.",
+    icon: Search,
     details: [
-      "Envio massivo para segmentos específicos",
-      "Mensagens personalizadas (nome, pontos, etc.)",
-      "Rastreamento de entrega e conversão",
-      "Custo transparente por mensagem",
+      "Configuração de SEO Local",
+      "Palavras-chave estratégicas",
+      "Informação de contacto verificada",
+      "Ligação direta ao seu site",
     ],
     color: "text-catback-success-green",
   },
   {
-    title: "E-mail Marketing e Cupons",
-    description: "Crie newsletters e envie cupons de desconto exclusivos para incentivar a primeira ou próxima compra.",
-    icon: Mail,
+    title: "Gestão de Conteúdo",
+    description: "Mantenha a sua página ativa e atraente com a inserção semanal de posts, fotos e novidades do seu negócio.",
+    icon: Camera,
     details: [
-      "Editor de e-mail simples e intuitivo",
-      "Templates otimizados para conversão",
-      "Geração automática de cupons únicos",
-      "Relatórios de abertura e clique",
+      "Posts semanais agendados",
+      "Upload de fotos de alta qualidade",
+      "Divulgação de ofertas especiais",
+      "Destaque de produtos e serviços",
     ],
     color: "text-catback-purple",
   },
   {
-    title: "Gestão de Redes Sociais",
-    description: "Agende posts e gerencie interações do Facebook e Instagram em um único lugar.",
-    icon: Share2,
+    title: "Respostas Automáticas com IA",
+    description: "Nunca deixe um cliente sem resposta. A nossa IA Catback responde a todas as avaliações de forma automática e profissional.",
+    icon: Bot,
     details: [
-      "Calendário de conteúdo unificado",
-      "Impulsionamento de posts integrado",
-      "Inbox unificado para mensagens",
-      "Análise de performance social",
+      "IA treinada em português de Portugal",
+      "Respostas personalizadas e cordiais",
+      "Gestão de reputação 24/7",
+      "Análise de sentimento do feedback",
     ],
     color: "text-catback-energy-orange",
   },
 ];
 
-const MarketingAutomatizado: React.FC = () => {
+const GoogleMeuNegocio: React.FC = () => {
   return (
     <div className="space-y-12">
       <div className="grid md:grid-cols-3 gap-8">
@@ -69,16 +69,16 @@ const MarketingAutomatizado: React.FC = () => {
       <div className="bg-catback-light-purple/20 dark:bg-catback-dark-purple/50 p-8 rounded-xl flex flex-col md:flex-row items-center justify-between">
         <div className="md:w-2/3 text-left">
           <h3 className="text-2xl font-bold text-catback-dark-purple dark:text-white mb-2">
-            Automações de Marketing
+            Domine as Pesquisas Locais
           </h3>
           <p className="text-gray-700 dark:text-gray-300">
-            Configure fluxos automáticos para enviar mensagens de aniversário, lembretes de inatividade ou ofertas de boas-vindas sem levantar um dedo.
+            Um perfil ativo e bem gerido no Google é o fator nº 1 para atrair novos clientes na sua área. Deixe que a tecnologia Catback trate de tudo por si.
           </p>
         </div>
-        <Zap className="w-12 h-12 text-catback-dark-purple mt-4 md:mt-0" />
+        <Star className="w-12 h-12 text-catback-dark-purple mt-4 md:mt-0" />
       </div>
     </div>
   );
 };
 
-export default MarketingAutomatizado;
+export default GoogleMeuNegocio;
