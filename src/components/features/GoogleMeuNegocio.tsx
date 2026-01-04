@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Check, Search, Camera, Bot, Star, ArrowRight, Zap, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { cn } from "@/lib/utils"; // Importação adicionada para corrigir o erro
 
 const gmbFeatures = [
   {
