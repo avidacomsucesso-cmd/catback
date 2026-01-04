@@ -5,6 +5,19 @@ import { CreditCard, Calendar, Users, MapPin, ArrowRight } from "lucide-react";
 
 const features = [
   {
+    icon: MapPin,
+    title: "Google Meu Negócio",
+    description: "Otimização de perfil, gestão de página e respostas automáticas com IA.",
+    details: [
+      "Otimização do Perfil Google",
+      "Gestão de Página GMN",
+      "Posts e Fotos Semanais",
+      "Respostas Automáticas com IA",
+    ],
+    href: "/features#gmb",
+    color: "text-catback-success-green",
+  },
+  {
     icon: CreditCard,
     title: "Fidelização Digital",
     description: "Cartões de selos digitais, pontos acumulativos e cashback automático.",
@@ -42,19 +55,6 @@ const features = [
     ],
     href: "/features#crm",
     color: "text-catback-dark-purple",
-  },
-  {
-    icon: MapPin,
-    title: "Google Meu Negócio",
-    description: "Otimização de perfil, gestão de página e respostas automáticas com IA.",
-    details: [
-      "Otimização do Perfil Google",
-      "Gestão de Página GMN",
-      "Posts e Fotos Semanais",
-      "Respostas Automáticas com IA",
-    ],
-    href: "/features#gmb",
-    color: "text-catback-success-green",
   },
 ];
 
