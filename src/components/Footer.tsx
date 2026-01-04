@@ -9,8 +9,9 @@ const Footer: React.FC = () => {
     {
       title: "Plataforma",
       links: [
+        { name: "Fidelização", href: "/fidelizacao" }, // Novo link
         { name: "Funcionalidades", href: "/features" },
-        { name: "Display NFC", href: "/nfc-display" }, // Novo link
+        { name: "Display NFC", href: "/nfc-display" },
         { name: "Preços", href: "/pricing" },
         { name: "Como Funciona", href: "/how-it-works" },
         { name: "Para Quem", href: "/industries" },
@@ -30,13 +31,13 @@ const Footer: React.FC = () => {
       links: [
         { name: "Sobre Nós", href: "/about" },
         { name: "Carreiras", href: "/careers" },
-        { name: "Contacto", href: "/contact" }, // Updated link
+        { name: "Contacto", href: "/contact" },
       ],
     },
     {
       title: "Clientes",
       links: [
-        { name: "Meus Cartões", href: "/customer-auth" }, // Updated link to customer authentication
+        { name: "Meus Cartões", href: "/customer-auth" },
       ],
     },
   ];

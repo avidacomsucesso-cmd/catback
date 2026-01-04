@@ -7,12 +7,12 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 const navItems = [
+  { name: "Fidelização", href: "/fidelizacao" }, // Novo item
   { name: "Funcionalidades", href: "/features" },
-  { name: "Display NFC", href: "/nfc-display" }, // Rota da página de detalhes
+  { name: "Display NFC", href: "/nfc-display" },
   { name: "Preços", href: "/pricing" },
   { name: "Para Quem", href: "/industries" },
   { name: "Como Funciona", href: "/how-it-works" },
-  // Blog and Ajuda are secondary, keeping main navigation clean
 ];
 
 const Logo = () => (

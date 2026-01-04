@@ -3,8 +3,6 @@
 import React from "react";
 import Layout from "@/components/Layout";
 import ImpactNumbers from "@/components/ImpactNumbers";
-import ProblemSolution from "@/components/ProblemSolution";
-import HowItWorksSteps from "@/components/HowItWorksSteps";
 import FeatureCards from "@/components/FeatureCards";
 import PricingPreview from "@/components/PricingPreview";
 import TestimonialsSection from "@/components/TestimonialsSection";
@@ -64,11 +62,9 @@ const Index = () => {
       {/* 1. Números de Impacto */}
       <ImpactNumbers />
       
-      {/* 2. Problema e Solução */}
-      <ProblemSolution />
+      {/* 2. Problema e Solução - REMOVIDO PARA LoyalY.tsx */}
       
-      {/* 3. Como Funciona (3 Passos Simples) */}
-      <HowItWorksSteps />
+      {/* 3. Como Funciona (3 Passos Simples) - REMOVIDO PARA LoyalY.tsx */}
       
       {/* 4. Funcionalidades Principais (Cards Interativos) */}
       <FeatureCards />

@@ -35,7 +35,8 @@ import ForgotPasswordCliente from "./pages/ForgotPasswordCliente";
 import NfcDisplay from "./pages/NfcDisplay"; 
 import NfcCheckout from "./pages/NfcCheckout"; 
 import CheckoutSuccess from "./pages/CheckoutSuccess"; 
-import CalendlyWidget from "./components/CalendlyWidget"; // Importando o novo componente
+import CalendlyWidget from "./components/CalendlyWidget"; 
+import Loyalty from "./pages/Loyalty"; // Novo import
 
 const queryClient = new QueryClient();
 
@@ -46,10 +47,11 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
-          <CalendlyWidget /> {/* Injetando o widget aqui */}
+          <CalendlyWidget />
           <Routes>
             {/* Public Routes */}
             <Route path="/" element={<Index />} />
+            <Route path="/fidelizacao" element={<Loyalty />} /> {/* Nova rota */}
             <Route path="/features" element={<Features />} />
             <Route path="/nfc-display" element={<NfcDisplay />} /> 
             <Route path="/nfc-display/checkout" element={<NfcCheckout />} /> 
