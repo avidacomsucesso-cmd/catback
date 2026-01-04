@@ -2,9 +2,10 @@
 
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Check, Search, Camera, Bot, Star, ArrowRight, Zap, TrendingUp, MapPin, MessageSquare, ShieldCheck } from "lucide-react";
+import { Check, Search, Camera, Bot, Star, ArrowRight, Zap, TrendingUp, MapPin, Nfc } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { Badge } from "@/components/ui/badge"; // Import official badge
 import { cn } from "@/lib/utils";
 
 const gmbFeatures = [
@@ -46,7 +47,6 @@ const gmbFeatures = [
   },
 ];
 
-// Custom dynamic illustration components to replace broken images
 const GmbIntroIllustration = () => (
   <div className="relative w-full h-[300px] bg-gradient-to-br from-catback-light-purple/20 to-catback-purple/10 rounded-2xl flex items-center justify-center p-8 border border-catback-purple/10">
     <div className="relative bg-white dark:bg-gray-800 p-6 rounded-xl shadow-2xl w-full max-w-sm">
@@ -224,12 +224,5 @@ const GoogleMeuNegocio: React.FC = () => {
     </div>
   );
 };
-
-// Helper Badge component
-const Badge: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className }) => (
-    <span className={cn("inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors", className)}>
-        {children}
-    </span>
-);
 
 export default GoogleMeuNegocio;
