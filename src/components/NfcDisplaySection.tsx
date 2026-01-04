@@ -1,16 +1,16 @@
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Star, Zap, Nfc, ArrowRight } from "lucide-react";
+import { Zap, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
-// Placeholder for the NFC Display illustration
+// Componente de imagem real do Display NFC
 const NfcDisplayIllustration: React.FC = () => (
   <div className="relative w-full max-w-xs mx-auto lg:max-w-sm">
     <img 
-      src="/images/nfc-display.png" 
+      src="/images/display_catback1.png" 
       alt="Display NFC CATBACK para Avaliações Google" 
-      className="w-full h-auto rounded-xl shadow-2xl"
+      className="w-full h-auto rounded-xl shadow-2xl object-cover"
     />
   </div>
 );

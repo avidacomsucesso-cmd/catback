@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Check, Search, Camera, Bot, Star, ArrowRight, Zap, TrendingUp, MapPin, Nfc } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Badge } from "@/components/ui/badge"; // Import official badge
+import { Badge } from "@/components/ui/badge"; 
 import { cn } from "@/lib/utils";
 
 const gmbFeatures = [
@@ -19,7 +19,7 @@ const gmbFeatures = [
       "Informação de contacto verificada",
       "Ligação direta ao seu site",
     ],
-    color: "text-catback-back-success-green",
+    color: "text-catback-success-green",
   },
   {
     title: "Gestão de Conteúdo",
@@ -101,7 +101,7 @@ const GmbComparisonIllustration = () => (
 const GmbBenefitsIllustration = () => (
   <div className="relative w-full rounded-2xl overflow-hidden shadow-2xl border border-white/10">
     <img 
-      src="/images/gmb/display_catback1.png" 
+      src="/images/display_catback1.png" 
       alt="Benefícios Display NFC CATBACK" 
       className="w-full h-auto object-cover block"
       loading="lazy"
