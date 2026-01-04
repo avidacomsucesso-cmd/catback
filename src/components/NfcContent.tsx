@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 const NfcDisplayIllustration: React.FC = () => (
   <div className="relative w-full max-w-xs mx-auto lg:max-w-sm">
     <img 
-      src="/images/nfc-display.png" 
+      src="/display_catback.png" 
       alt="Display NFC CATBACK para Avaliações Google" 
       className="w-full h-auto rounded-xl shadow-2xl"
       onError={(e) => {
