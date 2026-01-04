@@ -7,9 +7,10 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 const navItems = [
-  { name: "Fidelização", href: "/fidelizacao" }, // Novo item
-  { name: "Funcionalidades", href: "/features" },
-  { name: "Display NFC", href: "/nfc-display" },
+  { name: "Google Meu Negócio", href: "/features#gmb" }, // Anexo 3: Primeiro
+  { name: "Display NFC", href: "/nfc-display" }, // Anexo 2: Segundo
+  { name: "Funcionalidades", href: "/features" }, // Anexo 2: Terceiro
+  { name: "Fidelização", href: "/fidelizacao" }, // Anexo 2: Quarto
   { name: "Preços", href: "/pricing" },
   { name: "Para Quem", href: "/industries" },
   { name: "Como Funciona", href: "/how-it-works" },

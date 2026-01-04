@@ -9,6 +9,12 @@ import { cn } from "@/lib/utils";
 
 const featuresTabs = [
   {
+    value: "gmb", // Anexo 3: Primeiro
+    label: "Google Meu Negócio",
+    icon: MapPin,
+    content: <GoogleMeuNegocio />,
+  },
+  {
     value: "fidelizacao",
     label: "Fidelização Digital",
     icon: CreditCard,
@@ -26,12 +32,6 @@ const featuresTabs = [
     icon: Users,
     content: <CrmInteligente />,
   },
-  {
-    value: "gmb",
-    label: "Google Meu Negócio",
-    icon: MapPin,
-    content: <GoogleMeuNegocio />,
-  },
 ];
 
 const FeaturesContent: React.FC = () => {
@@ -46,7 +46,7 @@ const FeaturesContent: React.FC = () => {
         </p>
       </div>
 
-      <Tabs defaultValue="fidelizacao" className="w-full">
+      <Tabs defaultValue="gmb" className="w-full">
         <div className="overflow-x-auto mb-8">
           <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 h-auto p-1 bg-gray-100 dark:bg-gray-800">
             {featuresTabs.map((tab) => (
