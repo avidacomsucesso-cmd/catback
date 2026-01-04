@@ -5,7 +5,58 @@ import Layout from "@/components/Layout";
 import ProblemSolution from "@/components/ProblemSolution";
 import FinalCTA from "@/components/FinalCTA";
 import { Card, CardContent } from "@/components/ui/card";
-import { Settings, UserCheck, Trophy, ArrowRight } from "lucide-react";
+import { Settings, UserCheck, Trophy, ArrowRight, MapPin, CreditCard, Star } from "lucide-react";
+
+// Ilustração dinâmica transferida da Hero
+const DigitalCardIllustration = () => (
+  <div className="relative w-full max-w-xs mx-auto p-4 scale-90 md:scale-100">
+    <div className="relative w-full h-[450px] bg-gray-900 dark:bg-gray-700 rounded-3xl shadow-2xl border-8 border-gray-700 dark:border-gray-900 overflow-hidden">
+      <div className="h-full w-full bg-white dark:bg-gray-800 p-4 flex flex-col justify-between">
+        <div className="text-center space-y-2">
+          <div className="flex items-center justify-center space-x-1 text-catback-energy-orange">
+            {[...Array(5)].map((_, i) => (
+              <Star key={i} className="w-5 h-5 fill-catback-energy-orange" />
+            ))}
+          </div>
+          <p className="text-sm font-semibold text-gray-900 dark:text-white">Avalie o Café da Praça</p>
+          <div className="flex items-center justify-center text-xs text-gray-500">
+            <MapPin className="w-3 h-3 mr-1" /> Google Maps
+          </div>
+        </div>
+
+        <div className="relative h-40 w-full rounded-xl p-3 bg-catback-purple shadow-lg flex flex-col justify-between text-white">
+          <div className="flex justify-between items-start">
+            <div className="space-y-0.5">
+              <p className="text-lg font-bold">Cartão Café</p>
+              <p className="text-xs opacity-80">Recompensa: 1 Café Grátis</p>
+            </div>
+            <img src="/images/catback-logo.png" alt="Logo" className="w-6 h-6 invert" />
+          </div>
+          <div className="text-center">
+            <p className="text-4xl font-extrabold">7/10</p>
+            <p className="text-sm opacity-90">Selos Acumulados</p>
+          </div>
+          <div className="flex justify-between text-xs opacity-70">
+            <span>ID: 4A2B3C</span>
+            <CreditCard className="w-4 h-4" />
+          </div>
+        </div>
+
+        <div className="text-center">
+          <button className="w-full py-2 bg-catback-energy-orange text-white font-semibold rounded-lg text-sm">
+            Ver Meus Cartões
+          </button>
+        </div>
+      </div>
+    </div>
+    <div className="absolute -top-4 -right-4 p-3 bg-white rounded-full shadow-xl transform rotate-6">
+      <MapPin className="w-8 h-8 text-red-500" />
+    </div>
+    <div className="absolute -bottom-4 -left-4 p-2 bg-catback-success-green rounded-full shadow-xl transform -rotate-12">
+      <Star className="w-6 h-6 text-white fill-white" />
+    </div>
+  </div>
+);
 
 const steps = [
   {
@@ -46,43 +97,36 @@ const Loyalty = () => {
         </p>
       </div>
 
-      {/* Anexo 1: Comece a Fidelizar em 3 Passos Simples */}
       <section className="py-20 bg-white dark:bg-gray-900">
-        <div className="container text-center">
-          <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white mb-4">
-            Comece a Fidelizar em 3 Passos Simples
-          </h2>
-          <p className="text-lg text-gray-600 dark:text-gray-400 mb-16 max-w-3xl mx-auto">
-            A nossa plataforma foi desenhada para ser intuitiva e rápida de implementar, garantindo resultados imediatos.
-          </p>
-
-          <div className="space-y-12">
-            {steps.map((step, index) => (
-              <div key={index} className="flex flex-col md:flex-row items-center gap-8 text-left">
-                <div className="flex-shrink-0 flex items-center justify-center w-24 h-24 text-6xl font-black text-catback-purple/20">
-                  {step.number}
-                </div>
-                <div className="flex-shrink-0">
-                  <step.icon className={`w-12 h-12 ${step.color}`} />
-                </div>
-                <div className="flex-grow">
-                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{step.title}</h3>
-                  <p className="text-gray-600 dark:text-gray-400 max-w-xl">{step.description}</p>
-                </div>
-                <Card className="flex-shrink-0 w-full md:w-80 border-l-4 border-l-catback-purple shadow-sm">
-                  <CardContent className="p-4 py-6">
-                    <ul className="space-y-2">
-                      {step.features.map((feature, i) => (
-                        <li key={i} className="flex items-center text-sm text-gray-700 dark:text-gray-300">
-                          <ArrowRight className="w-4 h-4 mr-2 text-catback-purple" />
-                          {feature}
-                        </li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                </Card>
+        <div className="container">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div className="text-center lg:text-left">
+              <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white mb-4">
+                Comece a Fidelizar em 3 Passos Simples
+              </h2>
+              <p className="text-lg text-gray-600 dark:text-gray-400 mb-8 max-w-xl">
+                A nossa plataforma foi desenhada para ser intuitiva e rápida de implementar, garantindo resultados imediatos.
+              </p>
+              
+              <div className="space-y-8 mt-12">
+                {steps.map((step, index) => (
+                  <div key={index} className="flex items-start gap-4 text-left">
+                    <div className="flex-shrink-0 flex items-center justify-center w-12 h-12 rounded-full bg-catback-purple/10 text-catback-purple font-bold text-xl">
+                      {step.number}
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1">{step.title}</h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">{step.description}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
+            
+            {/* Ilustração transferida aqui */}
+            <div className="flex justify-center">
+              <DigitalCardIllustration />
+            </div>
           </div>
         </div>
       </section>
