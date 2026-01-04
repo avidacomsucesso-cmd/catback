@@ -19,7 +19,7 @@ const gmbFeatures = [
       "Informação de contacto verificada",
       "Ligação direta ao seu site",
     ],
-    color: "text-catback-back-success-green",
+    color: "text-catback-success-green",
   },
   {
     title: "Gestão de Conteúdo",
@@ -76,25 +76,14 @@ const GmbIntroIllustration = () => (
   </div>
 );
 
+// This section was previously using a CSS illustration, now it will use the real image provided
 const GmbComparisonIllustration = () => (
-  <div className="grid grid-cols-2 gap-4 w-full">
-    <div className="bg-red-50 dark:bg-red-900/10 p-4 rounded-xl border border-red-100 dark:border-red-900/20 opacity-60">
-        <div className="flex space-x-1 mb-2">
-            <Star className="w-3 h-3 text-gray-300" />
-            <Star className="w-3 h-3 text-gray-300" />
-        </div>
-        <div className="h-2 w-full bg-gray-200 rounded mb-1" />
-        <p className="text-[10px] text-gray-400">Sem resposta há 3 meses</p>
-    </div>
-    <div className="bg-green-50 dark:bg-green-900/10 p-4 rounded-xl border border-green-100 dark:border-green-900/20 shadow-lg scale-105">
-        <div className="flex space-x-1 mb-2">
-            {[...Array(5)].map((_, i) => <Star key={i} className="w-3 h-3 fill-catback-energy-orange text-catback-energy-orange" />)}
-        </div>
-        <div className="h-2 w-full bg-gray-200 rounded mb-2" />
-        <div className="bg-catback-purple/5 p-2 rounded-md border-l-2 border-catback-purple">
-            <p className="text-[10px] italic text-catback-purple font-medium">"Obrigado pelo seu feedback! A IA Catback..."</p>
-        </div>
-    </div>
+  <div className="relative w-full h-full min-h-[300px] rounded-2xl overflow-hidden shadow-2xl border border-gray-200 dark:border-gray-700">
+    <img 
+      src="/celular-mao.jpg" 
+      alt="Comparativo GMB - Reputação Online" 
+      className="w-full h-full object-cover"
+    />
   </div>
 );
 
@@ -142,7 +131,7 @@ const GoogleMeuNegocio: React.FC = () => {
           </Link>
         </div>
         <div className="relative">
-          <img src="/gmb-intro.png" alt="Google Meu Negócio Illustration" className="w-full h-auto rounded-2xl shadow-2xl" />
+          <GmbIntroIllustration />
         </div>
       </div>
 
@@ -163,8 +152,8 @@ const GoogleMeuNegocio: React.FC = () => {
                     <p className="text-sm text-gray-600 dark:text-gray-400">Enxurrada de avaliações 5 estrelas, fotos profissionais semanais, IA a responder a todos e destaque total no Google Maps.</p>
                 </div>
             </div>
-            <div className="rounded-xl overflow-hidden shadow-lg border border-gray-200 dark:border-gray-700">
-                <img src="/gmb-comparison.png" alt="Comparativo GMB" className="w-full h-auto" />
+            <div className="p-2 h-full">
+                <GmbComparisonIllustration />
             </div>
         </div>
       </div>
