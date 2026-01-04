@@ -31,7 +31,7 @@ const gmbFeatures = [
 
 const GmbSection: React.FC = () => {
   return (
-    <section className="py-20 bg-gray-50 dark:bg-gray-900">
+    <section className="pt-10 pb-20 bg-gray-50 dark:bg-gray-900">
       <div className="container text-center">
         <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-12">
           O Seu Negócio Está Invisível no Google?
