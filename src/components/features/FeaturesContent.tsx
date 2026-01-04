@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CreditCard, Calendar, Users, MapPin } from "lucide-react";
@@ -9,7 +11,7 @@ import { cn } from "@/lib/utils";
 
 const featuresTabs = [
   {
-    value: "gmb", // Anexo 3: Primeiro
+    value: "gmb",
     label: "Google Meu Negócio",
     icon: MapPin,
     content: <GoogleMeuNegocio />,
@@ -39,10 +41,10 @@ const FeaturesContent: React.FC = () => {
     <div className="container py-16">
       <div className="text-center mb-12">
         <h1 className="text-5xl font-extrabold text-gray-900 dark:text-white">
-          Fidelização Digital que Realmente Funciona
+          Crescimento e Fidelização <span className="text-catback-purple">Digital</span>
         </h1>
         <p className="mt-4 text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-          Transforme visitantes ocasionais em clientes fiéis com cartões digitais, agendamento simplificado e gestão de relacionamento poderosa.
+          Atraia novos clientes através do Google e mantenha-os fiéis com a nossa plataforma completa de gestão e marketing.
         </p>
       </div>
 

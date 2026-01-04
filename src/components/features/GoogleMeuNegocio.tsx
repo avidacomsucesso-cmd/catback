@@ -1,8 +1,12 @@
+"use client";
+
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Check, Search, Camera, Bot, Star } from "lucide-react";
+import { Check, Search, Camera, Bot, Star, ArrowRight, Zap, TrendingUp } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
-const features = [
+const gmbFeatures = [
   {
     title: "Otimização do Perfil",
     description: "Garantimos que o seu negócio é encontrado. Otimizamos o seu perfil Google para máxima visibilidade e presença online.",
@@ -43,11 +47,69 @@ const features = [
 
 const GoogleMeuNegocio: React.FC = () => {
   return (
-    <div className="space-y-12">
+    <div className="space-y-16">
+      {/* Hero Section for GMB */}
+      <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div className="space-y-6">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
+            Domine as Pesquisas Locais e Atraia Mais Clientes
+          </h2>
+          <p className="text-lg text-gray-600 dark:text-gray-400">
+            Ter uma presença forte no Google Meu Negócio não é mais opcional. É o fator nº 1 para o Google recomendar o seu estabelecimento a quem procura por serviços na sua área.
+          </p>
+          <div className="space-y-4">
+            <div className="flex items-start space-x-3">
+                <Check className="w-6 h-6 text-catback-success-green flex-shrink-0 mt-1" />
+                <p className="text-gray-700 dark:text-gray-300"><strong>Mais Avaliações:</strong> Aumento de 300% na coleta de opiniões 5 estrelas.</p>
+            </div>
+            <div className="flex items-start space-x-3">
+                <Check className="w-6 h-6 text-catback-success-green flex-shrink-0 mt-1" />
+                <p className="text-gray-700 dark:text-gray-300"><strong>IA Especializada:</strong> Respostas profissionais geradas em segundos pela IA Catback.</p>
+            </div>
+            <div className="flex items-start space-x-3">
+                <Check className="w-6 h-6 text-catback-success-green flex-shrink-0 mt-1" />
+                <p className="text-gray-700 dark:text-gray-300"><strong>Ranking Superior:</strong> Posts e fotos semanais que o colocam no topo do Google Maps.</p>
+            </div>
+          </div>
+          <Link to="/nfc-display/checkout">
+            <Button size="lg" className="bg-catback-energy-orange hover:bg-catback-energy-orange/90 text-white mt-4 px-8 py-6">
+                Quero o Meu Display <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
+          </Link>
+        </div>
+        <div className="relative rounded-2xl overflow-hidden shadow-2xl">
+          <img src="/images/gmb/gmb-intro.png" alt="Google Meu Negócio Illustration" className="w-full h-auto" />
+        </div>
+      </div>
+
+      {/* Comparison Section */}
+      <div className="bg-gray-50 dark:bg-gray-900/50 p-8 md:p-12 rounded-3xl border border-gray-200 dark:border-gray-800">
+        <div className="text-center mb-10">
+            <h3 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">O Poder da Reputação Online</h3>
+            <p className="text-gray-600 dark:text-gray-400 mt-2">Veja a diferença que um perfil bem gerido faz no seu faturamento.</p>
+        </div>
+        <div className="grid md:grid-cols-2 gap-8 items-center">
+            <div className="space-y-6">
+                <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md border-l-4 border-l-destructive">
+                    <h4 className="font-bold text-red-600 flex items-center mb-2 underline">❌ Sem a CATBACK</h4>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Poucas avaliações, perfil desatualizado, clientes satisfeitos que se esquecem de avaliar e críticas sem resposta.</p>
+                </div>
+                <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md border-l-4 border-l-catback-success-green">
+                    <h4 className="font-bold text-catback-success-green flex-center flex items-center mb-2 underline">✅ Com a CATBACK no Balcão</h4>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Enxurrada de avaliações 5 estrelas, fotos profissionais semanais, IA a responder a todos e destaque total no Google Maps.</p>
+                </div>
+            </div>
+            <div className="rounded-xl overflow-hidden shadow-lg border border-gray-200 dark:border-gray-700">
+                <img src="/images/gmb/gmb-comparison.png" alt="Comparativo GMB" className="w-full h-auto" />
+            </div>
+        </div>
+      </div>
+
+      {/* Features Grid */}
       <div className="grid md:grid-cols-3 gap-8">
-        {features.map((feature, index) => (
-          <Card key={index} className="shadow-lg hover:shadow-xl transition-shadow">
-            <CardHeader>
+        {gmbFeatures.map((feature, index) => (
+          <Card key={index} className="shadow-lg hover:shadow-xl transition-shadow h-full flex flex-col">
+            <CardHeader className="flex-grow pb-4">
               <feature.icon className={`w-8 h-8 mb-2 ${feature.color}`} />
               <CardTitle className="text-xl">{feature.title}</CardTitle>
             </CardHeader>
@@ -66,19 +128,38 @@ const GoogleMeuNegocio: React.FC = () => {
         ))}
       </div>
 
-      <div className="bg-catback-light-purple/20 dark:bg-catback-dark-purple/50 p-8 rounded-xl flex flex-col md:flex-row items-center justify-between">
-        <div className="md:w-2/3 text-left">
-          <h3 className="text-2xl font-bold text-catback-dark-purple dark:text-white mb-2">
-            Domine as Pesquisas Locais
-          </h3>
-          <p className="text-gray-700 dark:text-gray-300">
-            Um perfil ativo e bem gerido no Google é o fator nº 1 para atrair novos clientes na sua área. Deixe que a tecnologia Catback trate de tudo por si.
-          </p>
+      {/* Benefits Banner */}
+      <div className="bg-catback-dark-purple text-white p-8 md:p-12 rounded-3xl flex flex-col lg:flex-row items-center gap-12 shadow-xl">
+        <div className="lg:w-1/2 space-y-6">
+            <Badge className="bg-catback-energy-orange text-white text-sm font-bold px-4 py-1">SOLUÇÃO COMPLETA</Badge>
+            <h3 className="text-3xl md:text-4xl font-bold leading-tight">Receba Avaliações 5 Estrelas em 5 Segundos</h3>
+            <p className="text-catback-light-purple text-lg">
+                Coloque o nosso Display NFC no seu balcão e transforme o atendimento de hoje no faturamento de amanhã.
+            </p>
+            <div className="grid grid-cols-2 gap-4">
+                <div className="bg-white/10 p-4 rounded-xl border border-white/20">
+                    <Zap className="w-6 h-6 text-catback-energy-orange mb-2" />
+                    <p className="text-sm font-bold">Tecnologia NFC + QR Code</p>
+                </div>
+                <div className="bg-white/10 p-4 rounded-xl border border-white/20">
+                    <TrendingUp className="w-6 h-6 text-catback-success-green mb-2" />
+                    <p className="text-sm font-bold">Mais faturamento</p>
+                </div>
+            </div>
         </div>
-        <Star className="w-12 h-12 text-catback-dark-purple mt-4 md:mt-0" />
+        <div className="lg:w-1/2">
+            <img src="/images/gmb/gmb-benefits.png" alt="Benefícios GMB" className="rounded-xl shadow-lg border border-white/10 w-full h-auto" />
+        </div>
       </div>
     </div>
   );
 };
+
+// Helper Badge component since it's not imported
+const Badge: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className }) => (
+    <span className={cn("inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2", className)}>
+        {children}
+    </span>
+);
 
 export default GoogleMeuNegocio;
