@@ -97,7 +97,7 @@ const NfcContent: React.FC = () => {
             
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
                 <div className="text-5xl font-extrabold text-catback-purple">
-                    €29,90
+                    €33,90
                 </div>
                 <div className="text-xl font-semibold text-gray-900 dark:text-white">
                     Pagamento Único
