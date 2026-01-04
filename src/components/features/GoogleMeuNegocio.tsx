@@ -132,8 +132,12 @@ const GoogleMeuNegocio: React.FC = () => {
             </Button>
           </Link>
         </div>
-        <div className="relative">
-          <GmbIntroIllustration />
+        <div className="relative rounded-2xl overflow-hidden shadow-2xl">
+          <img 
+            src="/images/gmb/gmb-main-feature.png" 
+            alt="Domine as Pesquisas Locais com CATBACK" 
+            className="w-full h-auto object-cover"
+          />
         </div>
       </div>
 
