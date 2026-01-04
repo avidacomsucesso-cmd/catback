@@ -18,84 +18,63 @@ interface Feature {
   name: string;
   category: string;
   starter: string | boolean;
-  grow: string | boolean;
   pro: string | boolean;
-  premium: string | boolean;
+  gmn: string | boolean;
 }
 
 const plans: Plan[] = [
   {
     name: "Starter",
-    tag: "Começar",
+    tag: "Essencial",
     monthlyPrice: "€9,90",
     annualPrice: "€95",
-    idealFor: "Começar",
+    idealFor: "Começar Retenção",
     highlight: false,
-  },
-  {
-    name: "Grow",
-    tag: "Mais Popular",
-    monthlyPrice: "€19,90",
-    annualPrice: "€191",
-    idealFor: "Crescer",
-    highlight: true,
   },
   {
     name: "Pro",
-    tag: "Recomendado",
+    tag: "Mais Popular",
     monthlyPrice: "€29,90",
     annualPrice: "€287",
-    idealFor: "Profissional",
-    highlight: false,
+    idealFor: "Gestão Completa",
+    highlight: true,
   },
   {
-    name: "Premium",
-    tag: "Tudo-em-Um",
+    name: "GMN",
+    tag: "Crescimento",
     monthlyPrice: "€39,90",
     annualPrice: "€383",
-    idealFor: "Escalar",
+    idealFor: "Dominar o Google",
     highlight: false,
   },
 ];
 
 const features: Feature[] = [
-  { category: "FIDELIZAÇÃO DIGITAL", name: "Cartões de Selos", starter: "✅ Ilimitados", grow: "✅ Ilimitados", pro: "✅ Ilimitados", premium: "✅ Ilimitados" },
-  { category: "FIDELIZAÇÃO DIGITAL", name: "Pontos Acumulativos", starter: true, grow: true, pro: true, premium: true },
-  { category: "FIDELIZAÇÃO DIGITAL", name: "Cashback", starter: true, grow: true, pro: true, premium: true },
-  { category: "FIDELIZAÇÃO DIGITAL", name: "QR Code Validação", starter: true, grow: true, pro: true, premium: true },
-  { category: "FIDELIZAÇÃO DIGITAL", name: "App do Cliente (Web)", starter: true, grow: true, pro: true, premium: true },
-  { category: "FIDELIZAÇÃO DIGITAL", name: "Notificações Push", starter: "100/mês", grow: "500/mês", pro: "2000/mês", premium: "Ilimitadas" },
-  { category: "FIDELIZAÇÃO DIGITAL", name: "Clientes Ativos", starter: "Até 100", grow: "Até 500", pro: "Até 2000", premium: "Ilimitados" },
+  { category: "FIDELIZAÇÃO DIGITAL", name: "Cartões de Selos", starter: "✅ Ilimitados", pro: "✅ Ilimitados", gmn: "✅ Ilimitados" },
+  { category: "FIDELIZAÇÃO DIGITAL", name: "Pontos Acumulativos", starter: true, pro: true, gmn: true },
+  { category: "FIDELIZAÇÃO DIGITAL", name: "Cashback", starter: true, pro: true, gmn: true },
+  { category: "FIDELIZAÇÃO DIGITAL", name: "QR Code Validação", starter: true, pro: true, gmn: true },
+  { category: "FIDELIZAÇÃO DIGITAL", name: "Notificações Push", starter: "100/mês", pro: "2000/mês", gmn: "Ilimitadas" },
+  { category: "FIDELIZAÇÃO DIGITAL", name: "Clientes Ativos", starter: "Até 100", pro: "Até 2000", gmn: "Ilimitados" },
   
-  { category: "AGENDAMENTO ONLINE", name: "Calendário Inteligente", starter: false, grow: true, pro: true, premium: true },
-  { category: "AGENDAMENTO ONLINE", name: "Reservas 24/7", starter: false, grow: true, pro: true, premium: true },
-  { category: "AGENDAMENTO ONLINE", name: "Lembretes Automáticos", starter: false, grow: "SMS/Email", pro: "SMS/Email", premium: "SMS/Email/WhatsApp" },
-  { category: "AGENDAMENTO ONLINE", name: "Sincronização Calendário", starter: false, grow: "Google Cal", pro: "Google Cal", premium: "Google Cal/Outlook" },
-  { category: "AGENDAMENTO ONLINE", name: "Gestão de Múltiplos Locais", starter: false, grow: "✅ 1 local", pro: "✅ 3 locais", premium: "✅ Ilimitado" },
-  { category: "AGENDAMENTO ONLINE", name: "Gestão de Equipe", starter: false, grow: "Até 3", pro: "Até 10", premium: "Ilimitado" },
+  { category: "AGENDAMENTO ONLINE", name: "Calendário Inteligente", starter: false, pro: true, gmn: true },
+  { category: "AGENDAMENTO ONLINE", name: "Reservas 24/7", starter: false, pro: true, gmn: true },
+  { category: "AGENDAMENTO ONLINE", name: "Lembretes Automáticos", starter: false, pro: "SMS/Email", gmn: "SMS/Email/WhatsApp" },
+  { category: "AGENDAMENTO ONLINE", name: "Gestão de Equipe", starter: false, pro: "Até 10", gmn: "Ilimitado" },
 
-  { category: "CRM INTELIGENTE", name: "Base de Clientes", starter: false, grow: false, pro: true, premium: true },
-  { category: "CRM INTELIGENTE", name: "Histórico de Compras", starter: false, grow: false, pro: true, premium: true },
-  { category: "CRM INTELIGENTE", name: "Segmentação de Clientes", starter: false, grow: false, pro: "Básica", premium: "Avançada" },
-  { category: "CRM INTELIGENTE", name: "Analytics e Relatórios", starter: false, grow: false, pro: "Básico", premium: "Completo" },
-  { category: "CRM INTELIGENTE", name: "Notas e Tags", starter: false, grow: false, pro: true, premium: true },
-  { category: "CRM INTELIGENTE", name: "Exportação de Dados", starter: false, grow: false, pro: "CSV", premium: "CSV/Excel/API" },
+  { category: "CRM INTELIGENTE", name: "Base de Clientes", starter: false, pro: true, gmn: true },
+  { category: "CRM INTELIGENTE", name: "Histórico de Compras", starter: false, pro: true, gmn: true },
+  { category: "CRM INTELIGENTE", name: "Analytics e Relatórios", starter: false, pro: "Básico", gmn: "Completo" },
 
-  { category: "MARKETING AUTOMATIZADO", name: "Campanhas SMS/WhatsApp", starter: false, grow: false, pro: false, premium: true },
-  { category: "MARKETING AUTOMATIZADO", name: "E-mail Marketing", starter: false, grow: false, pro: false, premium: true },
-  { category: "MARKETING AUTOMATIZADO", name: "Gestão de Redes Sociais", starter: false, grow: false, pro: false, premium: true },
-  { category: "MARKETING AUTOMATIZADO", name: "Impulsionamento de Posts", starter: false, grow: false, pro: false, premium: true },
-  { category: "MARKETING AUTOMATIZADO", name: "Cupons e Promoções", starter: false, grow: false, pro: false, premium: true },
-  { category: "MARKETING AUTOMATIZADO", name: "Automações de Marketing", starter: false, grow: false, pro: false, premium: true },
+  { category: "GOOGLE MEU NEGÓCIO (IA)", name: "Otimização do Perfil", starter: false, pro: false, gmn: true },
+  { category: "GOOGLE MEU NEGÓCIO (IA)", name: "Gestão de Página GMN", starter: false, pro: false, gmn: true },
+  { category: "GOOGLE MEU NEGÓCIO (IA)", name: "Posts e Fotos Semanais", starter: false, pro: false, gmn: true },
+  { category: "GOOGLE MEU NEGÓCIO (IA)", name: "Respostas com IA Catback", starter: false, pro: false, gmn: true },
+  { category: "GOOGLE MEU NEGÓCIO (IA)", name: "Monitorização de Reputação", starter: false, pro: false, gmn: true },
 
-  { category: "SUPORTE", name: "E-mail", starter: "✅ 48h", grow: "✅ 24h", pro: "✅ 12h", premium: "✅ 6h" },
-  { category: "SUPORTE", name: "Chat", starter: false, grow: true, pro: true, premium: true },
-  { category: "SUPORTE", name: "Telefone", starter: false, grow: false, pro: true, premium: "Prioritário" },
-  { category: "SUPORTE", name: "Gestor de Conta Dedicado", starter: false, grow: false, pro: false, premium: true },
-
-  { category: "EXTRAS", name: "Teste Gratuito", starter: "✅ 14 dias", grow: "✅ 14 dias", pro: "✅ 14 dias", premium: "✅ 14 dias" },
-  { category: "EXTRAS", name: "Sem Cartão de Crédito", starter: true, grow: true, pro: true, premium: true },
-  { category: "EXTRAS", name: "Cancele Quando Quiser", starter: true, grow: true, pro: true, premium: true },
+  { category: "SUPORTE", name: "E-mail", starter: "✅ 48h", pro: "✅ 12h", gmn: "✅ 6h" },
+  { category: "SUPORTE", name: "Chat", starter: false, pro: true, gmn: true },
+  { category: "SUPORTE", name: "Telefone", starter: false, pro: true, gmn: "Prioritário" },
 ];
 
 const renderFeatureValue = (value: string | boolean) => {
@@ -163,14 +142,14 @@ const PricingTable: React.FC = () => {
           <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700 border-collapse">
             <thead>
               <tr>
-                <th className="w-1/5 px-6 py-4 text-left text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider sticky left-0 bg-background z-10">
+                <th className="w-1/4 px-6 py-4 text-left text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider sticky left-0 bg-background z-10">
                   Funcionalidade
                 </th>
                 {plans.map((plan) => (
                   <th
                     key={plan.name}
                     className={cn(
-                      "w-1/5 px-6 py-4 text-center",
+                      "w-1/4 px-6 py-4 text-center",
                       plan.highlight ? "bg-catback-light-purple/20 dark:bg-catback-dark-purple/50" : "bg-gray-50 dark:bg-gray-800"
                     )}
                   >
@@ -190,19 +169,16 @@ const PricingTable: React.FC = () => {
                       <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 mb-4">
                         {billingCycle === "annual" && `(€${plan.monthlyPrice.replace('€', '')}/mês)`}
                       </p>
-                      <Link to="/signup">
+                      <Link to="/signup" className="w-full">
                         <Button
                           className={cn(
                             "w-full px-6",
                             plan.highlight ? 'bg-catback-purple hover:bg-catback-dark-purple' : 'bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600'
                           )}
                         >
-                          Começar Teste Grátis
+                          Teste Grátis
                         </Button>
                       </Link>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                        Ideal para: {plan.idealFor}
-                      </p>
                     </div>
                   </th>
                 ))}
@@ -216,7 +192,7 @@ const PricingTable: React.FC = () => {
                   return (
                     <React.Fragment key={feature.category}>
                       <tr className="bg-gray-100 dark:bg-gray-800">
-                        <td colSpan={5} className="px-6 py-3 text-left text-xs font-bold text-catback-dark-purple dark:text-catback-light-purple uppercase tracking-wider sticky left-0 bg-gray-100 dark:bg-gray-800 z-10">
+                        <td colSpan={4} className="px-6 py-3 text-left text-xs font-bold text-catback-dark-purple dark:text-catback-light-purple uppercase tracking-wider sticky left-0 bg-gray-100 dark:bg-gray-800 z-10">
                           {feature.category}
                         </td>
                       </tr>
@@ -228,13 +204,10 @@ const PricingTable: React.FC = () => {
                           {renderFeatureValue(feature.starter)}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-center bg-catback-light-purple/10 dark:bg-catback-dark-purple/20">
-                          {renderFeatureValue(feature.grow)}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-center">
                           {renderFeatureValue(feature.pro)}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-center">
-                          {renderFeatureValue(feature.premium)}
+                          {renderFeatureValue(feature.gmn)}
                         </td>
                       </tr>
                     </React.Fragment>
@@ -250,37 +223,15 @@ const PricingTable: React.FC = () => {
                       {renderFeatureValue(feature.starter)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-center bg-catback-light-purple/10 dark:bg-catback-dark-purple/20">
-                      {renderFeatureValue(feature.grow)}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-center">
                       {renderFeatureValue(feature.pro)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-center">
-                      {renderFeatureValue(feature.premium)}
+                      {renderFeatureValue(feature.gmn)}
                     </td>
                   </tr>
                 );
               })}
             </tbody>
-            <tfoot>
-              <tr className="bg-gray-50 dark:bg-gray-800">
-                <td className="px-6 py-4 sticky left-0 bg-gray-50 dark:bg-gray-800 z-10"></td>
-                {plans.map((plan) => (
-                  <td key={plan.name} className="px-6 py-4 text-center">
-                    <Link to="/signup">
-                      <Button
-                        className={cn(
-                          "w-full px-6",
-                          plan.highlight ? 'bg-catback-purple hover:bg-catback-dark-purple' : 'bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600'
-                        )}
-                      >
-                        Começar Teste Grátis
-                      </Button>
-                    </Link>
-                  </td>
-                ))}
-              </tr>
-            </tfoot>
           </table>
         </div>
       </div>
