@@ -142,7 +142,7 @@ const GoogleMeuNegocio: React.FC = () => {
           </Link>
         </div>
         <div className="relative">
-          <GmbIntroIllustration />
+          <img src="/gmb-intro.png" alt="Google Meu Negócio Illustration" className="w-full h-auto rounded-2xl shadow-2xl" />
         </div>
       </div>
 
@@ -159,12 +159,12 @@ const GoogleMeuNegocio: React.FC = () => {
                     <p className="text-sm text-gray-600 dark:text-gray-400">Poucas avaliações, perfil desatualizado, clientes satisfeitos que se esquecem de avaliar e críticas sem resposta.</p>
                 </div>
                 <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md border-l-4 border-l-catback-success-green">
-                    <h4 className="font-bold text-catback-success-green flex items-center mb-2 underline">✅ Com a CATBACK no Balcão</h4>
+                    <h4 className="font-bold text-catback-success-green flex-center flex items-center mb-2 underline">✅ Com a CATBACK no Balcão</h4>
                     <p className="text-sm text-gray-600 dark:text-gray-400">Enxurrada de avaliações 5 estrelas, fotos profissionais semanais, IA a responder a todos e destaque total no Google Maps.</p>
                 </div>
             </div>
-            <div className="p-2">
-                <GmbComparisonIllustration />
+            <div className="rounded-xl overflow-hidden shadow-lg border border-gray-200 dark:border-gray-700">
+                <img src="/gmb-comparison.png" alt="Comparativo GMB" className="w-full h-auto" />
             </div>
         </div>
       </div>
