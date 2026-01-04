@@ -19,7 +19,7 @@ const gmbFeatures = [
       "Informação de contacto verificada",
       "Ligação direta ao seu site",
     ],
-    color: "text-catback-success-green",
+    color: "text-catback-back-success-green",
   },
   {
     title: "Gestão de Conteúdo",
@@ -88,13 +88,15 @@ const GmbComparisonIllustration = () => (
 );
 
 const GmbBenefitsIllustration = () => (
-  <div className="relative w-full rounded-2xl overflow-hidden shadow-2xl border border-white/10">
-    <img 
-      src="/display_catback.png" 
-      alt="Benefícios Display NFC CATBACK" 
-      className="w-full h-auto object-cover block"
-      loading="lazy"
-    />
+  <div className="relative w-full flex justify-center lg:justify-end">
+    <div className="relative w-[65%] rounded-2xl overflow-hidden shadow-2xl border border-white/10">
+      <img 
+        src="/display_catback.png" 
+        alt="Benefícios Display NFC CATBACK" 
+        className="w-full h-auto object-cover block"
+        loading="lazy"
+      />
+    </div>
   </div>
 );
 
