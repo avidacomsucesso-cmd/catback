@@ -103,7 +103,8 @@ const GmbBenefitsIllustration = () => (
     <img 
       src="/images/gmb/display_catback1.png" 
       alt="Benefícios Display NFC CATBACK" 
-      className="w-full h-auto object-cover"
+      className="w-full h-auto object-cover block"
+      loading="lazy"
     />
   </div>
 );
