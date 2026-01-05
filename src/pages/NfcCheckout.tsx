@@ -10,13 +10,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { showSuccess, showError } from "@/utils/toast";
-import { loadStripe } from "@stripe/stripe-js";
+import { loadStripe, Stripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { supabase } from "@/integrations/supabase/client";
-
-// Initialize Stripe safely
-const stripeKey = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
-const stripePromise = stripeKey ? loadStripe(stripeKey) : null;
 
 const checkoutSchema = z.object({
   name: z.string().min(2, { message: "Nome é obrigatório." }),
@@ -215,34 +211,60 @@ const CheckoutForm: React.FC<{ clientSecret: string }> = ({ clientSecret }) => {
 
 const NfcCheckout: React.FC = () => {
   const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const [stripePromise, setStripePromise] = useState<Promise<Stripe | null> | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Fetch the PaymentIntent client secret
-    const fetchPaymentIntent = async () => {
+    // Fetch the PaymentIntent client secret AND the public key
+    const fetchPaymentConfig = async () => {
       try {
         const { data, error } = await supabase.functions.invoke('create-payment-intent', {
           body: { amount: 3390 }, // 33.90 EUR in cents
         });
 
-        if (error) throw error;
-        if (data?.clientSecret) {
-          setClientSecret(data.clientSecret);
+        if (error) {
+            // Check if it's a connection error (function missing)
+            if (error.message.includes("Failed to send a request")) {
+                throw new Error("Erro de conexão com o servidor de pagamentos. A função 'create-payment-intent' pode não estar implantada.");
+            }
+            throw error;
+        }
+
+        if (data) {
+            if (data.clientSecret) {
+                setClientSecret(data.clientSecret);
+            }
+            
+            // Prioritize key from backend, fallback to frontend env, finally error
+            const backendKey = data.publicKey;
+            const frontendKey = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
+            const keyToUse = backendKey || frontendKey;
+
+            if (keyToUse) {
+                setStripePromise(loadStripe(keyToUse));
+            } else {
+                throw new Error("Chave pública do Stripe não encontrada (Frontend ou Backend).");
+            }
         }
       } catch (err: any) {
-        showError("Erro ao iniciar pagamento: " + err.message);
+        console.error(err);
+        setError(err.message || "Erro desconhecido ao iniciar checkout.");
+        showError("Erro ao iniciar pagamento.");
       }
     };
 
-    fetchPaymentIntent();
+    fetchPaymentConfig();
   }, []);
 
   const price = 33.90;
 
-  if (!stripePromise) {
+  if (error) {
     return (
         <Layout>
-            <div className="container py-16 flex justify-center text-center text-red-500">
-                Erro de configuração: Chave pública do Stripe não encontrada. Verifique VITE_STRIPE_PUBLIC_KEY.
+            <div className="container py-16 flex justify-center text-center flex-col items-center">
+                <div className="text-red-500 text-lg font-semibold mb-2">Erro de Configuração</div>
+                <p className="text-gray-600 mb-4">{error}</p>
+                <Button onClick={() => window.location.reload()}>Tentar Novamente</Button>
             </div>
         </Layout>
     );
@@ -261,7 +283,7 @@ const NfcCheckout: React.FC = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {clientSecret ? (
+            {clientSecret && stripePromise ? (
               <Elements stripe={stripePromise} options={{ clientSecret }}>
                 <CheckoutForm clientSecret={clientSecret} />
               </Elements>
