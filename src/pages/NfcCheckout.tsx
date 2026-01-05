@@ -223,9 +223,10 @@ const NfcCheckout: React.FC = () => {
         });
 
         if (error) {
-            // Check if it's a connection error (function missing)
-            if (error.message.includes("Failed to send a request")) {
-                throw new Error("Erro de conexão com o servidor de pagamentos. A função 'create-payment-intent' pode não estar implantada.");
+            console.error("Supabase Invoke Error:", error);
+            // Check if it's a connection error (function missing or CORS)
+            if (error.message && (error.message.includes("Failed to send a request") || error.message.includes("fetch"))) {
+                throw new Error("Erro de conexão (CORS/Network). Verifique se a Edge Function foi atualizada e implantada corretamente.");
             }
             throw error;
         }
