@@ -11,6 +11,7 @@ O sistema foi verificado e as últimas alterações foram salvas com sucesso. O 
    - Configuração do frontend com `PaymentElement`.
    - Conexão segura com `create-payment-intent` via Edge Functions.
    - Utilização de variáveis de ambiente seguras (`VITE_STRIPE_PUBLIC_KEY`).
+   - **Correção:** Instalação das bibliotecas `@stripe/stripe-js` e `@stripe/react-stripe-js` que estavam em falta.
 
 2. **Página de Checkout (NFC Display)**
    - Refatoração completa de `src/pages/NfcCheckout.tsx`.
