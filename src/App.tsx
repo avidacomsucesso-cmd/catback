@@ -36,7 +36,8 @@ import NfcDisplay from "./pages/NfcDisplay";
 import NfcCheckout from "./pages/NfcCheckout"; 
 import CheckoutSuccess from "./pages/CheckoutSuccess"; 
 import CalendlyWidget from "./components/CalendlyWidget"; 
-import Loyalty from "./pages/Loyalty"; // Novo import
+import Loyalty from "./pages/Loyalty"; 
+import ScrollToTop from "./components/ScrollToTop"; // Importando o novo componente
 
 const queryClient = new QueryClient();
 
@@ -47,11 +48,12 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
+          <ScrollToTop /> {/* Adicionando o ScrollToTop aqui */}
           <CalendlyWidget />
           <Routes>
             {/* Public Routes */}
             <Route path="/" element={<Index />} />
-            <Route path="/fidelizacao" element={<Loyalty />} /> {/* Nova rota */}
+            <Route path="/fidelizacao" element={<Loyalty />} /> 
             <Route path="/features" element={<Features />} />
             <Route path="/nfc-display" element={<NfcDisplay />} /> 
             <Route path="/nfc-display/checkout" element={<NfcCheckout />} /> 
