@@ -14,8 +14,9 @@ import { loadStripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { supabase } from "@/integrations/supabase/client";
 
-// Initialize Stripe
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
+// Initialize Stripe safely
+const stripeKey = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
+const stripePromise = stripeKey ? loadStripe(stripeKey) : null;
 
 const checkoutSchema = z.object({
   name: z.string().min(2, { message: "Nome é obrigatório." }),
@@ -236,6 +237,16 @@ const NfcCheckout: React.FC = () => {
   }, []);
 
   const price = 33.90;
+
+  if (!stripePromise) {
+    return (
+        <Layout>
+            <div className="container py-16 flex justify-center text-center text-red-500">
+                Erro de configuração: Chave pública do Stripe não encontrada. Verifique VITE_STRIPE_PUBLIC_KEY.
+            </div>
+        </Layout>
+    );
+  }
 
   return (
     <Layout>
