@@ -169,16 +169,16 @@ const PricingTable: React.FC = () => {
                       <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 mb-4">
                         {billingCycle === "annual" && `(€${plan.monthlyPrice.replace('€', '')}/mês)`}
                       </p>
-                      <Link to="/signup" className="w-full">
+                      <a href="https://wa.me/351928202241" target="_blank" rel="noopener noreferrer" className="w-full">
                         <Button
                           className={cn(
                             "w-full px-6",
                             plan.highlight ? 'bg-catback-purple hover:bg-catback-dark-purple' : 'bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600'
                           )}
                         >
-                          Teste Grátis
+                          Solicite uma avaliação Grátis
                         </Button>
-                      </Link>
+                      </a>
                     </div>
                   </th>
                 ))}

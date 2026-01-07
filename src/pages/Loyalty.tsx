@@ -105,7 +105,7 @@ const Loyalty = () => {
                 Comece a Fidelizar em 3 Passos Simples
               </h2>
               <p className="text-lg text-gray-600 dark:text-gray-400 mb-8 max-w-xl">
-                A nossa plataforma foi desenhada para ser intuitiva e rápida de implementar, garantindo resultados imediatos.
+                Solicite uma avaliação Grátis agora e veja como podemos transformar o seu negócio.
               </p>
               
               <div className="space-y-8 mt-12">

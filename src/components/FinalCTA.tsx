@@ -14,17 +14,17 @@ const FinalCTA: React.FC = () => {
         </h2>
         
         <p className="text-xl font-light mb-8">
-          Comece grátis hoje. Sem cartão de crédito. Cancele quando quiser.
+          Solicite uma avaliação Grátis hoje. Sem cartão de crédito. Cancele quando quiser.
         </p>
 
-        <Link to="/signup">
+        <a href="https://wa.me/351928202241" target="_blank" rel="noopener noreferrer">
           <Button 
             size="lg" 
             className="w-full sm:w-auto text-lg px-10 py-7 bg-catback-energy-orange hover:bg-catback-energy-orange/90 text-white transition-all shadow-xl shadow-catback-energy-orange/40"
           >
-            <Cat className="w-5 h-5 mr-2 fill-white" /> Começar Grátis - 14 Dias de Teste
+            <Cat className="w-5 h-5 mr-2 fill-white" /> Solicite uma avaliação Grátis
           </Button>
-        </Link>
+        </a>
 
         <p className="text-sm mt-6 opacity-80">
           Mais de 1.000 negócios já confiam no CATBACK

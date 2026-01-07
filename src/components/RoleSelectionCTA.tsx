@@ -22,9 +22,9 @@ const RoleSelectionCTA: React.FC = () => {
               Entrar no Dashboard
             </Button>
           </Link>
-          <Link to="/signup" className="mt-2 text-xs text-catback-purple hover:underline">
-            Ou Começar Teste Grátis
-          </Link>
+          <a href="https://wa.me/351928202241" target="_blank" rel="noopener noreferrer" className="mt-2 text-xs text-catback-purple hover:underline">
+            Ou Solicite uma avaliação Grátis
+          </a>
         </CardContent>
       </Card>
 

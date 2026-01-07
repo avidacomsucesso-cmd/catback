@@ -25,7 +25,7 @@ const faqs = [
   {
     question: "Como funciona o teste gratuito?",
     answer:
-      "Oferecemos 14 dias completos de acesso ao plano escolhido. Não é necessário cartão de crédito para começar. Cancele quando quiser antes do fim do período de teste.",
+      "Oferecemos uma avaliação gratuita completa do plano escolhido. Basta solicitar via WhatsApp para começar. Não é necessário cartão de crédito.",
   },
   {
     question: "Aceitam que formas de pagamento?",

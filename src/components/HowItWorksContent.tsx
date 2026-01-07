@@ -95,11 +95,11 @@ const HowItWorksContent: React.FC = () => {
         </div>
 
         <div className="mt-16 text-center">
-          <Link to="/signup">
+          <a href="https://wa.me/351928202241" target="_blank" rel="noopener noreferrer">
             <Button size="lg" className="text-lg px-8 py-6 bg-catback-purple hover:bg-catback-dark-purple transition-all">
-              <Cat className="w-5 h-5 mr-2 fill-white" /> Começar Teste Grátis Agora
+              <Cat className="w-5 h-5 mr-2 fill-white" /> Solicite uma avaliação Grátis Agora
             </Button>
-          </Link>
+          </a>
         </div>
       </div>
     </section>

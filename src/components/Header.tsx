@@ -46,11 +46,11 @@ const MobileNav = () => (
               Entrar
             </Button>
           </Link>
-          <Link to="/signup">
+          <a href="https://wa.me/351928202241" target="_blank" rel="noopener noreferrer">
             <Button className="w-full bg-catback-purple hover:bg-catback-dark-purple">
-              Começar Grátis
+              Solicite uma avaliação Grátis
             </Button>
-          </Link>
+          </a>
         </div>
       </nav>
     </SheetContent>
@@ -86,11 +86,11 @@ const Header: React.FC = () => {
                 Entrar
               </Button>
             </Link>
-            <Link to="/signup">
+            <a href="https://wa.me/351928202241" target="_blank" rel="noopener noreferrer">
               <Button className="bg-catback-purple hover:bg-catback-dark-purple transition-colors">
-                Começar Grátis
+                Solicite uma avaliação Grátis
               </Button>
-            </Link>
+            </a>
           </div>
         </div>
 

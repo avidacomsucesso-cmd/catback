@@ -54,11 +54,11 @@ const HowItWorksSteps: React.FC = () => {
         </div>
 
         <div className="mt-12">
-          <Link to="/signup">
+          <a href="https://wa.me/351928202241" target="_blank" rel="noopener noreferrer">
             <Button size="lg" className="text-lg px-8 py-6 bg-catback-purple hover:bg-catback-dark-purple transition-all">
-              Começar Agora Grátis
+              Solicite uma avaliação Grátis
             </Button>
-          </Link>
+          </a>
         </div>
       </div>
     </section>

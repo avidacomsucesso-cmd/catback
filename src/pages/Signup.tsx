@@ -96,10 +96,24 @@ const Signup: React.FC = () => {
       <div className="container py-16 flex justify-center">
         <Card className="w-full max-w-md shadow-xl">
           <CardHeader className="text-center">
-            <CardTitle className="text-3xl font-bold text-catback-dark-purple">Começar Grátis</CardTitle>
-            <p className="text-sm text-gray-500">Inicie seu teste de 14 dias. Sem cartão de crédito.</p>
+            <CardTitle className="text-3xl font-bold text-catback-dark-purple">Solicite sua Avaliação</CardTitle>
+            <p className="text-sm text-gray-500">Comece hoje mesmo. Sem cartão de crédito.</p>
           </CardHeader>
           <CardContent className="space-y-6">
+            <div className="text-center p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border-2 border-dashed border-catback-purple/30">
+              <p className="text-gray-600 dark:text-gray-400 mb-4 font-medium">Para garantir o melhor setup para o seu negócio, agora oferecemos atendimento personalizado via WhatsApp.</p>
+              <a href="https://wa.me/351928202241" target="_blank" rel="noopener noreferrer">
+                <Button className="w-full bg-catback-energy-orange hover:bg-catback-energy-orange/90 h-12 text-lg">
+                  Solicite uma avaliação Grátis
+                </Button>
+              </a>
+            </div>
+            
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center"><span className="w-full border-t"></span></div>
+              <div className="relative flex justify-center text-xs uppercase"><span className="bg-background px-2 text-muted-foreground">Ou continue com o registo manual</span></div>
+            </div>
+
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                 <FormField
@@ -150,7 +164,7 @@ const Signup: React.FC = () => {
                     <Loader2 className="mr-2 h-4 w-4 animate-spin fill-white" />
                   ) : (
                     <>
-                      <Cat className="w-5 h-5 mr-2 fill-white" /> Iniciar Teste Grátis
+                      <Cat className="w-5 h-5 mr-2 fill-white" /> Criar Conta
                     </>
                   )}
                 </Button>

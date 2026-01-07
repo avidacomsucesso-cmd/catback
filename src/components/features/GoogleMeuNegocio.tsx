@@ -191,9 +191,9 @@ const GoogleMeuNegocio: React.FC = () => {
       <div className="bg-catback-dark-purple text-white p-8 md:p-12 rounded-3xl flex flex-col lg:flex-row items-center gap-12 shadow-xl">
         <div className="lg:w-1/2 space-y-6">
             <Badge className="bg-catback-energy-orange text-white text-sm font-bold px-4 py-1 uppercase tracking-wider">Solução Completa</Badge>
-            <h3 className="text-3xl md:text-4xl font-bold leading-tight">Receba Avaliações 5 Estrelas em 5 Segundos</h3>
+            <h3 className="text-3xl md:text-4xl font-bold leading-tight">Solicite uma avaliação Grátis do seu Negócio</h3>
             <p className="text-catback-light-purple text-lg">
-                Coloque o nosso Display NFC no seu balcão e transforme o atendimento de hoje no faturamento de amanhã.
+                Fale com um especialista hoje mesmo e descubra o potencial oculto do seu perfil no Google.
             </p>
             <div className="grid grid-cols-2 gap-4">
                 <div className="bg-white/10 p-4 rounded-xl border border-white/20">

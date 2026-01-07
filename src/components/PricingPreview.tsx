@@ -53,7 +53,7 @@ const PricingPreview: React.FC = () => {
           Planos que Crescem com Você
         </h2>
         <p className="text-xl text-gray-600 dark:text-gray-400 mb-12">
-          Comece com 14 dias grátis em qualquer plano.
+          Solicite uma avaliação Grátis em qualquer plano.
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -87,13 +87,13 @@ const PricingPreview: React.FC = () => {
                 </div>
               </CardContent>
               <CardFooter className="pt-6">
-                <Link to="/signup" className="w-full">
+                <a href="https://wa.me/351928202241" target="_blank" rel="noopener noreferrer" className="w-full">
                   <Button 
                     className={`w-full ${plan.highlight ? 'bg-catback-purple hover:bg-catback-dark-purple' : 'bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600'}`}
                   >
-                    Começar Teste Grátis
+                    Solicite uma avaliação Grátis
                   </Button>
-                </Link>
+                </a>
               </CardFooter>
             </Card>
           ))}

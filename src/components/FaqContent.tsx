@@ -20,7 +20,7 @@ const faqSections = [
       {
         question: "Preciso de cartão de crédito para começar o teste gratuito?",
         answer:
-          "Não. Oferecemos 14 dias de teste gratuito em qualquer plano sem a necessidade de inserir dados de cartão de crédito. Pode cancelar a qualquer momento.",
+          "Não. Oferecemos uma avaliação gratuita em qualquer plano sem a necessidade de inserir dados de cartão de crédito. Basta solicitar através do nosso WhatsApp.",
       },
       {
         question: "O CATBACK funciona para o meu tipo de negócio?",
