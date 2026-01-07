@@ -86,7 +86,7 @@ const NfcContent: React.FC = () => {
           {/* Right: CTA & Price */}
           <div className="space-y-6 text-center lg:text-left">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
-              Adquira o Seu Display por um Preço Simbólico
+              Receba Avaliações 5 Estrelas em 5 Segundos
             </h2>
             
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
@@ -95,17 +95,19 @@ const NfcContent: React.FC = () => {
                 </div>
                 <div className="text-xl font-semibold text-gray-900 dark:text-white">
                     Pagamento Único
-                    <p className="text-sm font-normal text-gray-600 dark:text-gray-400">Este não é o preço do display. É o preço de começar a transformar a sua reputação online, hoje.</p>
+                    <p className="text-sm font-normal text-gray-600 dark:text-gray-400">Sem mensalidades</p>
                 </div>
             </div>
 
-            {/* Killer Feature Badge - Adjusted text */}
-            <Card className="bg-catback-energy-orange/80 border-catback-energy-orange">
-              <CardContent className="p-4 flex items-center justify-center space-x-4">
-                <Zap className="w-8 h-8 text-white fill-white" />
-                <div className="text-white text-center">
-                  <h3 className="font-extrabold text-xl">🏆 EXCLUSIVO CATBACK</h3>
-                  <p className="text-lg font-semibold">Integração Automática com Fidelização</p>
+            {/* Killer Feature Badge - Adjusted to match purple section */}
+            <Card className="bg-catback-purple/10 border-catback-purple/50">
+              <CardContent className="p-4 flex items-center space-x-4">
+                <Zap className="w-8 h-8 text-catback-energy-orange flex-shrink-0" />
+                <div className="text-left">
+                  <h3 className="font-bold text-catback-dark-purple dark:text-white">Automação Inteligente</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    O CATBACK liga as suas avaliações do Google ao seu CRM, permitindo-lhe monitorizar e responder a todas as opiniões diretamente do seu dashboard.
+                  </p>
                 </div>
               </CardContent>
             </Card>
