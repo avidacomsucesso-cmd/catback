@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Star, Zap, Nfc, ArrowRight, Check } from "lucide-react";
+import { Star, Zap, Nfc, ArrowRight, Check, Frown, Sparkles, Smartphone } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
 
@@ -67,19 +67,51 @@ const NfcContent: React.FC = () => {
         </div>
 
         {/* Dor vs Solução */}
-        <div className="max-w-4xl mx-auto space-y-8 mb-16">
-            <Card className="p-6 bg-red-50 dark:bg-red-900/20 border-red-300">
-                <CardTitle className="text-xl text-destructive mb-2">A Dor:</CardTitle>
-                <p className="text-gray-700 dark:text-gray-300">
-                    Pedir uma avaliação a um cliente é estranho. Eles dizem 'sim, claro', mas depois esquecem-se. O processo é complicado: têm de procurar o seu negócio, encontrar a secção de avaliações, e só depois escrever. É pedir demasiado.
-                </p>
-            </Card>
-            <Card className="p-6 bg-catback-light-purple/20 dark:bg-catback-dark-purple/50 border-catback-purple">
-                <CardTitle className="text-xl text-catback-dark-purple dark:text-white mb-2">A Solução:</CardTitle>
-                <p className="text-gray-700 dark:text-gray-300">
-                    Agora, imagine isto: o seu cliente paga, você aponta para o display e diz 'Se gostou, deixe-nos a sua opinião aqui'. Ele encosta o telemóvel. A página de avaliação abre instantaneamente. Em 5 segundos, você ganhou uma nova avaliação 5 estrelas.
-                </p>
-            </Card>
+        <div className="max-w-5xl mx-auto mb-20 relative">
+            <div className="grid md:grid-cols-2 gap-8 items-stretch">
+                {/* A Dor */}
+                <div className="relative group">
+                    <div className="absolute -inset-1 bg-gradient-to-r from-red-500 to-orange-500 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
+                    <Card className="relative h-full p-8 bg-white dark:bg-gray-900 border-none shadow-xl overflow-hidden">
+                        <div className="absolute top-0 right-0 p-4 opacity-10">
+                            <Frown size={120} className="text-red-500" />
+                        </div>
+                        <div className="flex items-center space-x-3 mb-6">
+                            <div className="p-3 bg-red-100 dark:bg-red-900/30 rounded-xl text-red-600 dark:text-red-400">
+                                <Frown className="w-8 h-8" />
+                            </div>
+                            <h3 className="text-2xl font-bold text-gray-900 dark:text-white">A Dor:</h3>
+                        </div>
+                        <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
+                            Pedir uma avaliação a um cliente é estranho. Eles dizem 'sim, claro', mas depois esquecem-se. O processo é complicado: têm de procurar o seu negócio, encontrar a secção de avaliações, e só depois escrever. <strong>É pedir demasiado.</strong>
+                        </p>
+                    </Card>
+                </div>
+
+                {/* A Solução */}
+                <div className="relative group">
+                    <div className="absolute -inset-1 bg-gradient-to-r from-catback-purple to-catback-dark-purple rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
+                    <Card className="relative h-full p-8 bg-white dark:bg-gray-900 border-none shadow-xl overflow-hidden">
+                        <div className="absolute top-0 right-0 p-4 opacity-10">
+                            <Smartphone size={120} className="text-catback-purple" />
+                        </div>
+                        <div className="flex items-center space-x-3 mb-6">
+                            <div className="p-3 bg-catback-light-purple/20 rounded-xl text-catback-purple">
+                                <Sparkles className="w-8 h-8" />
+                            </div>
+                            <h3 className="text-2xl font-bold text-catback-dark-purple dark:text-white">A Solução:</h3>
+                        </div>
+                        <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
+                            Agora, imagine isto: o seu cliente paga, você aponta para o display e diz <strong>'Se gostou, deixe-nos a sua opinião aqui'</strong>. Ele encosta o telemóvel. A página de avaliação abre instantaneamente. Em 5 segundos, você ganhou uma nova avaliação 5 estrelas.
+                        </p>
+                    </Card>
+                </div>
+            </div>
+            
+            {/* Elemento de conexão (seta ou indicador) escondido em mobile */}
+            <div className="hidden lg:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-16 h-16 bg-white dark:bg-gray-800 rounded-full shadow-2xl items-center justify-center border-4 border-gray-50 dark:border-gray-950">
+                <ArrowRight className="w-8 h-8 text-catback-purple animate-pulse" />
+            </div>
         </div>
 
         {/* Main Content & CTA */}
