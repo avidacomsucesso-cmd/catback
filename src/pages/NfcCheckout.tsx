@@ -50,6 +50,15 @@ const CheckoutForm: React.FC<{ clientSecret: string }> = ({ clientSecret }) => {
 
     setIsProcessing(true);
 
+    // Track Google Ads conversion: Initiate Payment
+    if (typeof window !== 'undefined' && (window as any).gtag) {
+      (window as any).gtag('event', 'conversion', {
+        'send_to': 'AW-11531201538/u_iWCLvOiaYaEILp9Pkq',
+        'value': 33.9,
+        'currency': 'EUR'
+      });
+    }
+
     try {
       // 1. (Optional) Save shipping info to DB here before payment
       // For now, we proceed to payment
