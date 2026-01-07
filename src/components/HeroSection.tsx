@@ -16,7 +16,7 @@ const HeroSection: React.FC = () => {
             Atraia Clientes do <span className="text-catback-purple dark:text-catback-light-purple">Google</span>. Transforme-os em Fãs.
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-400 max-w-lg mx-auto lg:mx-0">
-            Otimize seu perfil no Google para atrair novos clientes e use ferramentas de fidelização inteligentes para garantir que eles voltem sempre.
+            Melhore a visibilidade do seu negócio no Google através de avaliações reais e consistentes.
           </p>
           <p className="text-lg font-semibold text-gray-900 dark:text-white pt-2">
             Encontrado no Google. Lembrado pelos Clientes.

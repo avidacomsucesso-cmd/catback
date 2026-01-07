@@ -26,7 +26,7 @@ const Index = () => {
               Atraia Clientes do <span className="text-catback-purple">Google</span>. Transforme-os em Fãs.
             </h1>
             <p className="text-xl text-gray-600 dark:text-gray-300 max-w-lg lg:max-w-none mx-auto">
-              Otimize seu perfil no Google para atrair novos clientes e use ferramentas de fidelização inteligentes para garantir que eles voltem sempre. <br/><strong>Encontrado no Google. Lembrado pelos Clientes.</strong>
+              Melhore a visibilidade do seu negócio no Google através de avaliações reais e consistentes. <br/><strong>Encontrado no Google. Lembrado pelos Clientes.</strong>
             </p>
             {/* NEW CTAs: Role Selection */}
             <RoleSelectionCTA />
