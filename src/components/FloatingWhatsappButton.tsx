@@ -10,7 +10,7 @@ const FloatingWhatsappButton: React.FC = () => {
         size="lg"
         className="bg-transparent hover:bg-transparent text-white rounded-full shadow-lg flex items-center justify-center p-0 h-16 w-16"
       >
-        <img src="/images/whatsapp-icon.png" alt="WhatsApp" className="h-16 w-16" />
+        <img src="/images/whatsapp-logo.png" alt="WhatsApp" className="h-16 w-16" />
         <span className="sr-only">Fale Conosco no WhatsApp</span>
       </BotaoWhatsapp>
     </div>
