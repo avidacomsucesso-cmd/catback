@@ -4,6 +4,7 @@ import { Button } from "./ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import { Menu, Phone } from "lucide-react";
 import BotaoWhatsapp from "./BotaoWhatsapp";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const navLinks = [
   { to: "/#features", text: "Funcionalidades" },
