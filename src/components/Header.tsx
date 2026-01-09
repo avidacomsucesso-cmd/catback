@@ -9,6 +9,8 @@ import { useIsMobile } from "@/hooks/use-mobile";
 const navLinks = [
   { to: "/#features", text: "Funcionalidades" },
   { to: "/fidelizacao", text: "Fidelização" },
+  { to: "/gmb", text: "Google Meu Negócio" },
+  { to: "/nfc-display", text: "Display NFC" },
   { to: "/pricing", text: "Preços" },
   { to: "/industries", text: "Para Quem" },
 ];
