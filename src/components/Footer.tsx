@@ -1,6 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Cat } from "lucide-react";
+import { Button } from "./ui/button";
+import { Phone } from "lucide-react";
+import BotaoWhatsapp from "./BotaoWhatsapp";
 
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
@@ -77,11 +79,18 @@ const Footer: React.FC = () => {
           ))}
         </div>
 
-        <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700 text-center">
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            &copy; {currentYear} CATBACK. Todos os direitos reservados.
-          </p>
+        <div className="flex flex-col items-center md:items-end space-y-4">
+          <p className="text-sm text-gray-500 dark:text-gray-400">Pronto para começar?</p>
+          <BotaoWhatsapp className="bg-catback-purple hover:bg-catback-dark-purple text-white">
+            <Phone className="w-4 h-4 mr-2" />
+            Fale com um especialista
+          </BotaoWhatsapp>
         </div>
+      </div>
+      <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700 text-center text-sm text-gray-500 dark:text-gray-400">
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          &copy; {currentYear} CATBACK. Todos os direitos reservados.
+        </p>
       </div>
     </footer>
   );
