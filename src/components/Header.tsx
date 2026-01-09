@@ -63,6 +63,18 @@ const Header: React.FC = () => {
       <div className="container flex h-16 items-center justify-between">
         <Logo />
 
+        <nav className="hidden lg:flex items-center space-x-6 text-sm font-medium">
+          {navLinks.map((item) => (
+            <Link
+              key={item.text}
+              to={item.to}
+              className="transition-colors hover:text-catback-purple"
+            >
+              {item.text}
+            </Link>
+          ))}
+        </nav>
+
         <div className="hidden lg:flex items-center space-x-4">
           <BotaoWhatsapp className="bg-catback-purple hover:bg-catback-dark-purple text-white">
             <Phone className="w-4 h-4 mr-2" />
