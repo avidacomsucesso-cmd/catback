@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-const GOOGLE_TAG_ID = 'AW-17858320955';
+const GOOGLE_TAG_ID = 'AW-17823816531';
 
 const GoogleTag: React.FC = () => {
   useEffect(() => {

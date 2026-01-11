@@ -16,7 +16,7 @@ const BotaoWhatsapp: React.FC<BotaoWhatsappProps> = ({ children, ...props }) => 
     // 1. Avisa o Google Ads que a conversão aconteceu
     if (typeof window !== 'undefined' && (window as any).gtag) {
       (window as any).gtag('event', 'conversion', {
-        'send_to': 'AW-17858320955/PQmpCOfy5d8bElu0wcNc',
+        'send_to': 'AW-17823816531/PQmpCOfy5d8bElu0wcNc',
       });
     }
 

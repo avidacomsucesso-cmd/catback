@@ -53,7 +53,7 @@ const CheckoutForm: React.FC<{ clientSecret: string }> = ({ clientSecret }) => {
     // Track Google Ads conversion: Initiate Payment
     if (typeof window !== 'undefined' && (window as any).gtag) {
       (window as any).gtag('event', 'conversion', {
-        'send_to': 'AW-17858320955/tQENCJrGz94bENO2h7NC'
+        'send_to': 'AW-17823816531/tQENCJrGz94bENO2h7NC'
       });
     }
 
