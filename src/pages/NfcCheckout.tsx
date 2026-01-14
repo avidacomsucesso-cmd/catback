@@ -215,15 +215,6 @@ const NfcCheckout: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('event', 'conversion', {
-          'send_to': 'AW-17858320955/HMT2CPye_-AbELu0wcNC',
-          'value': 33.90,
-          'currency': 'EUR',
-          'transaction_id': ''
-      });
-    }
-
     // Fetch the PaymentIntent client secret AND the public key
     const fetchPaymentConfig = async () => {
       try {

@@ -10,13 +10,6 @@ const NfcDisplay: React.FC = () => {
   const navigate = useNavigate();
 
   const handleBuyClick = () => {
-    if (typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('event', 'conversion', {
-          'send_to': 'AW-17858320955/HMT2CPye_AbELu0wcNC',
-          'value': 33.90,
-          'currency': 'EUR'
-      });
-    }
     navigate('/nfc-display/checkout');
   };
 
