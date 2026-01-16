@@ -7,41 +7,27 @@ import BotaoWhatsapp from "./BotaoWhatsapp";
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
 
-  const footerLinks = [
-    {
-      title: "Plataforma",
-      links: [
-        { name: "Fidelização", href: "/fidelizacao" }, // Novo link
-        { name: "Funcionalidades", href: "/features" },
-        { name: "Display NFC", href: "/nfc-display" },
-        { name: "Preços", href: "/pricing" },
-        { name: "Como Funciona", href: "/how-it-works" },
-        { name: "Para Quem", href: "/industries" },
-      ],
-    },
-    {
-      title: "Recursos",
-      links: [
-        { name: "Blog", href: "/blog" },
-        { name: "Ajuda (FAQ)", href: "/help" },
-        { name: "Termos de Serviço", href: "/terms" },
-        { name: "Política de Privacidade", href: "/privacy" },
-      ],
-    },
-    {
-      title: "Empresa",
-      links: [
-        { name: "Sobre Nós", href: "/about" },
-        { name: "Carreiras", href: "/careers" },
-        { name: "Contacto", href: "/contact" },
-      ],
-    },
-    {
-      title: "Clientes",
-      links: [
-        { name: "Meus Cartões", href: "/customer-auth" },
-      ],
-    },
+  const platformLinks = [
+    { to: "/nfc-display", text: "Display NFC" },
+    { to: "/pricing", text: "Preços" },
+    { to: "/industries", text: "Para Quem" },
+  ];
+
+  const resourcesLinks = [
+    { to: "/blog", text: "Blog" },
+    { to: "/help", text: "Ajuda (FAQ)" },
+    { to: "/terms", text: "Termos de Serviço" },
+    { to: "/privacy", text: "Política de Privacidade" },
+  ];
+
+  const companyLinks = [
+    { to: "/about", text: "Sobre Nós" },
+    { to: "/careers", text: "Carreiras" },
+    { to: "/contact", text: "Contacto" },
+  ];
+
+  const customerLinks = [
+    { to: "/customer-auth", text: "Meus Cartões" },
   ];
 
   return (
@@ -58,25 +44,69 @@ const Footer: React.FC = () => {
             </p>
           </div>
 
-          {footerLinks.map((section) => (
-            <div key={section.title} className="space-y-4">
-              <h4 className="text-lg font-semibold text-gray-900 dark:text-white">
-                {section.title}
-              </h4>
-              <ul className="space-y-2">
-                {section.links.map((link) => (
-                  <li key={link.name}>
-                    <Link
-                      to={link.href}
-                      className="text-sm text-gray-600 hover:text-catback-purple dark:text-gray-400 dark:hover:text-catback-light-purple transition-colors"
-                    >
-                      {link.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          <div className="space-y-4">
+            <h4 className="text-lg font-semibold text-gray-900 dark:text-white">Plataforma</h4>
+            <ul className="space-y-2">
+              {platformLinks.map((link) => (
+                <li key={link.to}>
+                  <Link
+                    to={link.to}
+                    className="text-sm text-gray-600 hover:text-catback-purple dark:text-gray-400 dark:hover:text-catback-light-purple transition-colors"
+                  >
+                    {link.text}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="space-y-4">
+            <h4 className="text-lg font-semibold text-gray-900 dark:text-white">Recursos</h4>
+            <ul className="space-y-2">
+              {resourcesLinks.map((link) => (
+                <li key={link.to}>
+                  <Link
+                    to={link.to}
+                    className="text-sm text-gray-600 hover:text-catback-purple dark:text-gray-400 dark:hover:text-catback-light-purple transition-colors"
+                  >
+                    {link.text}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="space-y-4">
+            <h4 className="text-lg font-semibold text-gray-900 dark:text-white">Empresa</h4>
+            <ul className="space-y-2">
+              {companyLinks.map((link) => (
+                <li key={link.to}>
+                  <Link
+                    to={link.to}
+                    className="text-sm text-gray-600 hover:text-catback-purple dark:text-gray-400 dark:hover:text-catback-light-purple transition-colors"
+                  >
+                    {link.text}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="space-y-4">
+            <h4 className="text-lg font-semibold text-gray-900 dark:text-white">Clientes</h4>
+            <ul className="space-y-2">
+              {customerLinks.map((link) => (
+                <li key={link.to}>
+                  <Link
+                    to={link.to}
+                    className="text-sm text-gray-600 hover:text-catback-purple dark:text-gray-400 dark:hover:text-catback-light-purple transition-colors"
+                  >
+                    {link.text}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
 
         <div className="flex flex-col items-center md:items-end space-y-4">
