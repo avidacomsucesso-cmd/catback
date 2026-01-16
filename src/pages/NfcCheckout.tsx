@@ -217,13 +217,46 @@ const NfcCheckout: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const key = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
-    if (key) {
-      setStripePromise(loadStripe(key));
-    } else {
-      setError("Chave pública do Stripe não encontrada.");
-      showError("Erro de configuração de pagamento.");
-    }
+    // Fetch the PaymentIntent client secret AND the public key
+    const fetchPaymentConfig = async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke('create-payment-intent', {
+          body: { amount: 3390 }, // 33.90 EUR in cents
+        });
+
+        if (error) {
+            console.error("Supabase Invoke Error:", error);
+            // Check if it's a connection error (function missing or CORS)
+            if (error.message && (error.message.includes("Failed to send a request") || error.message.includes("fetch"))) {
+                throw new Error("Erro de conexão (CORS/Network). Verifique se a Edge Function foi atualizada e implantada corretamente.");
+            }
+            throw error;
+        }
+
+        if (data) {
+            if (data.clientSecret) {
+                setClientSecret(data.clientSecret);
+            }
+            
+            // Prioritize key from backend, fallback to frontend env, finally error
+            const backendKey = data.publicKey;
+            const frontendKey = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
+            const keyToUse = backendKey || frontendKey;
+
+            if (keyToUse) {
+                setStripePromise(loadStripe(keyToUse));
+            } else {
+                throw new Error("Chave pública do Stripe não encontrada (Frontend ou Backend).");
+            }
+        }
+      } catch (err: any) {
+        console.error(err);
+        setError(err.message || "Erro desconhecido ao iniciar checkout.");
+        showError("Erro ao iniciar pagamento.");
+      }
+    };
+
+    fetchPaymentConfig();
   }, []);
 
   const price = 33.90;
@@ -253,9 +286,9 @@ const NfcCheckout: React.FC = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {stripePromise ? (
-              <Elements stripe={stripePromise} options={{ }}>
-                <CheckoutForm clientSecret={""} />
+            {clientSecret && stripePromise ? (
+              <Elements stripe={stripePromise} options={{ clientSecret }}>
+                <CheckoutForm clientSecret={clientSecret} />
               </Elements>
             ) : (
               <div className="flex justify-center p-12">
