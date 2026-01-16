@@ -33,6 +33,9 @@ serve(async (req) => {
       automatic_payment_methods: {
         enabled: true,
       },
+      metadata: {
+        nif: nif,
+      },
     });
 
     return new Response(
