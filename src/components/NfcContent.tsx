@@ -40,8 +40,8 @@ const benefits = [
     {
         icon: Zap,
         title: "Integração com Fidelização (Killer Feature)",
-        subtitle: "O Único Display que Liga Reviews ao CRM.",
-        description: "Apenas com o CATBACK, pode ligar as avaliações 5 estrelas diretamente ao seu programa de fidelidade, recompensando os seus melhores clientes com pontos ou selos bónus. Use o poder das reviews para incentivar o retorno.",
+        subtitle: "O Único Display que Liga Reviews ao seu Negócio.",
+        description: "Apenas com o CATBACK, pode ligar as avaliações 5 estrelas diretamente ao seu programa de fidelidade, recompensando os seus melhores clientes com pontos ou selos bónus. Use o poder das reviews para incentivar o retorno e aumentar o seu faturamento.",
         color: "text-catback-success-green",
     },
     {
