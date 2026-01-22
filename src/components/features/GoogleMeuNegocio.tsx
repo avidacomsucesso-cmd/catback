@@ -123,7 +123,7 @@ const GoogleMeuNegocio: React.FC = () => {
             </div>
             <div className="flex items-start space-x-3">
                 <Check className="w-6 h-6 text-catback-success-green flex-shrink-0 mt-1" />
-                <p className="text-gray-700 dark:text-gray-300"><strong>Ranking Superior:</strong> Posts e fotos semanais que o colocam no topo do Google Maps.</p>
+                <p className="text-gray-700 dark:text-gray-300"><strong>Ranking Superior:</strong> Posts e fotos semanais que o colocam no topo do Google.</p>
             </div>
           </div>
           <Link to="/nfc-display/checkout">
@@ -155,7 +155,7 @@ const GoogleMeuNegocio: React.FC = () => {
                 </div>
                 <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md border-l-4 border-l-catback-success-green">
                     <h4 className="font-bold text-catback-success-green flex-center flex items-center mb-2 underline">✅ Com a CATBACK no Balcão</h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">Enxurrada de avaliações 5 estrelas, fotos profissionais semanais, IA a responder a todos e destaque total no Google Maps.</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Enxurrada de avaliações 5 estrelas, fotos profissionais semanais, IA a responder a todos e destaque total no Google.</p>
                 </div>
             </div>
             <div className="p-2 h-full">

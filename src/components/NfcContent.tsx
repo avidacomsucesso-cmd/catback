@@ -34,7 +34,7 @@ const benefits = [
         icon: Star,
         title: "Aumento de 300% nas Avaliações",
         subtitle: "Mais Avaliações. Melhor Ranking.",
-        description: "Negócios que usam os nossos displays reportam um aumento médio de 300% no número de avaliações recebidas no primeiro mês. Mais avaliações positivas significam um melhor ranking no Google Maps e mais clientes a entrar pela sua porta.",
+        description: "Negócios que usam os nossos displays reportam um aumento médio de 300% no número de avaliações recebidas no primeiro mês. Mais avaliações positivas significam um melhor ranking no Google e mais clientes a entrar pela sua porta.",
         color: "text-catback-energy-orange",
     },
     {
@@ -68,7 +68,7 @@ const NfcContent: React.FC = () => {
             </div>
             
             <h2 className="text-3xl md:text-5xl font-bold text-catback-dark-purple mb-6 leading-tight">
-              Seu Negócio no Topo do <span className="text-catback-purple">Google Maps</span>
+              Seu Negócio no Topo do <span className="text-catback-purple">Google</span>
             </h2>
 
             <div className="mb-8 p-6 bg-gradient-to-r from-catback-purple to-catback-dark-purple rounded-2xl shadow-xl text-white transform -rotate-1">

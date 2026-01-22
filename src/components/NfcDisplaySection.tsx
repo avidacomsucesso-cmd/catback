@@ -50,7 +50,7 @@ const NfcDisplaySection: React.FC = () => {
                 <div>
                   <h3 className="font-bold text-white text-lg">Mais Visibilidade, Mais Vendas</h3>
                   <p className="text-sm text-white font-medium">
-                    Aumente o seu ranking no Google Maps e apareça para mais clientes. Negócios com mais avaliações positivas transmitem mais confiança e atraem mais visitas de forma orgânica e constante.
+                    Aumente o seu ranking no Google e apareça para mais clientes. Negócios com mais avaliações positivas transmitem mais confiança e atraem mais visitas de forma orgânica e constante.
                   </p>
                 </div>
               </CardContent>
