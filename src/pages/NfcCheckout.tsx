@@ -51,6 +51,13 @@ const CheckoutForm: React.FC<{ clientSecret: string }> = ({ clientSecret }) => {
     setIsProcessing(true);
 
     try {
+      // Validate the Payment Element first
+      const { error: submitError } = await elements.submit();
+      if (submitError) {
+        setIsProcessing(false);
+        return;
+      }
+
       const { data: intentData, error: intentError } = await supabase.functions.invoke('create-payment-intent', {
         body: { 
           amount: 2000, // Preço promocional: 20.00 EUR em cêntimos
