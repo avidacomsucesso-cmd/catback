@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Layout from "@/components/Layout";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,6 +6,18 @@ import { CheckCircle, Nfc, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const CheckoutSuccess: React.FC = () => {
+  useEffect(() => {
+    // Dispara evento de conversão de compra no Google Ads
+    if (typeof (window as any).gtag === 'function') {
+      (window as any).gtag('event', 'purchase', {
+        'send_to': 'AW-17858320955/HMT2CPye_AbELu0wcNC',
+        'value': 20.00,
+        'currency': 'EUR',
+        'transaction_id': 'nfc_' + Math.random().toString(36).substr(2, 9)
+      });
+    }
+  }, []);
+
   return (
     <Layout>
       <div className="container py-16 flex justify-center">
