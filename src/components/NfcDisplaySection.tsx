@@ -48,9 +48,9 @@ const NfcDisplaySection: React.FC = () => {
               <CardContent className="p-4 flex items-center space-x-4">
                 <Zap className="w-8 h-8 text-catback-energy-orange flex-shrink-0" />
                 <div>
-                  <h3 className="font-bold text-white">Automação Inteligente</h3>
+                  <h3 className="font-bold text-white">Mais Visibilidade, Mais Vendas</h3>
                   <p className="text-sm text-catback-light-purple">
-                    O CATBACK liga as suas avaliações do Google ao seu CRM, permitindo-lhe monitorizar e responder a todas as opiniões diretamente do seu dashboard.
+                    Aumente o seu ranking no Google Maps e apareça para mais clientes. Negócios com mais avaliações positivas transmitem mais confiança e atraem mais visitas de forma orgânica e constante.
                   </p>
                 </div>
               </CardContent>
