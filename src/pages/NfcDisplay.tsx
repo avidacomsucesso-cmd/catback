@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Layout from "@/components/Layout";
 import FinalCTA from "@/components/FinalCTA";
 import NfcContent from "@/components/NfcContent";
@@ -7,6 +7,18 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Flame } from "lucide-react";
 
 const NfcDisplay: React.FC = () => {
+  useEffect(() => {
+    // Track ViewContent event on Meta Pixel
+    if (typeof (window as any).fbq === 'function') {
+      (window as any).fbq('track', 'ViewContent', {
+        content_name: 'Display NFC Catback',
+        content_type: 'product',
+        value: 20.00,
+        currency: 'EUR'
+      });
+    }
+  }, []);
+
   const navigate = useNavigate();
 
   const handleBuyClick = () => {
