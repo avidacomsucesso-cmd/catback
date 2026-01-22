@@ -53,7 +53,7 @@ const CheckoutForm: React.FC<{ clientSecret: string }> = ({ clientSecret }) => {
     try {
       const { data: intentData, error: intentError } = await supabase.functions.invoke('create-payment-intent', {
         body: { 
-          amount: 2000, // Updated to 20.00 EUR in cents
+          amount: 2000, // Preço promocional: 20.00 EUR em cêntimos
           name: values.name,
           email: values.email,
           address: values.address,
@@ -64,7 +64,7 @@ const CheckoutForm: React.FC<{ clientSecret: string }> = ({ clientSecret }) => {
       });
 
       if (intentError || !intentData.clientSecret) {
-        throw new Error(intentError?.message || "Failed to create payment intent.");
+        throw new Error(intentError?.message || "Falha ao criar intenção de pagamento.");
       }
 
       const { error } = await stripe.confirmPayment({
@@ -78,7 +78,6 @@ const CheckoutForm: React.FC<{ clientSecret: string }> = ({ clientSecret }) => {
       if (error) {
         showError(error.message || "Ocorreu um erro no pagamento.");
       }
-      // If successful, Stripe redirects to return_url
       
     } catch (err: any) {
       showError("Erro inesperado: " + err.message);

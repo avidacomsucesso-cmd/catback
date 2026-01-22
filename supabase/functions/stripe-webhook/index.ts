@@ -52,7 +52,7 @@ async function sendNewOrderEmail(order: any) {
     },
     body: JSON.stringify({
       from: "CATBACK <noreply@catback.app>",
-      to: ["geral@catback.app"], // Atualizado para o seu email de suporte/gestão
+      to: ["geral@catback.app"], // Verifique se este email está correto para receber as notificações
       subject: `Nova Venda de Display NFC - Pedido de ${customerName}`,
       html: emailHtml,
     }),
