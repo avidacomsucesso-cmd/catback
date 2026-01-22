@@ -13,7 +13,7 @@ const NfcDisplay: React.FC = () => {
       (window as any).fbq('track', 'ViewContent', {
         content_name: 'Display NFC Catback',
         content_type: 'product',
-        value: 20.00,
+        value: 29.90,
         currency: 'EUR'
       });
     }
