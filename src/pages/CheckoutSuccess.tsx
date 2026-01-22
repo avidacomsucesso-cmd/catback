@@ -16,6 +16,14 @@ const CheckoutSuccess: React.FC = () => {
         'transaction_id': 'nfc_' + Math.random().toString(36).substr(2, 9)
       });
     }
+
+    // Dispara evento de conversão de compra no Meta Pixel
+    if (typeof (window as any).fbq === 'function') {
+      (window as any).fbq('track', 'Purchase', {
+        value: 20.00,
+        currency: 'EUR'
+      });
+    }
   }, []);
 
   return (
