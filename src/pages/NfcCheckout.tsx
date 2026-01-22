@@ -53,7 +53,7 @@ const CheckoutForm: React.FC<{ clientSecret: string }> = ({ clientSecret }) => {
     try {
       const { data: intentData, error: intentError } = await supabase.functions.invoke('create-payment-intent', {
         body: { 
-          amount: 3390, // 33.90 EUR in cents
+          amount: 2000, // Updated to 20.00 EUR in cents
           name: values.name,
           email: values.email,
           address: values.address,
@@ -87,16 +87,22 @@ const CheckoutForm: React.FC<{ clientSecret: string }> = ({ clientSecret }) => {
     }
   };
 
-  const price = 33.90;
+  const price = 20.00;
 
   return (
     <div className="grid lg:grid-cols-2 gap-8">
       {/* Order Summary */}
       <div className="space-y-4 p-4 border rounded-lg bg-gray-50 dark:bg-gray-800 h-full">
-        <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Seu Pedido</h3>
+        <div className="flex justify-between items-start">
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Seu Pedido</h3>
+            <span className="bg-catback-energy-orange text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-tighter">Oferta Limitada</span>
+        </div>
         <div className="flex justify-between text-sm">
             <span>Display NFC CATBACK</span>
-            <span className="font-semibold">€33.90</span>
+            <div className="text-right">
+                <span className="text-gray-400 line-through text-xs mr-2">€33,90</span>
+                <span className="font-semibold">€20,00</span>
+            </div>
         </div>
         <div className="flex justify-between text-sm">
             <span>Portes de Envio (Portugal Continental)</span>
@@ -259,7 +265,7 @@ const NfcCheckout: React.FC = () => {
     fetchPaymentConfig();
   }, []);
 
-  const price = 33.90;
+  const price = 20.00;
 
   if (error) {
     return (

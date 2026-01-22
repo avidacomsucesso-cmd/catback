@@ -16,7 +16,7 @@ const GoogleTag: React.FC = () => {
               if (typeof (window as any).gtag === 'function') {
                 (window as any).gtag('event', 'conversion', {
                     'send_to': 'AW-17858320955/HMT2CPye_AbELu0wcNC',
-                    'value': 33.90,
+                    'value': 20.00,
                     'currency': 'EUR'
                 });
               }

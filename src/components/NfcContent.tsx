@@ -55,81 +55,34 @@ const benefits = [
 
 const NfcContent: React.FC = () => {
   return (
-    <section className="py-16">
+    <section className="py-20 bg-white dark:bg-gray-900 overflow-hidden">
       <div className="container">
-        <div className="text-center mb-12">
-          <h1 className="text-5xl font-extrabold text-gray-900 dark:text-white">
-            Receba Avaliações 5 Estrelas em 5 Segundos
-          </h1>
-          <p className="mt-4 text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-            Apresentamos o Display NFC CATBACK: a forma mais rápida e elegante de transformar clientes satisfeitos em avaliações positivas no Google.
-          </p>
-        </div>
-
-        {/* Dor vs Solução */}
-        <div className="max-w-5xl mx-auto mb-20 relative">
-            <div className="grid md:grid-cols-2 gap-8 items-stretch">
-                {/* A Dor */}
-                <div className="relative group">
-                    <div className="absolute -inset-1 bg-gradient-to-r from-red-500 to-orange-500 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
-                    <Card className="relative h-full p-8 bg-white dark:bg-gray-900 border-none shadow-xl overflow-hidden">
-                        <div className="absolute top-0 right-0 p-4 opacity-10">
-                            <Frown size={120} className="text-red-500" />
-                        </div>
-                        <div className="flex items-center space-x-3 mb-6">
-                            <div className="p-3 bg-red-100 dark:bg-red-900/30 rounded-xl text-red-600 dark:text-red-400">
-                                <Frown className="w-8 h-8" />
-                            </div>
-                            <h3 className="text-2xl font-bold text-gray-900 dark:text-white">A Dor:</h3>
-                        </div>
-                        <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
-                            Pedir uma avaliação a um cliente é estranho. Eles dizem 'sim, claro', mas depois esquecem-se. O processo é complicado: têm de procurar o seu negócio, encontrar a secção de avaliações, e só depois escrever. <strong>É pedir demasiado.</strong>
-                        </p>
-                    </Card>
-                </div>
-
-                {/* A Solução */}
-                <div className="relative group">
-                    <div className="absolute -inset-1 bg-gradient-to-r from-catback-purple to-catback-dark-purple rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
-                    <Card className="relative h-full p-8 bg-white dark:bg-gray-900 border-none shadow-xl overflow-hidden">
-                        <div className="absolute top-0 right-0 p-4 opacity-10">
-                            <Smartphone size={120} className="text-catback-purple" />
-                        </div>
-                        <div className="flex items-center space-x-3 mb-6">
-                            <div className="p-3 bg-catback-light-purple/20 rounded-xl text-catback-purple">
-                                <Sparkles className="w-8 h-8" />
-                            </div>
-                            <h3 className="text-2xl font-bold text-catback-dark-purple dark:text-white">A Solução:</h3>
-                        </div>
-                        <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
-                            Agora, imagine isto: o seu cliente paga, você aponta para o display e diz <strong>'Se gostou, deixe-nos a sua opinião aqui'</strong>. Ele encosta o telemóvel. A página de avaliação abre instantaneamente. Em 5 segundos, você ganhou uma nova avaliação 5 estrelas.
-                        </p>
-                    </Card>
-                </div>
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="order-2 lg:order-1 animate-fade-in-up">
+            <div className="inline-flex items-center px-4 py-2 rounded-full bg-catback-purple/10 text-catback-purple mb-6 border border-catback-purple/20">
+              <span className="relative flex h-3 w-3 mr-3">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-catback-energy-orange opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-catback-energy-orange"></span>
+              </span>
+              <span className="text-sm font-semibold tracking-wide uppercase">Oferta de Lançamento</span>
             </div>
             
-            {/* Elemento de conexão (seta ou indicador) escondido em mobile */}
-            <div className="hidden lg:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-16 h-16 bg-white dark:bg-gray-800 rounded-full shadow-2xl items-center justify-center border-4 border-gray-50 dark:border-gray-950">
-                <ArrowRight className="w-8 h-8 text-catback-purple animate-pulse" />
-            </div>
-        </div>
-
-        {/* Main Content & CTA */}
-        <div className="grid lg:grid-cols-2 gap-12 items-center bg-catback-dark-purple text-white p-8 md:p-12 rounded-2xl shadow-xl">
-          {/* Left: Illustration */}
-          <div className="flex justify-center">
-            <NfcDisplayIllustration />
-          </div>
-
-          {/* Right: CTA & Price */}
-          <div className="space-y-6 text-center lg:text-left">
-            <h2 className="text-3xl md:text-4xl font-bold">
-              Receba Avaliações 5 Estrelas em 5 Segundos
+            <h2 className="text-3xl md:text-5xl font-bold text-catback-dark-purple mb-6 leading-tight">
+              Seu Negócio no Topo do <span className="text-catback-purple">Google Maps</span>
             </h2>
-            
+
+            <div className="mb-8 p-6 bg-gradient-to-r from-catback-purple to-catback-dark-purple rounded-2xl shadow-xl text-white transform -rotate-1">
+                <p className="text-sm uppercase font-bold opacity-80 mb-1">Aproveite agora:</p>
+                <div className="flex items-baseline gap-3">
+                    <span className="text-gray-300 line-through text-2xl">€33,90</span>
+                    <span className="text-5xl font-black text-white">€20,00</span>
+                </div>
+                <p className="mt-2 text-sm font-medium italic">* Apenas para as primeiras 100 unidades.</p>
+            </div>
+
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
                 <div className="text-5xl font-extrabold text-catback-energy-orange">
-                    €33,90
+                    €20,00
                 </div>
                 <div className="text-xl font-semibold">
                     Pagamento Único
@@ -156,6 +109,22 @@ const NfcContent: React.FC = () => {
                         Quero o Meu Display <ArrowRight className="w-5 h-5 ml-2" />
                     </Button>
                 </Link>
+            </div>
+          </div>
+
+          <div className="order-1 lg:order-2">
+            <div className="relative w-full max-w-xs mx-auto lg:max-w-sm">
+              <img 
+                src="/display_catback.png" 
+                alt="Display NFC CATBACK para Avaliações Google" 
+                className="w-full h-auto rounded-xl shadow-2xl"
+                onError={(e) => {
+                  // Fallback to a generic placeholder if image fails to load
+                  e.currentTarget.onerror = null; 
+                  e.currentTarget.src = "/placeholder.svg";
+                  e.currentTarget.className = "w-1/3 h-1/3 object-contain mx-auto my-auto p-4";
+                }}
+              />
             </div>
           </div>
         </div>

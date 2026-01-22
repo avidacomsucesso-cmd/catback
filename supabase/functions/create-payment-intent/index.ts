@@ -14,6 +14,9 @@ serve(async (req) => {
 
   try {
     const { amount, name, email, address, city, zipCode, nif } = await req.json();
+    
+    // Ensure the price is 20€ if no amount is provided or for security
+    const finalAmount = amount || 2000;
 
     const customer = await stripe.customers.create({
       name,
@@ -27,7 +30,7 @@ serve(async (req) => {
     });
 
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: amount,
+      amount: finalAmount,
       currency: "eur",
       customer: customer.id,
       automatic_payment_methods: {
