@@ -232,7 +232,7 @@ const NfcCheckout: React.FC = () => {
     const fetchPaymentConfig = async () => {
       try {
         const { data, error: invokeError } = await supabase.functions.invoke('create-payment-intent', {
-          body: { amount: 2000 }, // Preço promocional: 20.00 EUR
+          body: { amount: 2000 }, // Preço promocional fixo: 20.00 EUR
         });
 
         if (invokeError) {
