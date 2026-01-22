@@ -223,42 +223,37 @@ const NfcCheckout: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Fetch the PaymentIntent client secret AND the public key
+    // Inicializa o Stripe Promise assim que possível
+    const frontendKey = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
+    if (frontendKey) {
+        setStripePromise(loadStripe(frontendKey));
+    }
+
     const fetchPaymentConfig = async () => {
       try {
-        const { data, error } = await supabase.functions.invoke('create-payment-intent', {
-          body: { amount: 3390 }, // 33.90 EUR in cents
+        const { data, error: invokeError } = await supabase.functions.invoke('create-payment-intent', {
+          body: { amount: 2000 }, // Preço promocional: 20.00 EUR
         });
 
-        if (error) {
-            console.error("Supabase Invoke Error:", error);
-            // Check if it's a connection error (function missing or CORS)
-            if (error.message && (error.message.includes("Failed to send a request") || error.message.includes("fetch"))) {
-                throw new Error("Erro de conexão (CORS/Network). Verifique se a Edge Function foi atualizada e implantada corretamente.");
-            }
-            throw error;
+        if (invokeError) {
+            console.error("Supabase Invoke Error:", invokeError);
+            throw new Error("Não foi possível conectar ao servidor de pagamentos. Por favor, tente novamente mais tarde.");
         }
 
-        if (data) {
-            if (data.clientSecret) {
-                setClientSecret(data.clientSecret);
-            }
+        if (data && data.clientSecret) {
+            setClientSecret(data.clientSecret);
             
-            // Prioritize key from backend, fallback to frontend env, finally error
-            const backendKey = data.publicKey;
-            const frontendKey = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
-            const keyToUse = backendKey || frontendKey;
-
-            if (keyToUse) {
-                setStripePromise(loadStripe(keyToUse));
-            } else {
-                throw new Error("Chave pública do Stripe não encontrada (Frontend ou Backend).");
+            // Se não conseguimos carregar pelo ENV, tentamos o que veio do backend
+            if (!stripePromise && data.publicKey) {
+                setStripePromise(loadStripe(data.publicKey));
             }
+        } else {
+            throw new Error("Resposta inválida do servidor de pagamentos.");
         }
       } catch (err: any) {
-        console.error(err);
-        setError(err.message || "Erro desconhecido ao iniciar checkout.");
-        showError("Erro ao iniciar pagamento.");
+        console.error("Checkout Initialization Error:", err);
+        setError(err.message);
+        showError("Erro ao iniciar o checkout.");
       }
     };
 

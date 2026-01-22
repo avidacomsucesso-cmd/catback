@@ -2,21 +2,28 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@11.1.0";
 import { corsHeaders } from "../_shared/cors.ts";
 
-const stripe = new Stripe(Deno.env.get("STRIPE_API_KEY") as string, {
-  apiVersion: "2022-11-15",
-});
+const STRIPE_API_KEY = Deno.env.get("STRIPE_API_KEY");
 
 serve(async (req) => {
-  // This is needed if you're planning to invoke your function from a browser.
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
 
   try {
+    if (!STRIPE_API_KEY) {
+      throw new Error("STRIPE_API_KEY is not set in environment variables.");
+    }
+
+    const stripe = new Stripe(STRIPE_API_KEY, {
+      apiVersion: "2022-11-15",
+    });
+
     const { amount, name, email, address, city, zipCode, nif } = await req.json();
     
-    // Ensure the price is 20€ if no amount is provided or for security
+    // Default to 20€ if amount is not provided (safety)
     const finalAmount = amount || 2000;
+
+    console.log(`Creating payment intent for ${email} - Amount: ${finalAmount}`);
 
     const customer = await stripe.customers.create({
       name,
@@ -37,7 +44,8 @@ serve(async (req) => {
         enabled: true,
       },
       metadata: {
-        nif: nif,
+        nif: nif || "",
+        customer_email: email,
       },
     });
 
@@ -51,7 +59,7 @@ serve(async (req) => {
       }
     );
   } catch (error) {
-    console.error("Error creating payment intent:", error);
+    console.error("Error creating payment intent:", error.message);
     return new Response(JSON.stringify({ error: error.message }), {
       status: 400,
       headers: { ...corsHeaders, "Content-Type": "application/json" },

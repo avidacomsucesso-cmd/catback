@@ -15,7 +15,7 @@ const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 
 async function sendNewOrderEmail(order: any) {
   if (!RESEND_API_KEY) {
-    console.log("No Resend API key, skipping email.");
+    console.warn("RESEND_API_KEY is missing. Skipping email notification.");
     return;
   }
 
@@ -52,7 +52,7 @@ async function sendNewOrderEmail(order: any) {
     },
     body: JSON.stringify({
       from: "CATBACK <noreply@catback.app>",
-      to: ["seu-email-para-notificacoes@exemplo.com"], // TODO: Replace with your actual notification email
+      to: ["geral@catback.app"], // Atualizado para o seu email de suporte/gestão
       subject: `Nova Venda de Display NFC - Pedido de ${customerName}`,
       html: emailHtml,
     }),
