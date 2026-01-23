@@ -2,7 +2,7 @@
 
 import React, { useEffect } from 'react';
 
-const PIXEL_ID = '1187152749412426';
+const PIXEL_ID = '1385953883008355';
 
 const MetaPixel: React.FC = () => {
   useEffect(() => {
