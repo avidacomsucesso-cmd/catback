@@ -17,51 +17,57 @@ const NfcDisplayIllustration: React.FC = () => (
 
 const NfcDisplaySection: React.FC = () => {
   return (
-    <section className="py-20 bg-background dark:bg-gray-950">
+    <section className="py-20 bg-white dark:bg-gray-950">
       <div className="container">
-        <div className="grid lg:grid-cols-2 gap-12 items-center bg-catback-dark-purple text-white p-8 md:p-12 rounded-2xl shadow-2xl">
-          {/* Left: Illustration */}
-          <div className="flex justify-center">
-            <NfcDisplayIllustration />
-          </div>
-
-          {/* Right: Content */}
-          <div className="space-y-6 text-center lg:text-left">
-            <h2 className="text-3xl md:text-4xl font-bold">
-              Receba Avaliações 5 Estrelas em 5 Segundos
-            </h2>
-            <p className="text-lg text-catback-light-purple">
-              Coloque o nosso Display NFC no seu balcão e transforme clientes satisfeitos em avaliações positivas no Google, sem esforço. Basta um toque do telemóvel.
-            </p>
-            
-            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
-                <div className="text-4xl font-extrabold text-catback-energy-orange">
-                    €20,00
-                </div>
-                <div className="text-lg font-semibold">
-                    Pagamento Único
-                    <p className="text-sm font-normal text-catback-light-purple">Sem mensalidades</p>
-                </div>
+        <div className="bg-catback-purple rounded-3xl overflow-hidden shadow-2xl">
+          <div className="grid lg:grid-cols-2 items-center">
+            {/* Image Column */}
+            <div className="relative h-full min-h-[400px]">
+              <img 
+                src="/images/nfc-display-v2.jpeg" 
+                alt="Display NFC Catback" 
+                className="absolute inset-0 w-full h-full object-cover"
+              />
             </div>
 
-            <Card className="bg-catback-purple/50 border-catback-light-purple/50">
-              <CardContent className="p-4 flex items-center space-x-4">
-                <Zap className="w-8 h-8 text-catback-energy-orange flex-shrink-0" />
-                <div>
-                  <h3 className="font-bold text-white text-lg">Mais Visibilidade, Mais Vendas</h3>
-                  <p className="text-sm text-white font-medium">
-                    Aumente o seu ranking no Google e apareça para mais clientes. Negócios com mais avaliações positivas transmitem mais confiança e atraem mais visitas de forma orgânica e constante.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+            {/* Content Column */}
+            <div className="p-8 md:p-12 space-y-6">
+              <h2 className="text-3xl md:text-4xl font-bold">
+                Receba Avaliações 5 Estrelas em 5 Segundos
+              </h2>
+              <p className="text-lg text-catback-light-purple">
+                Coloque o nosso Display NFC no seu balcão e transforme clientes satisfeitos em avaliações positivas no Google, sem esforço. Basta um toque do telemóvel.
+              </p>
+              
+              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
+                  <div className="text-4xl font-extrabold text-catback-energy-orange">
+                      €20,00
+                  </div>
+                  <div className="text-lg font-semibold">
+                      Pagamento Único
+                      <p className="text-sm font-normal text-catback-light-purple">Sem mensalidades</p>
+                  </div>
+              </div>
 
-            <div className="pt-4">
-                <Link to="/nfc-display/checkout">
-                    <Button size="lg" className="bg-catback-energy-orange hover:bg-catback-energy-orange/90 text-white text-lg px-8 py-6 shadow-lg">
-                        Quero o Meu Display <ArrowRight className="w-5 h-5 ml-2" />
-                    </Button>
-                </Link>
+              <Card className="bg-catback-purple/50 border-catback-light-purple/50">
+                <CardContent className="p-4 flex items-center space-x-4">
+                  <Zap className="w-8 h-8 text-catback-energy-orange flex-shrink-0" />
+                  <div>
+                    <h3 className="font-bold text-white text-lg">Mais Visibilidade, Mais Vendas</h3>
+                    <p className="text-sm text-white font-medium">
+                      Aumente o seu ranking no Google e apareça para mais clientes. Negócios com mais avaliações positivas transmitem mais confiança e atraem mais visitas de forma orgânica e constante.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <div className="pt-4">
+                  <Link to="/nfc-display/checkout">
+                      <Button size="lg" className="bg-catback-energy-orange hover:bg-catback-energy-orange/90 text-white text-lg px-8 py-6 shadow-lg">
+                          Quero o Meu Display <ArrowRight className="w-5 h-5 ml-2" />
+                      </Button>
+                  </Link>
+              </div>
             </div>
           </div>
         </div>
