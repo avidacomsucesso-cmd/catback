@@ -15,7 +15,7 @@ const HowItWorksNfc = () => {
       title: "O que é o NFC?",
       description: "Significa tecnologia de aproximação sem contacto. O Display CATBACK deteta o telemóvel do cliente instantaneamente e direciona-o para deixar uma avaliação 5 estrelas em apenas 5 segundos.",
       icon: <Zap className="w-12 h-12 text-catback-energy-orange" />,
-      image: "/images/nfc-display-marketing.jpeg",
+      image: "/images/nfc-tech-detail.png",
       bg: "bg-gray-50/50"
     },
     {
