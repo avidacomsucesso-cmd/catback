@@ -9,7 +9,7 @@ const Footer: React.FC = () => {
 
   const platformLinks = [
     { to: "/nfc-display", text: "Display NFC" },
-    { to: "/pricing", text: "Preços" },
+    // { to: "/pricing", text: "Preços" },
     { to: "/industries", text: "Para Quem" },
   ];
 
@@ -27,7 +27,7 @@ const Footer: React.FC = () => {
   ];
 
   const customerLinks = [
-    { to: "/customer-auth", text: "Meus Cartões" },
+    // { to: "/customer-auth", text: "Meus Cartões" },
   ];
 
   return (
