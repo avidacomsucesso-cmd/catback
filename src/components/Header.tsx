@@ -102,11 +102,6 @@ const Header: React.FC = () => {
                   </Link>
                 ))}
                 <div className="pt-4 space-y-2">
-                  <Link to="/login">
-                    <Button variant="ghost" className="w-full justify-start">
-                      Entrar
-                    </Button>
-                  </Link>
                   <a href="https://wa.me/351928202241" target="_blank" rel="noopener noreferrer">
                     <Button className="w-full bg-catback-purple hover:bg-catback-dark-purple">
                       Solicite uma avaliação Grátis
