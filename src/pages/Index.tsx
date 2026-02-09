@@ -20,10 +20,10 @@ const Index = () => {
   return (
     <Layout>
       {/* Hero Section */}
-      <div className="container pt-16 pb-12 lg:pt-24 lg:pb-16">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+      <div className="container pt-8 pb-12 lg:pt-16 lg:pb-16">
+        <div className="grid lg:grid-cols-2 gap-12 items-start">
           {/* Left Content */}
-          <div className="space-y-8 text-center lg:text-left">
+          <div className="space-y-8 text-center lg:text-left lg:pt-4">
             <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight text-gray-900 dark:text-white leading-tight">
               Atraia Clientes do <span className="text-catback-purple">Google</span>. <br/>Transforme-os em Fãs.
             </h1>
