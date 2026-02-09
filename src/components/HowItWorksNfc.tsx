@@ -11,7 +11,7 @@ const HowItWorksNfc = () => {
             Tecnologia que <span className="text-catback-purple">Trabalha por Si</span>
           </h2>
           <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            Simples para o cliente, poderoso para o seu negócio. Veja como o NFC revoluciona a forma como recebe feedback.
+            Simples para o cliente, poderoso para o seu negócio. Veja como o Display Google funciona e revoluciona a forma como recebe feedback.
           </p>
         </div>
 
