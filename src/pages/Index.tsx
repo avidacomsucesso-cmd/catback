@@ -24,9 +24,19 @@ const Index = () => {
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left Content */}
           <div className="space-y-8 text-center lg:text-left">
-            <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight text-gray-900 dark:text-white">
-              Atraia Clientes do <span className="text-catback-purple">Google</span>. Transforme-os em Fãs.
+            <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight text-gray-900 dark:text-white leading-tight">
+              Atraia Clientes do <span className="text-catback-purple">Google</span>. <br/>Transforme-os em Fãs.
             </h1>
+            
+            {/* Texto de destaque vinculado ao Google My Business com cores de referência */}
+            <div className="bg-white dark:bg-gray-900 p-6 rounded-2xl border-l-8 border-l-[#4285F4] shadow-md max-w-lg lg:max-w-none mx-auto transform -rotate-1 hover:rotate-0 transition-transform duration-300">
+              <p className="text-2xl font-bold leading-relaxed">
+                <span className="text-[#4285F4]">Quanto mais</span> <span className="text-[#EA4335]">avaliações</span>, 
+                <span className="text-[#FBBC05]"> mais o Google</span> <span className="text-[#34A853]">te mostra</span> 
+                <span className="text-gray-900 dark:text-white"> para quem busca seus serviços.</span>
+              </p>
+            </div>
+
             <p className="text-xl text-gray-600 dark:text-gray-300 max-w-lg lg:max-w-none mx-auto">
               Melhore a visibilidade do seu negócio no Google através de avaliações reais e consistentes. <br/><strong>Encontrado no Google. Lembrado pelos Clientes.</strong>
             </p>
