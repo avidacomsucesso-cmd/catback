@@ -22,7 +22,7 @@ const HowItWorksNfc = () => {
       title: "Como começar?",
       description: "Passo 1: Coloque o Display CATBACK no seu balcão.\nPasso 2: Os seus clientes aproximam o telemóvel e as avaliações começam a subir todos os dias de forma automática.",
       icon: <Rocket className="w-12 h-12 text-catback-success-green" />,
-      image: "/public/images/display-diagram.png",
+      image: "/images/nfc-review-ai.png",
       bg: "bg-gray-50/50"
     }
   ];
