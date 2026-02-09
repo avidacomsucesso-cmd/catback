@@ -86,8 +86,9 @@ const Index = () => {
       
       {/* 3. Como Funciona (3 Passos Simples) - REMOVIDO PARA LoyalY.tsx */}
       
-      {/* 4. Funcionalidades Principais (Cards Interativos) */}
+      {/* 4. Funcionalidades Principais (Cards Interativos) - DESATIVADO TEMPORARIAMENTE
       <FeatureCards />
+      */}
       
       {/* 5. Planos e Preços (Preview) - DESATIVADO TEMPORARIAMENTE
       <PricingPreview />
