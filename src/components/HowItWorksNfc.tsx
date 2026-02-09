@@ -4,7 +4,7 @@ import { Smartphone, Zap, Rocket } from "lucide-react";
 
 const HowItWorksNfc = () => {
   return (
-    <section className="py-20 bg-white dark:bg-gray-950">
+    <section className="py-14 bg-white dark:bg-gray-950">
       <div className="container">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">

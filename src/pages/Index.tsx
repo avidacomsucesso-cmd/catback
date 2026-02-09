@@ -20,7 +20,7 @@ const Index = () => {
   return (
     <Layout>
       {/* Hero Section */}
-      <div className="container pt-8 pb-12 lg:pt-16 lg:pb-16">
+      <div className="container pt-8 pb-8 lg:pt-16 lg:pb-10">
         <div className="grid lg:grid-cols-2 gap-12 items-start">
           {/* Left Content */}
           <div className="space-y-8 text-center lg:text-left lg:pt-4">
