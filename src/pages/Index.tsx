@@ -8,11 +8,12 @@ import PricingPreview from "@/components/PricingPreview";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import IndustriesPreview from "@/components/IndustriesPreview";
 import FinalCTA from "@/components/FinalCTA";
-import RoleSelectionCTA from "@/components/RoleSelectionCTA";
 import GmbSection from "@/components/GmbSection";
 import NfcDisplaySection from "@/components/NfcDisplaySection";
 import HeroIllustration from "@/components/HeroIllustration";
-import { Check } from "lucide-react";
+import { Check, ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const Index = () => {
   return (
@@ -28,8 +29,21 @@ const Index = () => {
             <p className="text-xl text-gray-600 dark:text-gray-300 max-w-lg lg:max-w-none mx-auto">
               Melhore a visibilidade do seu negócio no Google através de avaliações reais e consistentes. <br/><strong>Encontrado no Google. Lembrado pelos Clientes.</strong>
             </p>
-            {/* NEW CTAs: Role Selection */}
-            <RoleSelectionCTA />
+            
+            {/* NEW CTAs: Replacing Role Selection */}
+            <div className="flex flex-col sm:flex-row gap-4 pt-4 justify-center lg:justify-start">
+              <Link to="/nfc-display">
+                <Button size="lg" className="w-full sm:w-auto bg-catback-purple hover:bg-catback-dark-purple text-lg px-8 py-6">
+                  Conhecer o Display NFC <ArrowRight className="ml-2 w-5 h-5" />
+                </Button>
+              </Link>
+              <a href="https://wa.me/351928202241" target="_blank" rel="noopener noreferrer">
+                <Button size="lg" variant="outline" className="w-full sm:w-auto text-lg px-8 py-6 border-catback-purple text-catback-purple">
+                  Solicitar Avaliação Grátis
+                </Button>
+              </a>
+            </div>
+
             {/* Social Proof */}
             <div className="flex flex-wrap justify-center lg:justify-start gap-x-6 gap-y-2 text-sm text-gray-500 dark:text-gray-400 font-medium pt-4">
               <span className="flex items-center">
