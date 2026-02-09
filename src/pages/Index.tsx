@@ -48,6 +48,11 @@ const Index = () => {
                   Conhecer o Display NFC <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
               </Link>
+              <Link to="/nfc-display/checkout">
+                <Button size="lg" className="w-full sm:w-auto bg-catback-success-green hover:bg-catback-success-green/90 text-lg px-8 py-6 text-white font-bold">
+                  Comprar meu Display Google agora
+                </Button>
+              </Link>
               {/* Desativado temporariamente 
               <a href="https://wa.me/351928202241" target="_blank" rel="noopener noreferrer">
                 <Button size="lg" variant="outline" className="w-full sm:w-auto text-lg px-8 py-6 border-catback-purple text-catback-purple">
