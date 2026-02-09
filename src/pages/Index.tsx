@@ -11,6 +11,7 @@ import FinalCTA from "@/components/FinalCTA";
 import GmbSection from "@/components/GmbSection";
 import NfcDisplaySection from "@/components/NfcDisplaySection";
 import HeroIllustration from "@/components/HeroIllustration";
+import HowItWorksNfc from "@/components/HowItWorksNfc";
 import { Check, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -69,6 +70,9 @@ const Index = () => {
         </div>
       </div>
       
+      {/* Nova Secção Como Funciona NFC (Baseada na referência) */}
+      <HowItWorksNfc />
+
       {/* Nova Secção GMB */}
       <GmbSection />
       
