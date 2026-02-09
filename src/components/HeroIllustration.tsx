@@ -3,7 +3,17 @@ import React from "react";
 const HeroIllustration: React.FC = () => {
   return (
     <div className="relative w-full max-w-lg mx-auto lg:mx-0 p-4 space-y-6">
-      {/* Vídeo do YouTube em destaque */}
+      {/* Imagem de Marketing em Destaque (Topo) */}
+      <div className="relative rounded-3xl overflow-hidden shadow-2xl transition-transform hover:scale-[1.01] duration-500">
+        <img 
+          src="/images/nfc-display-marketing.jpeg" 
+          alt="CATBACK Display NFC - Seu cliente avalia seu atendimento?" 
+          className="w-full h-auto object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent pointer-events-none" />
+      </div>
+
+      {/* Vídeo do YouTube (Baixo) */}
       <div className="relative rounded-3xl overflow-hidden shadow-2xl aspect-video border-2 border-catback-purple/20 transition-transform hover:scale-[1.01] duration-500">
         <iframe
           width="100%"
@@ -15,16 +25,6 @@ const HeroIllustration: React.FC = () => {
           allowFullScreen
           className="absolute inset-0"
         ></iframe>
-      </div>
-
-      {/* Imagem do Produto */}
-      <div className="relative rounded-3xl overflow-hidden shadow-2xl transition-transform hover:scale-[1.01] duration-500">
-        <img 
-          src="/images/hero-display.png" 
-          alt="CATBACK Display NFC e Fidelização Digital" 
-          className="w-full h-auto object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
       </div>
       
       {/* Elementos decorativos flutuantes */}
