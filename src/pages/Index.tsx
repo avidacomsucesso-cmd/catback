@@ -89,8 +89,9 @@ const Index = () => {
       {/* 4. Funcionalidades Principais (Cards Interativos) */}
       <FeatureCards />
       
-      {/* 5. Planos e Preços (Preview) */}
+      {/* 5. Planos e Preços (Preview) - DESATIVADO TEMPORARIAMENTE
       <PricingPreview />
+      */}
       
       {/* 6. Prova Social (Testemunhos) */}
       <TestimonialsSection />
