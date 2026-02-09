@@ -10,8 +10,8 @@ const navLinks = [
   { to: "/nfc-display", text: "Display NFC" },
   { to: "/features#gmb", text: "Google Meu Negócio" },
   { to: "/industries", text: "Para Quem" },
-  { to: "/fidelizacao", text: "Fidelização" },
-  { to: "/pricing", text: "Preços" },
+  // { to: "/fidelizacao", text: "Fidelização" },
+  // { to: "/pricing", text: "Preços" },
 ];
 
 const Logo = () => (
